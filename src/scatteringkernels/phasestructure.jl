@@ -25,13 +25,13 @@ struct PhaseStructure <: AbstractScatteringKernel
         hyp1 = _₂F₁(1/2., (2+α)/2., 1., -k)
         hyp2 = _₂F₁(1/2., -α/2., 1., -k)
         num = 2^(4. - α)/(α^2.)/gamma(α/2.)
-        Bmaj = num * hyp1 / √(1+k) / (1+ζ)
-        Bmin = num * hyp2/(1-ζ)
+        Bmaj = num / hyp1 / √(1+k) / (1+ζ)
+        Bmin = num / hyp2/(1-ζ)
 
         bm = √(8*log(2)/2*π) * λ0/θmaj
         l1 = (1. +M)*inscale*(2. /(α * Bmaj))^(1/(α-2.))
         l2 = 4. ^(1/(2. -α))*Bmaj^(2/(α-2.))*α^(α/(α-2.))/(1+ζ)
         C = l2/(((bm/l1)^2. +1)^(α/2.) - 1)
-        return new(α, inscale, θmaj, θmin, ϕpt, λ0, M, A, ζ, k, Bmaj, Bmin, C) 
+        return new(α, inscale, θmaj, θmin, ϕpt, λ0, M, ζ, A, k, Bmaj, Bmin, C) 
     end
 end
