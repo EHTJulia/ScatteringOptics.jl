@@ -3,6 +3,11 @@ uuid = "e317c96f-4a6f-4ae9-8016-294fb9063ff5"
 authors = ["Anna Tartaglia", "Kazunori Akiyama"]
 version = "1.0.0-DEV"
 
+[deps]
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+HypergeometricFunctions = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+
 [compat]
 julia = "1.9"
 
