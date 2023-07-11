@@ -1,3 +1,9 @@
+export AbstractScatteringKernel
+export calc_dmaj
+export calc_dmin
+export phase_structure_point
+export visibility_point
+
 """
     AbstractScatteringKernel
 

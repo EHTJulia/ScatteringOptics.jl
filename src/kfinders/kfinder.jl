@@ -1,3 +1,5 @@
+export KFinder
+
 """
     $(TYPEDEF)
 
