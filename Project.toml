@@ -6,6 +6,7 @@ version = "1.0.0-DEV"
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 HypergeometricFunctions = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
+NonlinearSolve = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [compat]
