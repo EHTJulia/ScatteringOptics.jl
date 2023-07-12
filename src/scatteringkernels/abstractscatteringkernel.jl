@@ -81,6 +81,6 @@ end
 Maps visibility kernel for a given observing wavelength λ and fourier space coordinates u, v
 """
 function visibility_point(ps::AbstractScatteringKernel, λ::Number, u::Number, v::Number)
-    b = (u, v).* (λ/(1+ps.M))
+    b = (u*λ, v*λ)./(1+ps.M)
     return exp(-.5 * phase_structure_point(ps, λ, b...))
 end
