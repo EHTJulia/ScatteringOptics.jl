@@ -5,6 +5,7 @@ using DocStringExtensions
 using HypergeometricFunctions
 using SpecialFunctions
 using NonlinearSolve
+using AstroAngles
 
 #k finders
 include("./kfinders/abstractkfinder.jl")

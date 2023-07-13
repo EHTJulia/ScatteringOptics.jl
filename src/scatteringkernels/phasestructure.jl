@@ -23,6 +23,10 @@ struct PhaseStructure <: AbstractScatteringKernel
         ζ = (A^2. - 1)/(A^2. +1)
         k = findk(KFinder(α, A))
 
+        #milliarcseconds to radians
+        θmaj_rad = dms2rad((0,0,θmaj*10^-3))
+        θmin_rad = dms2rad((0,0,θmin*10^-3))
+
         # B parameters
         hyp1 = _₂F₁(1/2., (2+α)/2., 1., -k)
         hyp2 = _₂F₁(1/2., -α/2., 1., -k)
@@ -31,7 +35,7 @@ struct PhaseStructure <: AbstractScatteringKernel
         Bmin = num / hyp2/(1-ζ)
         
         # C parameter
-        Qbar = 2.0/gamma((2-α)/2.) * (inscale^2*(1.0 + M)/((2.0 * log(2.0))^0.5/π*(λ0/(2.0*π))^2) )^2 * ( (θmaj^2 + θmin^2))
+        Qbar = 2.0/gamma((2-α)/2.) * (inscale^2*(1.0 + M)/((2.0 * log(2.0))^0.5/π*(λ0/(2.0*π))^2) )^2 * ( (θmaj_rad^2 + θmin_rad^2))
         C = (λ0/(2.0*π))^2 * Qbar*gamma(1.0 - α/2.0)/(8.0*π^2*inscale^2)
         return new(α, inscale, θmaj, θmin, ϕpt, λ0, M, ζ, A, k, Bmaj, Bmin, C) 
     end
