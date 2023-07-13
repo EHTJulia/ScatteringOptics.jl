@@ -17,7 +17,7 @@ struct PhaseStructure <: AbstractScatteringKernel
     Bmaj::Number
     Bmin::Number
     C::Number
-    function PhaseStructure(α, inscale, θmaj, θmin, ϕpt, λ0, M)
+    function PhaseStructure(α=1.38, inscale=800e5, θmaj=1.380, θmin=.703, ϕpt=81.9, λ0=1, M=.53)
         # solve for k from dipole model in Psaltis 2018
         A = θmaj/θmin
         ζ = (A^2. - 1)/(A^2. +1)
