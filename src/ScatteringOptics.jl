@@ -6,6 +6,7 @@ using HypergeometricFunctions
 using SpecialFunctions
 using NonlinearSolve
 using AstroAngles
+using QuadGK
 
 #k finders
 include("./kfinders/abstractkfinder.jl")

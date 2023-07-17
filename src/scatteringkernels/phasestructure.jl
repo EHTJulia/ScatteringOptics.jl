@@ -17,6 +17,7 @@ struct PhaseStructure <: AbstractScatteringKernel
     Bmaj::Number
     Bmin::Number
     C::Number
+    P_ϕ0::Number
     function PhaseStructure(α=1.38, inscale=800e5, θmaj=1.380, θmin=.703, ϕpt=81.9, λ0=1, M=.53)
         # solve for k from dipole model in Psaltis 2018
         A = θmaj/θmin
@@ -37,6 +38,8 @@ struct PhaseStructure <: AbstractScatteringKernel
         # C parameter
         Qbar = 2.0/gamma((2-α)/2.) * (inscale^2*(1.0 + M)/((2.0 * log(2.0))^0.5/π*(λ0/(2.0*π))^2) )^2 * ( (θmaj_rad^2 + θmin_rad^2))
         C = (λ0/(2.0*π))^2 * Qbar*gamma(1.0 - α/2.0)/(8.0*π^2*inscale^2)
-        return new(α, inscale, θmaj, θmin, ϕpt, λ0, M, ζ, A, k, Bmaj, Bmin, C) 
+
+        P_ϕ0 = 1.0/(2.0*π* _₂F₁((α + 2.0)/2.0, 0.5, 1.0, -k))
+        return new(α, inscale, θmaj, θmin, ϕpt, λ0, M, ζ, A, k, Bmaj, Bmin, C, P_ϕ0) 
     end
 end
