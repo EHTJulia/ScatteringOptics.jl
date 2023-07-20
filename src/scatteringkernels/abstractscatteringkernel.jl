@@ -92,8 +92,7 @@ x and y into polar coordinates
 function Dϕ_exact(ps::AbstractScatteringKernel, λ::Number, x::Number, y::Number)
     r = (x^2 + y^2)^0.5
     ϕ = atan(y, x)
-    f(ϕ_q) = dDϕ_dz(ps, λ, r, ϕ, ϕ_q)*P_ϕ(ps, ϕ_q)
-    return quadgk(f, 0, 2.0*π)[1]     
+    return quadgk(ϕ_q -> dDϕ_dz(ps, λ, r, ϕ, ϕ_q)*ps.P_ϕ(ϕ_q), 0, 2.0*π)[1]     
 end
 
 """
