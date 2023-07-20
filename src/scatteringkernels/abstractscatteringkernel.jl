@@ -1,8 +1,12 @@
 export AbstractScatteringKernel
 export calc_dmaj
 export calc_dmin
-export phase_structure_point
+export Dϕ_approx
+export P_ϕ
+export dDϕ_dz
+export Dϕ_exact
 export visibility_point
+
 
 """
     AbstractScatteringKernel
@@ -29,13 +33,12 @@ Equation 33 of Psaltis et al. 2018
 """
 @inline function calc_dmaj(ps::AbstractScatteringKernel, λ::Number, r::Number)
     Bmaj = ps.Bmaj
-    C = ps.C
+    Amaj = ps.Amaj
     α = ps.α
-    ζ = ps.ζ
     rin = ps.inscale
 
-    d1 = C*(1. +ζ)/2. * Bmaj*(2. /(α*Bmaj))^(-α/(2. -α))
-    d2 = (2. /(α*Bmaj))^(2. /(2. -α))
+    d1 = Bmaj*(2. *Amaj/(α*Bmaj))^(-α/(2. -α))
+    d2 = (2. *Amaj/(α*Bmaj))^(2. /(2. -α))
     return d1*((1+d2*(r/rin)^2.)^(α/2.)-1) * (λ/ps.λ0)^2.
 end
 
@@ -47,13 +50,12 @@ Equation 34 of Psaltis et al. 2018
 """
 @inline function calc_dmin(ps::AbstractScatteringKernel, λ::Number, r::Number)
     Bmin = ps.Bmin
-    C = ps.C
+    Amin = ps.Amin
     α = ps.α
-    ζ = ps.ζ
     rin = ps.inscale
 
-    d1 = C*(1. -ζ)/2. * Bmin*(2. /(α*Bmin))^(-α/(2. -α))
-    d2 = (2. /(α*Bmin))^(2. /(2. -α))
+    d1 = Bmin*(2. *Amin/(α*Bmin))^(-α/(2. -α))
+    d2 = (2. *Amin/(α*Bmin))^(2. /(2. -α))
     return d1*((1+d2*(r/rin)^2.)^(α/2.)-1) * (λ/ps.λ0)^2.
 end
 
@@ -65,17 +67,15 @@ x and y into polar coordinates
 Equation 35 of Psaltis et al. 2018
 """
 function Dϕ_approx(ps::AbstractScatteringKernel, λ::Number, x::Number, y::Number)
-    ϕ0 = deg2rad(90 - ps.ϕpt)
     r = √(x^2. + y^2.)
     ϕ = atan(y,x)
     dmaj = calc_dmaj(ps, λ, r)
     dmin = calc_dmin(ps, λ, r)
     add = (dmaj + dmin)/2.
     sub = (dmaj - dmin)/2.
-    return add + sub * cos(2. *(ϕ-ϕ0))
+    return add + sub * cos(2. *(ϕ-ps.ϕ0))
 end
 
-P_ϕ(ps::AbstractScatteringKernel, ϕ) = ps.P_ϕ0*(1. +ps.k*sin(ϕ-deg2rad(90-ps.ϕpt))^2.)^(-(ps.α+2.)/2.)
 
 function dDϕ_dz(ps::AbstractScatteringKernel, λ::Number, r::Number, ϕ::Number, ϕ_q)
 """differential contribution to the phase structure function
