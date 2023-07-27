@@ -5,7 +5,8 @@ using Bessels
 import ComradeBase:
     AbstractModel, IsPrimitive, IsAnalytic, NotAnalytic,
     IsPolarized, NotPolarized,
-    visanalytic, imanalytic, isprimitive, ispolarized
+    visanalytic, imanalytic, isprimitive, ispolarized,
+    visibility_point, flux, radialextent
 using DocStringExtensions
 using EHTUtils: mas2rad
 using HypergeometricFunctions
