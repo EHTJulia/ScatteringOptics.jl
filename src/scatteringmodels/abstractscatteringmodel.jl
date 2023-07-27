@@ -1,0 +1,148 @@
+export AbstractScatteringModel
+#export calc_Dmaj
+#export calc_Dmin
+#export Dϕ_approx
+#export Pϕ
+#export dDϕ_dz
+#export Dϕ_exact
+export visibility_point_apporoximate
+export visibility_point_exact
+
+
+"""
+    $(TYPEDEF)
+
+An abstract anistropic scattering model based on a thin-screen approximation.
+In this package, we provide a reference implementation of
+the dipole (`DipoleScatteringModel`), von Mises (`vonMisesScatteringModel`) and
+periodic Box Car models (`PeriodicBoxCarScatteringModel`) all introduced in Psaltis et al. 2018.
+
+**Mandatory fields**
+The scattering model will be fundamentally governed by the following parameters.
+Ideally, a subtype of this abstract model should have a constructor only with these arguments.
+- `α::Number`: The power-law index of the phase fluctuations (Kolmogorov is 5/3).
+- `rin::Number`: The inner scale of the scattering screen in cm.
+- `θmaj::Number`: FWHM in mas of the major axis angular broadening at the specified reference wavelength.
+- `θmin::Number`: FWHM in mas of the minor axis angular broadening at the specified reference wavelength.
+- `ϕ::Number`: The position angle of the major axis of the scattering in degree.
+- `λ0::Number`: The reference wavelength for the scattering model in cm.
+- `D::Number`: The distance from the observer to the scattering screen in pc.
+- `R::Number`: The distance from the source to the scattering screen in pc.
+Furthermore the following parameters need to be precomputed.
+- `M::Number`:
+- `ζ0::Number`:
+- `A::Number`:
+- `kζ::Number`
+- `Bmaj::Number`:
+- `Bmin::Number`:
+- `Qbar::Number`:
+- `C::Number`:
+- `Amaj::Number`:
+- `Amin::Number`:
+- `ϕ0::Number`:
+
+** Methods need to be defined **
+- `Pϕ(::AbstractScatteringModel, ϕ::Number)` and `Pϕ(::Type{<:AbstractScatteringModel}, ϕ::Number, args...)`:
+    Normalized probability distribution describing the distribution of the field wonder.
+    The function should depend on the field wonder model.
+"""
+abstract type AbstractScatteringModel end
+
+function Pϕ(::AbstractScatteringModel, ϕ::Number) end
+
+"""
+    Dmaj(r, sm::AbstractScatteringModel)
+
+Masm D_maj(r) for given r. Based on Equation 33 of Psaltis et al. 2018
+"""
+@inline function calc_Dmaj(sm::AbstractScatteringModel, λ::Number, r::Number)
+    Bmaj = sm.Bmaj
+    Amaj = sm.Amaj
+    α = sm.α
+    rin = sm.rin
+
+    d1 = Bmaj * (2 * Amaj / (α * Bmaj))^(-α / (2 - α))
+    d2 = (2 * Amaj / (α * Bmaj))^(2 / (2 - α))
+    return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / sm.λ0)^2
+end
+
+
+"""
+    calc_Dmin(r, sm::AbstractScatteringModel)
+
+Masm D_min(r) for given r. Based on Equation 34 of Psaltis et al. 2018
+"""
+@inline function calc_Dmin(sm::AbstractScatteringModel, λ::Number, r::Number)
+    Bmin = sm.Bmin
+    Amin = sm.Amin
+    α = sm.α
+    rin = sm.rin
+
+    d1 = Bmin * (2 * Amin / (α * Bmin))^(-α / (2 - α))
+    d2 = (2 * Amin / (α * Bmin))^(2 / (2 - α))
+    return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / sm.λ0)^2
+end
+
+
+"""
+    Dϕ_approx(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
+
+Masm approximate phase structure function Dϕ(r, ϕ) at observing wavelength λ, first converting
+x and y into polar coordinates. Based on Equation 35 of Psaltis et al. 2018.
+"""
+@inline function Dϕ_approx(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
+    r = √(x^2 + y^2)
+    ϕ = atan(y, x)
+    Dmaj = calc_Dmaj(sm, λ, r)
+    Dmin = calc_Dmin(sm, λ, r)
+    add = (Dmaj + Dmin) / 2
+    sub = (Dmaj - Dmin) / 2
+    return add + sub * cos(2 * (ϕ - sm.ϕ0))
+end
+
+"""
+    dDϕ_dz(sm::AbstractScatteringModel, λ::Number, r::Number, ϕ::Number, ϕq)
+
+Differential contribution to the phase structure function.
+"""
+@inline function dDϕ_dz(sm::AbstractScatteringModel, λ::Number, r::Number, ϕ::Number, ϕq)
+
+    return 4 * (λ / sm.λ0)^2 * sm.C / sm.α * (_₁F₁(-sm.α / 2, 0.5, -r^2 / (4 * sm.rin^2) * cos(ϕ - ϕq)^2) - 1)
+end
+
+
+"""
+    Dϕ_exact(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
+
+Masm exact phase structure function Dϕ(r, ϕ) at observing wavelength `λ`, first converting
+`x` and `y` into the polar coordinates
+"""
+@inline function Dϕ_exact(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
+    r = √(x^2 + y^2)
+    ϕ = atan(y, x)
+    return quadgk(ϕq -> dDϕ_dz(sm, λ, r, ϕ, ϕq) * sm.Pϕ(ϕq), 0, 2π)[1]
+end
+
+
+"""
+    visibility_point_approx(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
+
+Compute the diffractive kernel for a given observing wavelength `λ` and fourier space coordinates `u`, `v`
+using the approximated formula of the phase structure function.
+"""
+@inline function visibility_point_approx(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
+    b = (u, v) .* (λ / (1 + sm.M))
+    return exp(-0.5 * Dϕ_approx(sm, λ, b...))
+end
+
+
+"""
+    visibility_point_exact(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
+
+Compute the diffractive kernel for a given observing wavelength λ and fourier space coordinates `u`, `v`
+using the exact formula of the phase structure function.
+"""
+@inline function visibility_point_exact(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
+    b = (u, v) .* (λ / (1 + sm.M))
+    return exp(-0.5 * Dϕ_exact(sm, λ, b...))
+end
