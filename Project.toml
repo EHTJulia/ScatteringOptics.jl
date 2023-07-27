@@ -16,11 +16,16 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
 
 [compat]
+Bessels = "0.2"
+ComradeBase = "0.5"
 DocStringExtensions = "0.9"
+EHTImages = "0.2"
+EHTUtils = "0.1"
 HypergeometricFunctions = "0.3"
 NonlinearSolve = "1"
 QuadGK = "2"
 SpecialFunctions = "2"
+VLBISkyModels = "0.2"
 julia = "1.9"
 
 [extras]
