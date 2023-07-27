@@ -1,15 +1,19 @@
 name = "ScatteringOptics"
 uuid = "e317c96f-4a6f-4ae9-8016-294fb9063ff5"
-authors = ["Anna Tartaglia", "Kazunori Akiyama"]
+authors = ["Anna Tartaglia", "Kazunori Akiyama", "Paul Tiede"]
 version = "1.0.0-DEV"
 
 [deps]
-AstroAngles = "5c4adb95-c1fc-4c53-b4ea-2a94080c53d2"
+Bessels = "0e736298-9ec6-45e8-9647-e4fc86a2fe38"
+ComradeBase = "6d8c423b-a35f-4ef1-850c-862fe21f82c4"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+EHTImages = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
+EHTUtils = "9d0fa6a6-ae25-4c2e-8152-6c4b7f2016aa"
 HypergeometricFunctions = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
 NonlinearSolve = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
 
 [compat]
 julia = "1.9"
