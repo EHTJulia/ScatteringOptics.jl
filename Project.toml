@@ -21,6 +21,7 @@ HypergeometricFunctions = "0.3"
 NonlinearSolve = "1"
 QuadGK = "2"
 SpecialFunctions = "2"
+VLBISkyModels = "0.2"
 julia = "1.9"
 
 [extras]
