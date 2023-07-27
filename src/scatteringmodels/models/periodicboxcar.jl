@@ -17,7 +17,7 @@ The default numbers are based on the best-fit parameters presented in Johnson et
 - `D_pc::Number`: The distance from the observer to the scattering screen in pc.
 - `R_pc::Number`: The distance from the source to the scattering screen in pc.
 """
-struct PeriodicBoxCarScatteringModel{T<:Number,F<:Function} <: AbstractScatteringModel
+struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
     # Mandatory fields for AbstractScatteringModel
     #   fundamental parameters
     α::T
@@ -26,8 +26,9 @@ struct PeriodicBoxCarScatteringModel{T<:Number,F<:Function} <: AbstractScatterin
     θmin::T
     ϕpa::T
     λ0::T
-    R::T
     D::T
+    R::T
+
     #   precomputed constants
     M::T
     ζ0::T
@@ -41,7 +42,7 @@ struct PeriodicBoxCarScatteringModel{T<:Number,F<:Function} <: AbstractScatterin
     Amin::T
     ϕ0::T
 
-    function PeriodicBoxCarScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, D_pc=2.82, R_pc=5.53)
+    function PeriodicBoxCarScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, R_pc=5.53, D_pc=2.82)
         # compute asymmetry parameters and magnification parameter
         A = calc_A(θmaj_mas, θmin_mas)
         ζ0 = calc_ζ0(A)
@@ -74,7 +75,7 @@ struct PeriodicBoxCarScatteringModel{T<:Number,F<:Function} <: AbstractScatterin
         Bmaj = calc_Bmaj(α, ϕ0, Pϕfunc, B_prefac)
         Bmin = calc_Bmin(α, ϕ0, Pϕfunc, B_prefac)
 
-        return new{typeof(α),Function}(α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, M, R, D, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0)
+        return new{typeof(α)}(α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_pc, R_pc, M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0)
     end
 end
 
