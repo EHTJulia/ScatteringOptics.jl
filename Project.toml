@@ -17,6 +17,7 @@ VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
 
 [compat]
 DocStringExtensions = "0.9"
+EHTUtils = "0.1"
 HypergeometricFunctions = "0.3"
 NonlinearSolve = "1"
 QuadGK = "2"
