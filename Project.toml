@@ -16,6 +16,7 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
 
 [compat]
+ComradeBase = "0.5"
 DocStringExtensions = "0.9"
 HypergeometricFunctions = "0.3"
 NonlinearSolve = "1"
