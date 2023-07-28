@@ -66,7 +66,7 @@ struct vonMisesScatteringModel{T<:Number,F<:Function} <: AbstractScatteringModel
 
         # precomputing factor for Pϕ
         #   note: both lines are depending on the type of the scattering model
-        Pϕ0 = 1 / (2π * besseli0(kζ))
+        Pϕ0 = 1 / (2π * besseli(0, kζ))
         Pϕfunc(ϕ) = Pϕ(vonMisesScatteringModel, ϕ, ϕ0, kζ, Pϕ0)
 
         # B parameters

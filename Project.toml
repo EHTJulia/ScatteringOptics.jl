@@ -4,7 +4,6 @@ authors = ["Anna Tartaglia", "Kazunori Akiyama", "Paul Tiede"]
 version = "1.0.0-DEV"
 
 [deps]
-Bessels = "0e736298-9ec6-45e8-9647-e4fc86a2fe38"
 ComradeBase = "6d8c423b-a35f-4ef1-850c-862fe21f82c4"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 EHTImages = "a1be09f2-4a9d-4f8b-a1e3-812015e25e30"
@@ -16,7 +15,6 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
 
 [compat]
-Bessels = "0.2"
 ComradeBase = "0.5"
 DocStringExtensions = "0.9"
 EHTImages = "0.2"

@@ -1,7 +1,6 @@
 module ScatteringOptics
 
 # Import Modules
-using Bessels
 import ComradeBase:
     AbstractModel, IsPrimitive, IsAnalytic, NotAnalytic,
     IsPolarized, NotPolarized,

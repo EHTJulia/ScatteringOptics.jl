@@ -17,5 +17,5 @@ end
 # Originally Equation 37 of Psaltis et al. 2018, but apparely different equation is used in eht-imaging library.
 # We here use the version used in eht-imaging library.
 @inline function kzetafinder_equation(kzeta, finder::vonMises_KzetaFinder)
-    return besseli0.(kzeta) ./ besseli1.(kzeta) .- finder.A^2
+    return besseli.(0, kzeta) ./ besseli.(1, kzeta) .- finder.A^2
 end
