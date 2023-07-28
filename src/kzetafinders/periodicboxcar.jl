@@ -15,6 +15,6 @@ end
 
 # Equation 47 of Psaltis et al. 2018.
 @inline function kzetafinder_equation(kzeta, finder::PeriodicBoxCar_KzetaFinder)
-    k̃zeta = π ./ (1 .+ kzeta)
-    return sin.(k̃zeta) ./ k̃zeta .- finder.ζ0
+    x .= π ./ (1 .+ kzeta)
+    return sin.(x) ./ x .- finder.ζ0
 end
