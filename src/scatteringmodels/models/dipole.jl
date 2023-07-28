@@ -18,7 +18,7 @@ The default numbers are based on the best-fit parameters presented in Johnson et
 - `D_pc::Number`: The distance from the observer to the scattering screen in pc.
 - `R_pc::Number`: The distance from the source to the scattering screen in pc.
 """
-struct DipoleScatteringModel{T<:Number,F<:Function} <: AbstractScatteringModel
+struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
     # Mandatory fields for AbstractScatteringModel
     #   fundamental parameters
     α::T
@@ -27,8 +27,8 @@ struct DipoleScatteringModel{T<:Number,F<:Function} <: AbstractScatteringModel
     θmin::T
     ϕpa::T
     λ0::T
-    R::T
     D::T
+    R::T
 
     #   precomputed constants
     M::T
@@ -78,7 +78,7 @@ struct DipoleScatteringModel{T<:Number,F<:Function} <: AbstractScatteringModel
         Bmaj = calc_Bmaj(α, ϕ0, Pϕfunc, B_prefac)
         Bmin = calc_Bmin(α, ϕ0, Pϕfunc, B_prefac)
 
-        return new{typeof(α),Function}(α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, R_pc, D_pc, M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0)
+        return new{typeof(α)}(α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_pc, R_pc, M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0)
     end
 end
 
