@@ -20,7 +20,8 @@ Solves the equation for the concentration parameter k_ζ,2 given the set of para
 It uses NonlinearSolve.jl.
 """
 @inline function findkzeta_exact(finder::AbstractKzetaFinder; solver=NewtonRaphson())
-    probN = NonlinearProblem(kzetafinder_equation, [1.0, 1.0], finder)
+    kζ0 = initialize(finder)
+    probN = NonlinearProblem(kzetafinder_equation, [kζ0, kζ0], finder)
     return solve(probN, solver)[1]
 end
 
@@ -31,3 +32,5 @@ end
 This equation privide a root-finding function `f(kzeta, finder)` to find kzeta from the equation `f(kzeta, finder)=0`.
 """
 function kzetafinder_equation(kzeta, ::AbstractKzetaFinder) end
+
+@inline initialize(::AbstractKzetaFinder) = 1.0

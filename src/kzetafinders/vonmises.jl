@@ -19,3 +19,5 @@ end
 @inline function kzetafinder_equation(kzeta, finder::vonMises_KzetaFinder)
     return besseli.(0, kzeta) ./ besseli.(1, kzeta) .- finder.A^2
 end
+
+@inline initialize(::PeriodicBoxCar_KzetaFinder) = .538

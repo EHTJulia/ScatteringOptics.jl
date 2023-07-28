@@ -22,3 +22,5 @@ end
     ᾱ = (α + 2) / 2
     return _₂F₁.(ᾱ, 0.5, 2, .-kzeta) ./ _₂F₁.(ᾱ, 1.5, 2, .-kzeta) .- A^2
 end
+
+@inline initialize(::Dipole_KzetaFinder) = 3.89

@@ -5,7 +5,7 @@ export AbstractScatteringModel
 #export Pϕ
 #export dDϕ_dz
 #export Dϕ_exact
-export visibility_point_apporoximate
+export visibility_point_approx
 export visibility_point_exact
 
 

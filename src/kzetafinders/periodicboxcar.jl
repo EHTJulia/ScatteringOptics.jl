@@ -20,3 +20,5 @@ end
     x = 1 ./ (1 .+ kzeta)
     return sinc.(x) .- finder.ζ0
 end
+
+@inline initialize(::PeriodicBoxCar_KzetaFinder) = .859
