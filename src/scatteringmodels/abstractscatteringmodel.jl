@@ -56,14 +56,12 @@ function Pϕ(::AbstractScatteringModel, ϕ::Number) end
 Masm D_maj(r) for given r. Based on Equation 33 of Psaltis et al. 2018
 """
 @inline function calc_Dmaj(sm::AbstractScatteringModel, λ::Number, r::Number)
-    Bmaj = sm.Bmaj
-    Amaj = sm.Amaj
+    d1 = sm.D1maj
+    d2 = sm.D2maj
     α = sm.α
     rin = sm.rin
-
-    d1 = Bmaj * (2 * Amaj / (α * Bmaj))^(-α / (2 - α))
-    d2 = (2 * Amaj / (α * Bmaj))^(2 / (2 - α))
-    return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / sm.λ0)^2
+    λ0 = sm.λ0
+    return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / λ0)^2
 end
 
 
@@ -73,14 +71,12 @@ end
 Masm D_min(r) for given r. Based on Equation 34 of Psaltis et al. 2018
 """
 @inline function calc_Dmin(sm::AbstractScatteringModel, λ::Number, r::Number)
-    Bmin = sm.Bmin
-    Amin = sm.Amin
+    d1 = sm.D1maj
+    d2 = sm.D2maj
     α = sm.α
     rin = sm.rin
-
-    d1 = Bmin * (2 * Amin / (α * Bmin))^(-α / (2 - α))
-    d2 = (2 * Amin / (α * Bmin))^(2 / (2 - α))
-    return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / sm.λ0)^2
+    λ0 = sm.λ0
+    return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / λ0)^2
 end
 
 

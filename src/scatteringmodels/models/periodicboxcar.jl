@@ -41,6 +41,10 @@ struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
     Amaj::T
     Amin::T
     ϕ0::T
+    D1maj::T
+    D2maj::T
+    D1min::T
+    D2min::T
 
     function PeriodicBoxCarScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, R_pc=5.53, D_pc=2.82)
         # compute asymmetry parameters and magnification parameter
@@ -75,7 +79,16 @@ struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
         Bmaj = calc_Bmaj(α, ϕ0, Pϕfunc, B_prefac)
         Bmin = calc_Bmin(α, ϕ0, Pϕfunc, B_prefac)
 
-        return new{typeof(α)}(α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_pc, R_pc, M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0)
+        # D parameters
+        D1maj = calc_D1(α, Amaj, Bmaj)
+        D2maj = calc_D2(α, Amaj, Bmaj)
+        D1min = calc_D1(α, Amin, Bmin)
+        D2min = calc_D2(α, Amin, Bmin)
+
+        return new{typeof(α)}(
+            α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_pc, R_pc,
+            M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0, D1maj, D2maj, D1min, D2min
+        )
     end
 end
 

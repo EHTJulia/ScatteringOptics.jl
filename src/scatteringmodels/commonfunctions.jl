@@ -25,5 +25,8 @@ const Params_Johnson2018 = (α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.
 @inline calc_Bmaj(α, ϕ0, Pϕ, B_prefac) = B_prefac * quadgk(ϕ -> abs(cos(ϕ0 - ϕ))^α * Pϕ(ϕ), 0, 2π)[1]
 @inline calc_Bmin(α, ϕ0, Pϕ, B_prefac) = B_prefac * quadgk(ϕ -> abs(sin(ϕ0 - ϕ))^α * Pϕ(ϕ), 0, 2π)[1]
 
+@inline calc_D1(α, A, B) = B * (2 * A / (α * B))^(-α / (2 - α))
+@inline calc_D2(α, A, B) = (2 * A / (α * B))^(2 / (2 - α))
+
 @inline λcm2ν(λcm) = c_cgs / λcm
 @inline ν2λcm(ν) = c_cgs / ν
