@@ -84,7 +84,7 @@ end
 
 
 # the dipole model is the default scattering model
-ScatteringModel = DipoleScatteringModel
+const ScatteringModel = DipoleScatteringModel
 
 
 @inline function Pϕ(::Type{<:DipoleScatteringModel}, ϕ, α, ϕ0, kζ, Pϕ0)
