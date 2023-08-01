@@ -20,4 +20,4 @@ end
     return besseli.(0, kzeta) ./ besseli.(1, kzeta) .- finder.A^2
 end
 
-@inline initialize(::PeriodicBoxCar_KzetaFinder) = .538
+@inline initialize(::vonMises_KzetaFinder) = .538
