@@ -31,4 +31,4 @@ end
 end
 
 # use the approximated kernel as the default
-ScatteringKernel = ApproximatedScatteringKernel
+const ScatteringKernel = ApproximatedScatteringKernel
