@@ -6,12 +6,15 @@ import ComradeBase:
     IsPolarized, NotPolarized,
     visanalytic, imanalytic, isprimitive, ispolarized,
     visibility_point, flux, radialextent
+using StationaryRandomFields
 using DocStringExtensions
 using EHTUtils: mas2rad
 using HypergeometricFunctions
 using NonlinearSolve
 using QuadGK
 using SpecialFunctions
+using Random
+using FFTW
 
 # kζ finders
 include("./kzetafinders/abstractkzetafinder.jl")
@@ -33,5 +36,9 @@ include("./scatteringmodels/kernels/kernelmodel.jl")
 include("./scatteringmodels/models/dipole.jl")
 include("./scatteringmodels/models/periodicboxcar.jl")
 include("./scatteringmodels/models/vonmises.jl")
+
+# phase screen
+include("./scatteringmodels/phasescreens/powerlaw.jl")
+include("./scatteringmodels/phasescreens/refractivemodel.jl")
 
 end

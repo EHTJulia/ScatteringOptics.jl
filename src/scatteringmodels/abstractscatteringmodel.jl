@@ -48,7 +48,7 @@ Furthermore the following parameters need to be precomputed.
 """
 abstract type AbstractScatteringModel end
 
-function Pϕ(::AbstractScatteringModel, ϕ::Number) end
+#function Pϕ(::AbstractScatteringModel, ϕ::Number) end
 
 """
     Dmaj(r, sm::AbstractScatteringModel)
@@ -116,7 +116,7 @@ Masm exact phase structure function Dϕ(r, ϕ) at observing wavelength `λ`, fir
 @inline function Dϕ_exact(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
     r = √(x^2 + y^2)
     ϕ = atan(y, x)
-    return quadgk(ϕq -> dDϕ_dz(sm, λ, r, ϕ, ϕq) * sm.Pϕ(ϕq), 0, 2π)[1]
+    return quadgk(ϕq -> dDϕ_dz(sm, λ, r, ϕ, ϕq) * Pϕ(sm,ϕq), 0, 2π)[1]
 end
 
 

@@ -14,8 +14,8 @@ The default numbers are based on the best-fit parameters presented in Johnson et
 - `θmin_nas::Number`: FWHM in mas of the minor axis angular broadening at the specified reference wavelength.
 - `ϕ_deg::Number`: The position angle of the major axis of the scattering in degree.
 - `λ0_cm::Number`: The reference wavelength for the scattering model in cm.
-- `D_pc::Number`: The distance from the observer to the scattering screen in pc.
-- `R_pc::Number`: The distance from the source to the scattering screen in pc.
+- `D_kpc::Number`: The distance from the observer to the scattering screen in pc.
+- `R_kpc::Number`: The distance from the source to the scattering screen in pc.
 """
 struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
     # Mandatory fields for AbstractScatteringModel
@@ -45,12 +45,17 @@ struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
     D2maj::T
     D1min::T
     D2min::T
+    Pϕ0::T
 
-    function PeriodicBoxCarScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, R_pc=5.53, D_pc=2.82)
+    function PeriodicBoxCarScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, R_kpc=5.53, D_kpc=2.82)
         # compute asymmetry parameters and magnification parameter
         A = calc_A(θmaj_mas, θmin_mas)
         ζ0 = calc_ζ0(A)
-        M = calc_M(D_pc, R_pc)
+        M = calc_M(D_kpc, R_kpc)
+
+        # convert D and R to cm
+        D_cm = kpc_tp_cm*D_kpc
+        R_cm = kpc_tp_cm*R_kpc
 
         # Parameters for the approximate phase structure function
         θmaj_rad = calc_θrad(θmaj_mas) # milliarcseconds to radians
@@ -86,8 +91,8 @@ struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
         D2min = calc_D2(α, Amin, Bmin)
 
         return new{typeof(α)}(
-            α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_pc, R_pc,
-            M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0, D1maj, D2maj, D1min, D2min
+            α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_cm, R_cm,
+            M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0, D1maj, D2maj, D1min, D2min, Pϕ0
         )
     end
 end
