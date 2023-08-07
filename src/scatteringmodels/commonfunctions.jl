@@ -6,7 +6,7 @@ const kpc_tp_cm = 3.0857e21
 """
 Best-fit parameters of the dipole scattering model derived in Johnson et al. 2018
 """
-const Params_Johnson2018 = (α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, D_pc=2.82, R_pc=5.53)
+const Params_Johnson2018 = (α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, D_kpc=2.82, R_kpc=5.53)
 
 # common functions to precomute key constants
 @inline calc_A(θmaj, θmin) = θmaj / θmin
