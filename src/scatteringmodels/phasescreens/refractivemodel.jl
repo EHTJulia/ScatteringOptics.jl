@@ -2,6 +2,7 @@ export AbstractPhaseScreen
 export RefractivePhaseScreen
 export phase_screen
 export wrapped_grad
+export image_scatter
 
 """
     RefractivePhaseScreen(sm, Nx, Ny, dx, dy, Vx_km_per_s=0.0, Vy_km_per_s=0.0)
@@ -78,7 +79,7 @@ function get_rF(psm::AbstractPhaseScreen, λ_cm)
     return √(D*R/(D+R) * λ_cm/(2.0*π))
 end
 
-function scatter(psm::RefractivePhaseScreen, imap, λ_cm; νref::Number = c_cgs)
+function image_scatter(psm::RefractivePhaseScreen, imap, λ_cm; νref::Number = c_cgs)
 
     ϕ = phase_screen(psm, λ_cm)
 
