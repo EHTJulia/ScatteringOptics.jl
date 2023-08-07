@@ -15,6 +15,8 @@ using QuadGK
 using SpecialFunctions
 using Random
 using FFTW
+using VLBISkyModels: convolve
+using Interpolations
 
 # kζ finders
 include("./kzetafinders/abstractkzetafinder.jl")
