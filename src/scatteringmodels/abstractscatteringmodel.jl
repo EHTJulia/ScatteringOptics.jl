@@ -26,8 +26,8 @@ Ideally, a subtype of this abstract model should have a constructor only with th
 - `θmin::Number`: FWHM in mas of the minor axis angular broadening at the specified reference wavelength.
 - `ϕ::Number`: The position angle of the major axis of the scattering in degree.
 - `λ0::Number`: The reference wavelength for the scattering model in cm.
-- `D::Number`: The distance from the observer to the scattering screen in pc.
-- `R::Number`: The distance from the source to the scattering screen in pc.
+- `D::Number`: The distance from the observer to the scattering screen in cm.
+- `R::Number`: The distance from the source to the scattering screen in cm.
 Furthermore the following parameters need to be precomputed.
 - `M::Number`:
 - `ζ0::Number`:
@@ -116,7 +116,7 @@ Masm exact phase structure function Dϕ(r, ϕ) at observing wavelength `λ`, fir
 @inline function Dϕ_exact(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
     r = √(x^2 + y^2)
     ϕ = atan(y, x)
-    return quadgk(ϕq -> dDϕ_dz(sm, λ, r, ϕ, ϕq) * Pϕ(sm,ϕq), 0, 2π)[1]
+    return quadgk(ϕq -> dDϕ_dz(sm, λ, r, ϕ, ϕq) * Pϕ(sm, ϕq), 0, 2π)[1]
 end
 
 
