@@ -46,3 +46,8 @@ function wrapped_grad(ϕ)
     end
     return (gradϕ_x, gradϕ_y)
 end
+
+function get_rF(psm::AbstractPhaseScreen, λ_cm)
+    D, R = (psn.sm.D, psm.sm.R) .* 3.086e21
+    return √(D*R/(D+R) * λ_cm/(2.0*π))
+end
