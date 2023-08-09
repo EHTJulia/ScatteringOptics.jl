@@ -41,7 +41,7 @@ end
 StationaryRandomFields.generate_gaussian_noise(psm::AbstractPhaseScreen; rng = Random.default_rng()) = generate_gaussian_noise(psm.signal; rng = rng)
 
 
-function phase_screen(psm::AbstractPhaseScreen, λ_cm, noise_screen=nothing)
+@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm, noise_screen=nothing)
     # generate noise screen if not provided
     if isnothing(noise_screen)
         noise_screen = generate_gaussian_noise(psm)
@@ -58,32 +58,32 @@ function phase_screen(psm::AbstractPhaseScreen, λ_cm, noise_screen=nothing)
     return generate_signal_noise(screengen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy)  .* nx .* ny
 end
 
-function wrapped_grad(ϕ)
+@inline function wrapped_grad(ϕ, dx, dy)
     nx, ny = size(ϕ)
-    gradϕ_x = zeros(Float64, nx, ny)
-    gradϕ_y = zeros(Float64, nx, ny)
+    gradϕ_x = Array{Float64}(undef, (nx, ny))
+    gradϕ_y = Array{Float64}(undef, (nx, ny))
     for i=1:nx, j=1:ny
         i0 = i == 1 ? nx : i - 1
         j0 = j == 1 ? ny : j - 1
         i1 = i == nx ? 1 : i + 1
         j1 = j == ny ? 1 : j + 1
         
-        @inbounds gradϕ_x[i, j] = 0.5 * (ϕ[i1, j] - ϕ[i0, j])
-        @inbounds gradϕ_y[i, j] = 0.5 * (ϕ[i, j1] - ϕ[i, j0])
+        @inbounds gradϕ_x[i, j] = 0.5 * (ϕ[i1, j] - ϕ[i0, j]) / dx
+        @inbounds gradϕ_y[i, j] = 0.5 * (ϕ[i, j1] - ϕ[i, j0]) / dy
     end
     return (gradϕ_x, gradϕ_y)
 end
 
-function get_rF(psm::AbstractPhaseScreen, λ_cm)
+@inline function get_rF(psm::AbstractPhaseScreen, λ_cm)
     D, R = (psm.sm.D, psm.sm.R) 
     return √(D*R/(D+R) * λ_cm/(2.0*π))
 end
 
-function image_scatter(psm::RefractivePhaseScreen, imap, λ_cm; νref::Number = c_cgs)
+@inline function image_scatter(psm::RefractivePhaseScreen, imap, λ_cm; νref::Number = c_cgs)
 
     ϕ = phase_screen(psm, λ_cm)
 
-    gradϕ_x, gradϕ_y = wrapped_grad(ϕ) ./ (psm.dx, psm.dy)
+    gradϕ_x, gradϕ_y = wrapped_grad(ϕ, psm.dx, psm.dy) 
     
     sm = psm.sm
     rF = get_rF(psm, λ_cm)

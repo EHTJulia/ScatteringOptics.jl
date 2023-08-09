@@ -71,8 +71,8 @@ end
 Masm D_min(r) for given r. Based on Equation 34 of Psaltis et al. 2018
 """
 @inline function calc_Dmin(sm::AbstractScatteringModel, λ::Number, r::Number)
-    d1 = sm.D1maj
-    d2 = sm.D2maj
+    d1 = sm.D1min
+    d2 = sm.D2min 
     α = sm.α
     rin = sm.rin
     λ0 = sm.λ0
