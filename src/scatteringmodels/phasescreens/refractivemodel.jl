@@ -16,7 +16,7 @@ average image.
 - `dx`: pixel size in x direction (in radians)
 - `dy`: pixel size in y direction (in radians)
 
-Vx_km_per_s and Vy_km_per_s are optional for moving phase screen. 
+`Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
 """
 
 abstract type AbstractPhaseScreen end
@@ -40,8 +40,14 @@ end
 
 StationaryRandomFields.generate_gaussian_noise(psm::AbstractPhaseScreen; rng = Random.default_rng()) = generate_gaussian_noise(psm.signal; rng = rng)
 
+"""
+    phase_screen(psm::AbstractPhaseScreen, λ_cm, noise_screen=nothing)
 
-@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm, noise_screen=nothing)
+Generates a refractive phase screen, `ϕ`, using StationaryRandomFields.jl the power law noise procedure. 
+The fourier space 2D noise_screen (defaults to gaussian noise screen if not given) is scaled by the power law,
+`Q`, defined in input AbstractPhaseScreen `psm`. The observing wavelength, `λ_cm`, must be given.
+"""
+@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm::Number, noise_screen=nothing)
     # generate noise screen if not provided
     if isnothing(noise_screen)
         noise_screen = generate_gaussian_noise(psm)
@@ -58,6 +64,11 @@ StationaryRandomFields.generate_gaussian_noise(psm::AbstractPhaseScreen; rng = R
     return generate_signal_noise(screengen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy)  .* nx .* ny
 end
 
+"""
+    wrapped_grad(ϕ, dx, dy)
+
+Returns the wrapped gradient of a given 2D phase screen. The x and y pixel sizes (`dx` and `dy`) must be given.
+"""
 @inline function wrapped_grad(ϕ, dx, dy)
     nx, ny = size(ϕ)
     gradϕ_x = Array{Float64}(undef, (nx, ny))
@@ -74,12 +85,24 @@ end
     return (gradϕ_x, gradϕ_y)
 end
 
-@inline function get_rF(psm::AbstractPhaseScreen, λ_cm)
+"""
+    get_rF(psm::AbstractPhaseScreen, λ_cm)
+
+Returns Fresnel scale corresponding to the given AvstractPhaseScreen object and observing wavelength, `λ_cm`
+"""
+@inline function get_rF(psm::AbstractPhaseScreen, λ_cm::Number)
     D, R = (psm.sm.D, psm.sm.R) 
     return √(D*R/(D+R) * λ_cm/(2.0*π))
 end
 
-@inline function image_scatter(psm::RefractivePhaseScreen, imap, λ_cm; νref::Number = c_cgs)
+"""
+    image_scatter(psm::RefractivePhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs)
+
+Implements full ISM scattering on an unscattered Comrade skymodel (intensity map). Diffrective blurring and 
+refractive phase screen generation are specific to the scattering parameters defined in the AbstractPhaseScreen
+model `psm`. The observing wavelength `λ_cm` and reference frequence νref (default c) are required.
+"""
+@inline function image_scatter(psm::AbstractPhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs)
 
     ϕ = phase_screen(psm, λ_cm)
 
