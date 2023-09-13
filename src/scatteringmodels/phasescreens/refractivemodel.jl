@@ -98,9 +98,9 @@ end
 """
     image_scatter(psm::RefractivePhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs)
 
-Implements full ISM scattering on an unscattered Comrade skymodel (intensity map). Diffrective blurring and 
+Implements full ISM scattering on an unscattered Comrade skymodel intensity map (`imap`). Diffrective blurring and 
 refractive phase screen generation are specific to the scattering parameters defined in the AbstractPhaseScreen
-model `psm`. The observing wavelength `λ_cm` and reference frequence νref (default c) are required.
+model `psm`. The observing wavelength `λ_cm` is required.
 """
 @inline function image_scatter(psm::AbstractPhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs)
 

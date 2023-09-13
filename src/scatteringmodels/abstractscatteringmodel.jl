@@ -29,8 +29,8 @@ Ideally, a subtype of this abstract model should have a constructor only with th
 - `D::Number`: The distance from the observer to the scattering screen in cm.
 - `R::Number`: The distance from the source to the scattering screen in cm.
 Furthermore the following parameters need to be precomputed.
-- `M::Number`:
-- `ζ0::Number`:
+- `M::Number`: Magnification parameter, defined as D/R
+- `ζ0::Number`: 
 - `A::Number`:
 - `kζ::Number`
 - `Bmaj::Number`:
@@ -41,13 +41,15 @@ Furthermore the following parameters need to be precomputed.
 - `Amin::Number`:
 - `ϕ0::Number`:
 
-** Methods need to be defined **
-- `Pϕ(::AbstractScatteringModel, ϕ::Number)` and `Pϕ(::Type{<:AbstractScatteringModel}, ϕ::Number, args...)`:
-    Normalized probability distribution describing the distribution of the field wonder.
-    The function should depend on the field wonder model.
 """
 abstract type AbstractScatteringModel end
 
+"""
+    Pϕ(::AbstractScatteringModel, ϕ::Number)
+    
+Normalized probability distribution describing the distribution of the field wander.
+The function should depend on the field wander model.
+"""
 #function Pϕ(::AbstractScatteringModel, ϕ::Number) end
 
 """
