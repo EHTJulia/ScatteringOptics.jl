@@ -3,15 +3,15 @@ CurrentModule = ScatteringOptics
 ```
 
 # Tutorial
-This example code segment uses ScatteringOptics.jl to generate ISM scattering on an input Comrade SkyModel object
-via the `image_scatter()` function
+This example code segment uses ScatteringOptics.jl to generate ISM scattering on an input [Comrade.jl](https://github.com/ptiede/Comrade.jl) `SkyModel` object via the `image_scatter()` function
 
 
-```@example 1
+```julia
 using ScatteringOptics
 using EHTImages
 using PythonPlot
 using EHTUtils
+
 # Load a model image FITS file
 im = load_fits("jason_mad_eofn.fits")
 # Initialize a comrade SkyModel from the loaded image
@@ -23,7 +23,7 @@ imshow(im, angunit=EHTUtils.μas)
 
 Optionally, users can retrieve a purely diffractive scattering ensemble average image with the `convolve` function in `VLBISkyModels.jl`
 
-```@example 1
+```julia
 # Initialize a scattering model with desired scattering paramaters, otherwise default ISM parameters are used
 # The default model is a Dipole model
 sm = ScatteringModel()
@@ -45,7 +45,7 @@ imshow(im_ea, angunit=EHTUtils.μas)
 Otherwise, the scattering kernel `skm` is not required to obtain a fully scattered image. A `RefractivePhaseScreen` type object may 
 be initialized from the `ScatteringModel` and image dimensions. 
 
-```@example 1
+```julia
 # Create a refractive phase screen model from scattering model and image dimensions
 nx, ny = size(imap) 
 dx = imap.X.step.hi  # pixel size in radians
