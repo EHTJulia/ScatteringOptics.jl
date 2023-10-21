@@ -30,6 +30,7 @@ NonlinearSolve = "1"
 QuadGK = "2"
 SpecialFunctions = "2"
 VLBISkyModels = "0.2, 0.3"
+StationaryRandomFields = "0.1"
 julia = "1.9"
 
 [extras]
