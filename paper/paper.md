@@ -30,7 +30,7 @@ bibliography: paper.bib
 
 # Summary 
 
-ScatteringOptics implements the Stochastic Optics [@Johnson_2016] framework for generating realistic Interstellar Medium (ISM) scattering effects on very-long-baseline interferometry (VLBI) models. The package is written in the Julia programming language and is intended for use in Event Horizon Telescope (EHT) imaging of the black hole at our galactic center, Sagitarrius A*.
+ScatteringOptics implements the Stochastic Optics [@Johnson_2016; @Johnson_2018] framework for generating realistic Interstellar Medium (ISM) scattering effects on very-long-baseline interferometry (VLBI) models. The package is written in the Julia programming language and is intended for use in Event Horizon Telescope (EHT) imaging of the black hole at our galactic center, Sagitarrius A*.
 
 # Statement of Need
 
@@ -40,12 +40,11 @@ The EHT imaging process, currently implemented in the Python programming languag
 
 # Mathematics
 
-The EHT addresses scattering effects by employing Stochastic Optics [@Johnson_2016], which simulates diffractive and refractive scintillation effects individually before synthesizing them. Diffractive scattering is addressed by constructing a blurring kernel, ${G}(r)$. Here, $r$ refers to the two-dimensional phase screen cordinate vector. Convolution of the source image, ${I_{src}}(r)$ 
-with this kernel yields a diffractively scattered ensemble average image:
+The EHT addresses scattering effects by simulating diffractive and refractive scintillation effects individually and then synthesizing them. Diffractive scattering is addressed by constructing a blurring kernel, ${G}(r)$, where $r$ refers to the two-dimensional phase screen cordinate vector. Convolution of the source image, ${I_{src}}(r)$, with this kernel yields a diffractively scattered ensemble average image:
 
 $${I_{ea}}(r) = {I_{src}}(r) * {G}(r).$$
 
-The scattering kernel is built on a phase structure function, $D_\phi(r)$, which describes the scattering screen irregularities that produce scintillation effects [@psaltis2018model]. There are three different phase structure functions (Dipole, Periodic Boxcar, and Von Mises) that reflect different statistical magnetohydrodynamical models, though the Dipole kernel model is primarily used by the EHT. The above equation reflects convolution in image space, however EHT data is processed and scattered in Fourier space visibilities. Convolution of source visibilities is computed as:
+The scattering kernel is built on a phase structure function, $D_\phi(r)$, which describes the scattering screen irregularities that produce scintillation effects [@psaltis2018model]. There are three different phase structure functions (Dipole, Periodic Boxcar, and Von Mises) that reflect different statistical magnetohydrodynamical models, though the EHT primarily uses the Dipole model. The above equation reflects convolution in image space, however EHT data is processed and scattered in Fourier space visibilities. Convolution of source visibilities, $V_{src}(b)$, is computed as:
 
 $$V_{ea}(b) = V_{src}(b) * \text{exp}\left[-\frac{1}{2} D_\phi(\frac{b}{1+M})\right]$$
 
