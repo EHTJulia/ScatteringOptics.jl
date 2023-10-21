@@ -8,7 +8,7 @@
 This Julia Package provides a framework to simulate Interstellar-Medium-generated stochastic scattering on EHT VLBI models.
 
 ## Installation
-The package is being registered to the Julia standard repository as of [TBD]. Once registered, it will be installable by
+The package is being registered to the Julia standard repository as of October 20, 2023. Once registered, it will be installable by
 ```julia
 using Pkg
 Pkg.add("StationaryRandomFields")
