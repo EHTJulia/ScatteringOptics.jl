@@ -1,4 +1,32 @@
+---
+title: 'ScatteringOptics: An EHT Scattering Framework in the Julia Language'
+tags:
+  - Julia
+  - Astronomy
+  - VLBI
+  - Black Holes
+  - Radio Astronomy 
+authors:
+  - name: Anna Tartaglia
+    orcid: 0000-0001-9229-8833
+    affiliation: "1, 2" 
+  - name: Kazunori Akiyama
+    affiliation: 1
+  - name: Paul Tiede
+    affiliation: 3
 
+affiliations:
+ - name: MIT Haystack Observatory
+   index: 1
+ - name: The Pennsylvania State University
+   index: 2
+ - name: Black Hole Initiative at Harvard University
+   index: 3
+
+date: 15 November 2023
+bibliography: paper.bib
+
+---
 
 # Summary 
 
@@ -32,6 +60,5 @@ where $\phi$ is the angular polar coordinate of $\vec{f}$. The constant $\bar{Q}
 $${I_{a}}(r) = {I_{src}}(r) * {G}(r)  +  r_F^2[\nabla \phi_r(r)] \cdot [\nabla ({I_{src}}(r) * {G}(r))]$$
 
 in which the Fresnel scale, $r_F = \sqrt{\frac{DR}{D+R}\frac{\lambda}{2\pi}}$ is dependent on the observing wavelength $\lambda$, earth-screen distance $D$, and the screen-source distance $R$. ${I_{a}}(r)$ represents the output of the module's `image_scatter` function: the input source model with fully simulated refractive and diffractive scattering effects.
-
 
 
