@@ -60,4 +60,42 @@ $${I_{a}}(r) = {I_{src}}(r) * {G}(r)  +  r_F^2[\nabla \phi_r(r)] \cdot [\nabla (
 
 in which the Fresnel scale, $r_F = \sqrt{\frac{DR}{D+R}\frac{\lambda}{2\pi}}$ is dependent on the observing wavelength $\lambda$, earth-screen distance $D$, and the screen-source distance $R$. ${I_{a}}(r)$ represents the output of the module's `image_scatter` function: the input source model with fully simulated refractive and diffractive scattering effects.
 
+# Example Usage
 
+This example code segment uses ScatteringOptics.jl to generate ISM scattering on an input [Comrade.jl](https://github.com/ptiede/Comrade.jl) `SkyModel` [@Tiede2022].
+
+```
+using ScatteringOptics
+using EHTImages
+using PythonPlot
+using EHTUtils
+
+# Load a model image FITS file
+im = load_fits("jason_mad_eofn.fits")
+# Initialize a comrade SkyModel from the loaded image
+imap = intensitymap(im)
+# Plot source image
+imshow(im, angunit=EHTUtils.μas)
+```
+![fig](images/src.png)
+
+```
+# Initialize a scattering model with desired scattering paramaters, otherwise default ISM parameters are used
+# The default model is a Dipole model
+sm = ScatteringModel()
+
+# Create a refractive phase screen model from scattering model and image dimensions
+nx, ny = size(imap) 
+dx = imap.X.step.hi  # pixel size in radians
+dy = imap.Y.step.hi 
+rps = RefractivePhaseScreen(sm, nx, ny, dx, dy) # sm is the scattering model
+
+# Produce scattered image with observing wavelength .13 cm
+s = image_scatter(rps, imap, 0.13, νref=230e9)
+
+# Load and plot scattered image
+im_sc = load(s)
+im_sc.f[1] = 230e9
+imshow(im_sc, angunit=EHTUtils.μas)
+```
+![fig](images/avg.png)
