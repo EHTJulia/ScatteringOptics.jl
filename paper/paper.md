@@ -77,7 +77,7 @@ imap = intensitymap(im)
 # Plot source image
 imshow(im, angunit=EHTUtils.μas)
 ```
-![fig](images/src.png)
+![Output of above code plotting an example unscattered source image.](images/src.png)
 
 ```
 # Initialize a scattering model with desired scattering paramaters, otherwise default ISM parameters are used
@@ -98,4 +98,6 @@ im_sc = load(s)
 im_sc.f[1] = 230e9
 imshow(im_sc, angunit=EHTUtils.μas)
 ```
-![fig](images/avg.png)
+![Output of above code plotting the output scattered image.](images/avg.png)
+
+# Acknowledgements
