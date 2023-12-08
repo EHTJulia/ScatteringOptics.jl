@@ -1,5 +1,5 @@
 ---
-title: 'ScatteringOptics: An EHT Scattering Framework in the Julia Language'
+title: 'ScatteringOptics.jl: An Interstellar Scattering Framework in the Julia Programming Language'
 tags:
   - Julia
   - Astronomy
@@ -11,58 +11,78 @@ authors:
     orcid: 0000-0001-9229-8833
     affiliation: "1, 2" 
   - name: Kazunori Akiyama
-    affiliation: 1
+    orcid: 0000-0002-9475-4254
+    affiliation: "1,3,4"
   - name: Paul Tiede
-    affiliation: 3
+    orcid: 0000-0003-3826-5648
+    affiliation: "4,5"
 
 affiliations:
- - name: MIT Haystack Observatory
+ - name: Massachusetts Institute of Technology Haystack Observatory
    index: 1
  - name: The Pennsylvania State University
    index: 2
- - name: Black Hole Initiative at Harvard University
+ - name: National Astronomical Observatory of Japan
    index: 3
+ - name: Black Hole Initiative at Harvard University
+   index: 4
+ - name: Center for Astrophysics | Harvard & Smithsonian
+   index: 5
 
-date: 15 November 2023
+date: 15 December 2023
 bibliography: paper.bib
 
 ---
 
 # Summary 
-
-ScatteringOptics implements the Stochastic Optics [@Johnson_2016; @Johnson_2018] framework for generating realistic Interstellar Medium (ISM) scattering effects on very-long-baseline interferometry (VLBI) models. The package is written in the Julia programming language and is intended for use in Event Horizon Telescope (EHT) imaging of the black hole at our galactic center, Sagitarrius A*.
+`ScatteringOptics.jl` is an astronomy software package developed in the Julia programming language [@Bezanson_2012]. 
+It implements physical models for the anisotropic scattering of radio waves, which arise from turbulence in the ionized interstellar medium. 
+This toolkit excels in simulating and modeling the temporal, spatial, and spectral effects of interstellar scintillation in the strong scattering regime, taking advantage of Julia's speed and composability. 
+The package provides essential functionalities for modeling, analyzing, and interpreting the images of the Galactic Center's supermassive black hole, Sagittarius A*, especially with the Event Horizon Telescope, as well as the images of extremely high brightness temperature emissions in active galactic nuclei using space very long baseline interferometry.
 
 # Statement of Need
+Scintillation is a well-known phenomenon in astronomy. In radio wavelengths, electron density fluctuations in the ionized interstellar plasma cause scattering of radio waves, resulting in the scintillation of compact radio sources in the sky [@Rickett_1990; @Narayan_1992]. The interstellar scintillation produces temporal and spectral modulations (i.e., twinkling) in the brightness of objects, as well as distortion of the source images. 
+Interstellar scattering of radio emission typically occurs in the strong scattering regime, dominated by two distinct effects: diffractive and refractive scattering. Diffractive scattering, arising from small-scale fluctuations, typically causes angular broadening of the source image. Conversely, refractive scattering, resulting from large-scale fluctuations, introduces \'refractive substructures\' into the observed image [@GN_1989; @NG_1989; @Johnson_2015].
 
-The Interstellar Medium causes distortion and scattering effects in Radio Astronomy VLBI imaging. Wave propagation of radio emission through the ISM's turbulent ionized plasma results in scintillation and long time-scale variability of the source image. A mitigation framework which addresses these effects is required for Event Horizon Telescope (EHT) VLBI imaging of Sagittarius A*, the supermassive black hole located at the center of the Milky Way [@ehtsaga]. The galactic ISM between earth and the black hole acts as a 2-dimensional inhomogeneous scattering screen, producing diffractive and refractive scattering effects in interferometric data. 
+Scattering has become increasingly important in high-angular-resolution studies of compact radio sources at micro-arcsecond scales using very long baseline interferometry (VLBI). 
+Notable examples include event-horizon-scale imaging of the Milky Way's supermassive black hole, Sagittarius A* (Sgr A*), with the Event Horizon Telescope [@EHTSgrAPaper1; @EHTSgrAPaper3; @EHTSgrAPaper4], and studies of extremely high brightness temperature emissions in active galactic nuclei (AGNs) using space VLBI, exemplified by projects like RadioAstron [@Johnson_2016_3C273]. 
+In both scenarios, the observed interferometric data is influenced by both diffractive and refractive scattering effects. 
+This has driven the development of a theoretical framework [@Johnson_Narayan_2016; @Johnson_2016; @Johnson_2018; @Psaltis_2018] that can model, simulate, and assess these effects on both the sky images and the interferometric measurements.
 
-The EHT imaging process, currently implemented in the Python programming language, resembles a Bayesian optimization algorithm. Using a forward modelling strategy, model guesses of the final image are constructed first, scattered, and then compared with the real image data gathered by the telescope. This repeats over thousands of iterations in order to obtain the best fit image reconstruction, amplifying the effects of slow simulation algorithms. The Julia Programming Language offers fast and efficient computational abilities, holding the potential to significantly accelerate scattering simulations. It furthermore features advanced AD algorithms that can streamline existing image reconstruction procedures and allow a self-consistent joint-modelling of scattering parameters. `ScatteringOptics` provides a full framework for ISM-scattering mitigation to be implemented in the forward model imaging process.
+`ScatteringOptics.jl` implements physical models for anisotropic interstellar scattering, based on the fast \'stochastic optics\' framework, using a single thin-phase screen [@Johnson_2015; @Johnson_Narayan_2016]. The package offers capabilities to simulate diffractive and refractive scattering effects on sky images and interferometric measurements. It provides reference implementations of three different analytic, probabilistic models for the phase screen, as introduced in @Psaltis_2018 and widely used in the community. Additionally, `ScatteringOptics.jl` includes a set of abstract types that enable users to define other phase screen models. Designed for seamless integration, the package natively works with sky models and interferometric data types from the advanced Bayesian radio interferometric modeling package `Comrade.jl` [@Tiede_2022]. This integration allows for the incorporation of advanced scattering models into radio interferometric imaging of Sgr A* and other AGNs using the EHT and other VLBI arrays.
+
+The package leverages the strengths of the Julia programming language, which is designed for high-performance computing. A major advantage of Julia is its speed. Programs written in Julia are compiled into efficient native machine code, offering speed comparable to optimized C/C++ or Fortran, and often achieving performance more than a hundred times faster than Python. This speed provides a factor of 10-100 acceleration compared to the current standard implementation of scattering models in Python. This acceleration significantly enhances current state-of-the-art techniques for deriving the maximum posteriori estimate of joint models, including the sky model and phase screens [@Johnson_2016], and also enables the utilization of novel Bayesian inference techniques (available in `Comrade.jl` and related libraries) for deriving full posterior distributions of scattering parameters.
 
 # Mathematics
+`ScatteringOptics.jl` implements a single thin-screen scattering model described in @Johnson_2018 and @Psaltis_2018 that simulates both diffractive and refractive scattering. In many instances, the properties of the interstellar scattering can be well described by a single, thin phase-changing screen $\phi_r(r)$, where $r$ is a transverse coordinate on the screen. The statistical characteristics of scattering can be described by those of the phase screen through its spatial structure function $D_\phi(r)$.
 
-The EHT addresses scattering effects by simulating diffractive and refractive scintillation effects individually and then synthesizing them. Diffractive scattering is addressed by constructing a blurring kernel, ${G}(r)$, where $r$ refers to the two-dimensional phase screen cordinate vector. Convolution of the source image, ${I_{src}}(r)$, with this kernel yields a diffractively scattered ensemble average image:
+Diffractive scattering causes the angular broadening of the source image. 
+The diffractively scattered image ${I_{ea}}(r)$ is mathematically given by the convolution of the source image ${I_{src}}(r)$ with a blurring scattering kernel, ${G}(r)$, 
 
-$${I_{ea}}(r) = {I_{src}}(r) * {G}(r).$$
+$${I_{ea}}(r) = {I_{src}}(r) * {G}(r),$$
 
-The scattering kernel is built on a phase structure function, $D_\phi(r)$, which describes the scattering screen irregularities that produce scintillation effects [@psaltis2018model]. There are three different phase structure functions (Dipole, Periodic Boxcar, and Von Mises) that reflect different statistical magnetohydrodynamical models, though the EHT primarily uses the Dipole model. The above equation reflects convolution in image space, however EHT data is processed and scattered in Fourier space visibilities. Convolution of source visibilities, $V_{src}(b)$, is computed as:
+where $r$ refers to the two-dimensional phase screen coordinate vector. In radio interferometry, each set of measurements, so-called visibilities, obtained with a pair of antennas at different time and frequency segments, samples a Fourier component of the sky image. The source visibilities, $V_{src}(b)$, are related to the diffractively scattered visibilities, $V_{ea}(b)$, by,
 
-$$V_{ea}(b) = V_{src}(b) * \text{exp}\left[-\frac{1}{2} D_\phi(\frac{b}{1+M})\right]$$
+$$V_{ea}(b) = V_{src}(b)\,\text{exp}\left[-\frac{1}{2} D_\phi\left(\frac{b}{1+M}\right)\right],$$
 
-in which $b$ is the baseline vector between observing stations. The magnification, $M$ is the ratio of earth-screen distance to screen-source distance: $D/R$. 
+in which $b$ is the baseline vector between observing stations. The magnification $M=D/R$ is the ratio of earth-screen distance $D$ to screen-source distance $R$. 
 
-Refractive scattering requires the construction of a stochastic phase screen, ${\phi_r} (r)$, adhering to phase fluctuation dependence on the ISM-specific 2-dimensional power law: 
+Refractive scattering further introduces compact substructures on the diffractively-scattered, angular-broadened images. 
+The compact substructures arise from phase gradients on the scattering screen $\nabla \phi_r(r)$.
+The refractively scattered image ${I_{a}}(r)$ is given by
 
-$$P(\vec{f} ) = \bar{Q} \cdot (|\vec{f}| r_{\text{in}})^{-(\alpha + 2)} \cdot e^{-(|\vec{f}| r_{\text{in}})^2} \cdot P_{\phi}(\phi)$$
+$${I_{a}}(r) \approx {I_{ea}}(r) (r + r_F^2 \nabla \phi_r(r)),$$
 
-where $\phi$ is the angular polar coordinate of $\vec{f}$. The constant $\bar{Q}$, inner scale $r_{\text{in}}$, index $\alpha$, and function $P_{\phi}(\phi)$ derive from the scattering kernel phase structure function [@psaltis2018model]. Phase gradients on the scattering screen provide refractive scintillation effects in the computation of the final average image:
+in which the Fresnel scale, $r_F = \sqrt{\frac{DR}{D+R}\frac{\lambda}{2\pi}}$ is dependent on the observing wavelength $\lambda$ [@Johnson_Narayan_2016]. 
 
-$${I_{a}}(r) = {I_{src}}(r) * {G}(r)  +  r_F^2[\nabla \phi_r(r)] \cdot [\nabla ({I_{src}}(r) * {G}(r))]$$
+`ScatteringOptics.jl` implements three analytic probabilistic models for the phase screen $\phi_r(r)$, named Dipole, Periodic Boxcar, and Von Mises models in @Psaltis_2018, providing the corresponding semi-analytic descriptions of the phase structure function $D_\phi(r)$. The default model is the Dipole model, known to be consistent with multi-frequency measurements of Sgr A* [@Johnson_2018] and being used as the standard model in the Event Horizon Telescope Collaboration [@EHTSgrAPaper2; @EHTSgrAPaper3; @EHTSgrAPaper4].
 
-in which the Fresnel scale, $r_F = \sqrt{\frac{DR}{D+R}\frac{\lambda}{2\pi}}$ is dependent on the observing wavelength $\lambda$, earth-screen distance $D$, and the screen-source distance $R$. ${I_{a}}(r)$ represents the output of the module's `image_scatter` function: the input source model with fully simulated refractive and diffractive scattering effects.
+
+
 
 # Example Usage
 
-This example code segment uses ScatteringOptics.jl to generate ISM scattering on an input [Comrade.jl](https://github.com/ptiede/Comrade.jl) `SkyModel` [@Tiede2022].
+This example code segment uses ScatteringOptics.jl to simulate interstellar scattering on an input skymodel of [Comrade.jl](https://github.com/ptiede/Comrade.jl) [@Tiede_2022].
 
 ```
 using ScatteringOptics
@@ -77,7 +97,7 @@ imap = intensitymap(im)
 # Plot source image
 imshow(im, angunit=EHTUtils.μas)
 ```
-![Output of above code plotting an example unscattered source image.](images/src.png)
+![Output of above code plotting an example unscattered source image (obtained from @Dexter_2014).](images/src.png)
 
 ```
 # Initialize a scattering model with desired scattering paramaters, otherwise default ISM parameters are used
@@ -101,3 +121,7 @@ imshow(im_sc, angunit=EHTUtils.μas)
 ![Output of above code plotting the output scattered image.](images/avg.png)
 
 # Acknowledgements
+We thank Dongjin Kim and Vincent Fish for their helpful discussions related to the development of this package.
+This work was made possible by grants from the National Science Foundation (NSF; AST-1950348 and AST-2034306). 
+K.A. and P.T. have been financially supported also by other NSF grants (AST-1935980, OMA-2029670, AST-2107681, AST-2132700). 
+The Black Hole Initiative at Harvard University is funded by grants from the John Templeton Foundation and the Gordon and Betty Moore Foundation to Harvard University.
