@@ -17,7 +17,7 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Tutorial" => "tutorial.md",
-        "API" => "autodocs.md"
+        "ScateringOptics.jl API" => "autodocs.md"
     ],
 )
 
