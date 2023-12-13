@@ -3,7 +3,7 @@ CurrentModule = ScatteringOptics
 ```
 
 # Tutorial
-This example code segment uses ScatteringOptics.jl to generate ISM scattering on an input [Comrade.jl](https://github.com/ptiede/Comrade.jl) `SkyModel` object via the `image_scatter()` function
+This example code segment uses ScatteringOptics.jl to simulate interstellar scattering on an input [Comrade.jl](https://github.com/ptiede/Comrade.jl) `SkyModel` object via the `image_scatter()` function.
 
 
 ```julia
@@ -21,7 +21,7 @@ imshow(im, angunit=EHTUtils.μas)
 ```
 ![fig](images/src.png)
 
-Optionally, users can retrieve a purely diffractive scattering ensemble average image with the `convolve` function in `VLBISkyModels.jl`
+Optionally, users can retrieve a purely diffractive scattering ensemble average image with the `convolve` function in `VLBISkyModels.jl`.
 
 ```julia
 # Initialize a scattering model with desired scattering paramaters, otherwise default ISM parameters are used
@@ -42,8 +42,7 @@ imshow(im_ea, angunit=EHTUtils.μas)
 ```
 ![fig](images/ea.png)
 
-Otherwise, the scattering kernel `skm` is not required to obtain a fully scattered image. A `RefractivePhaseScreen` type object may 
-be initialized from the `ScatteringModel` and image dimensions. 
+Otherwise, the scattering kernel `skm` is not required to obtain a fully scattered image. A `RefractivePhaseScreen` type object may be initialized from the `ScatteringModel` and image dimensions. 
 
 ```julia
 # Create a refractive phase screen model from scattering model and image dimensions
