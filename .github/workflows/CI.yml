@@ -63,3 +63,5 @@ jobs:
             using ScatteringOptics
             DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); recursive=true)
             doctest(ScatteringOptics)'
+
+      
