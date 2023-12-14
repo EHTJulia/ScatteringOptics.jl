@@ -21,7 +21,7 @@ Refractive scattering further introduces compact substructures on the diffractiv
 The compact substructures arise from phase gradients on the scattering screen $\nabla \phi_r(r)$.
 The refractively scattered image ${I_{a}}(r)$ is given by
 
-$${I_{a}}(r) \approx {I_{ea}}(r) (r + r_F^2 \nabla \phi_r(r)),$$
+$${I_{a}}(r) \approx {I_{ea}}(r + r_F^2 \nabla \phi_r(r)),$$
 
 in which the Fresnel scale, $r_F = \sqrt{\frac{DR}{D+R}\frac{\lambda}{2\pi}}$ is dependent on the observing wavelength $\lambda$ [@Johnson_Narayan_2016]. 
 
