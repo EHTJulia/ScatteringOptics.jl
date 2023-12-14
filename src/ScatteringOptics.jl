@@ -6,17 +6,17 @@ import ComradeBase:
     IsPolarized, NotPolarized,
     visanalytic, imanalytic, isprimitive, ispolarized,
     visibility_point, flux, radialextent
-using StationaryRandomFields
 using DocStringExtensions
 using EHTUtils: mas2rad
+using FFTW
 using HypergeometricFunctions
+using Interpolations
 using NonlinearSolve
 using QuadGK
-using SpecialFunctions
 using Random
-using FFTW
+using SpecialFunctions
+using StationaryRandomFields
 using VLBISkyModels: convolve
-using Interpolations
 
 # kζ finders
 include("./kzetafinders/abstractkzetafinder.jl")
