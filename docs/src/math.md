@@ -3,6 +3,7 @@ CurrentModule = ScatteringOptics
 ```
 # Background
 
+## Mathematics
 `ScatteringOptics.jl` implements a single thin-screen scattering model (described in  [1] and [2]) that simulates both diffractive and refractive scattering. In many instances, the properties of the interstellar scattering can be well described by a single, thin phase-changing screen $\phi_r(r)$, where $r$ is a transverse coordinate on the screen. The statistical characteristics of scattering can be described by those of the phase screen through its spatial structure function $D_\phi(r)$.
 
 Diffractive scattering causes the angular broadening of the source image. 
