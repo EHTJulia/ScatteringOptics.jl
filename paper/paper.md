@@ -29,7 +29,7 @@ affiliations:
  - name: Center for Astrophysics | Harvard & Smithsonian
    index: 5
 
-date: 15 December 2023
+date: 14 December 2023
 bibliography: paper.bib
 
 ---
