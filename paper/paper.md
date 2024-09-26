@@ -65,7 +65,7 @@ In radio interferometry, each set of measurements, so-called visibilities, obtai
 
 $$V_{ea}(b) = V_{src}(b)\,\text{exp}\left[-\frac{1}{2} D_\phi\left(\frac{b}{1+M}\right)\right],$$
 
-in which $b$ is the baseline vector between observing stations. The magnification $M=D/R$ is the ratio of earth-scattering distance $D$ (i.e., the distance between earth and the scattering material) to scattering-source distance $R$. 
+in which $b$ is the baseline vector between observing stations. The magnification $M=D/R$ is the ratio of earth-scattering distance $D$ (i.e., the distance between earth and the scattering material) to scattering-source distance $R$. While convolution is performed through the above equation in Fourier space, where the kernel is analytically described, Comrade.jl provides a tool kit to compute the kernel on the image domain through FFT, and blur arbitral sky models with this kernel.
 
 Refractive scattering further introduces compact substructures on the diffractively-scattered, angular-broadened images. 
 The compact substructures arise from phase gradients on the scattering screen $\nabla \phi(r)$.
