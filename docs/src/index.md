@@ -1,15 +1,21 @@
 ```@meta
 CurrentModule = ScatteringOptics
 ```
-# ScatteringOptics
-[ScatteringOptics](https://github.com/EHTJulia/ScatteringOptics.jl) implements the 'Stochastic Optics' scattering mitigation framework [1] to produce realistic scattering on an input EHT model. The module addressed two distinctive forms of scattering--diffractive blurring and refractive scintillation--independently and then integrates them to output a fully scattered model via the `scatter()` function.
+# ScatteringOptics.jl
+[`ScatteringOptics.jl`](https://github.com/EHTJulia/ScatteringOptics.jl) is an astronomy software package developed in the Julia programming language for interstellar scintillation observed at radio wavelengths. It implements physical models for the anisotropic scattering of radio waves, which arise from turbulence in the ionized interstellar medium. 
 
-## Diffractive Kernel
-Users can instantiate a diffractive scattering kernel model and convolve input images to generate diffractive blurring effects. The module provides three different diffractive scattering probabilistic models: Dipole, Boxcar, and Von Mises. Users construct a model of choice which can generate a scattering kernel for convolution of the model image.
+This toolkit is aiming to provide capabilities of simulating and modeling the temporal, spatial, and spectral effects of interstellar scintillation primarily in the strong scattering regime, taking advantage of Julia's speed and composability. 
+The package is designed to work with sky models and interferometric data types from the advanced Bayesian radio interferometric modeling package [`Comrade.jl`](https://github.com/ptiede/Comrade.jl).
 
-## Refractive Phase Screen
-A `RefractivePhaseScreen` object automatically generates a refractive power law function from the scattering model parameters, to be used in generating a phase screen. The model implements power law noise generation provided by the package [StationaryRandomFields](https://github.com/EHTJulia/StationaryRandomFields.jl).
+The package provides essential functionalities for modeling, analyzing, and interpreting the images of the Galactic Center's supermassive black hole, Sagittarius A*, especially with the Event Horizon Telescope, and also the images of extremely high brightness temperature emissions in active galactic nuclei using space very long baseline interferometry.
 
-## References
-[1] M. D. Johnson. Stochastic optics: A scattering mitigation framework for radio interferometric
-imaging. The Astrophysical Journal, 833(1):74, dec 2016. doi: [10.3847/1538-4357/833/1/74](https://iopscience.iop.org/article/10.3847/1538-4357/aadcff).
+## Installation
+The package is registered in the Julia standard repository, and installable through the standard ways by
+```julia
+using Pkg
+Pkg.add("ScatteringOptics")
+```
+or
+```julia
+]add ScatteringOptics
+```
