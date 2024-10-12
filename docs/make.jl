@@ -2,27 +2,20 @@ using ScatteringOptics
 using Documenter
 using DocumenterVitepress
 
-#DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); recursive=true)
+DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); recursive=true)
 
 makedocs(;
     modules=[ScatteringOptics],
     authors="Anna Tartaglia, Kazunori Akiyama",
     repo="https://github.com/EHTJulia/ScatteringOptics.jl/blob/{commit}{path}#{line}",
     sitename="ScatteringOptics.jl",
-#    format=Documenter.HTML(;
-#        prettyurls=get(ENV, "CI", "false") == "true",
-#        canonical="https://EHTJulia.github.io/ScatteringOptics.jl",
-#        edit_link="main",
-#        assets=String[],
-#    ),
     format = MarkdownVitepress(
         repo = "https://github.com/EHTJulia/ScatteringOptics.jl",
-        devurl = "dev",
-        deploy_url = "EHTJulia.github.io/ScatteringOptics.jl",
     ),
     pages=[
         "Home" => "index.md",
-        "Introduction" => "math.md",
+        "Introduction" => "introduction.md",
+        "Brief Introduction to interstellar scattering" => "math.md",
         "Tutorial" => "tutorial.md",
         "ScateringOptics.jl API" => "autodocs.md",
     ],
@@ -30,6 +23,8 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/EHTJulia/ScatteringOptics.jl",
+    target = "build",
     devbranch="main",
+    branch = "gh-pages",
     push_preview=true,
 )

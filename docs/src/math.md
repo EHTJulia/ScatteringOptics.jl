@@ -1,46 +1,52 @@
 ```@meta
 CurrentModule = ScatteringOptics
 ```
-# Brief Introduction to interstellar scattering
-`ScatteringOptics.jl` implements a single thin-screen intersteller scattering model based on a fast but accurate semi-analytic framework developed in Johnson \& Narayan 2016 [1] and further extended in later work [2-4]. 
+## Brief Introduction to Interstellar Scattering
 
-## What is the interstellar scattering? Why is it important?
-Scintillation is a well-known phenomenon in astronomy. In radio wavelengths, electron density fluctuations in the ionized interstellar plasma cause scattering of radio waves, resulting in the scintillation of compact radio sources in the sky [5, 6]. The interstellar scintillation produces temporal and spectral modulations (i.e., twinkling) in the brightness of objects, as well as distortion of the source images. 
+`ScatteringOptics.jl` implements a single thin-screen interstellar scattering model based on a fast yet accurate semi-analytic framework developed by Johnson & Narayan (2016) [1], and further extended in subsequent works [2-4].
 
-Scattering has become increasingly important in high-angular-resolution studies of compact radio sources at micro-arcsecond scales using very long baseline interferometry (VLBI). 
-Notable examples include black hole imaging of the Milky Way's supermassive black hole, Sagittarius A* (Sgr A*), with the Event Horizon Telescope, and studies of extremely high brightness temperature emissions in active galactic nuclei (AGNs) using space VLBI, exemplified by projects like RadioAstron. 
-In both scenarios, the observed interferometric data is influenced by both diffractive and refractive scattering effects. 
 
-## Scattering regimes in the scope
-The model implemented in `ScatteringOptics.jl` will simulate both *diffractive* and *refractive* scattering in the *average* and *ensemble-average* regimes. Here let us briefly introduce each of scattering regimes and also their averaging regimes. 
+## Scattering Regimes in Scope
 
-The interstellar scattering seen in radio wavelengths is in the *strong scattering limit*, where scattering effects are dominated by phase fluctuations on two widely separated scales: **diffractvive** and **refractive** [5, 6]. 
-- **Diffractive scattering** arises from small-scale fluctuations, typically on scales smaller than microarcseconds. Consequently, diffractive effects are quenched for the vast majority of known sources on the sky, and they are typically only seen in extremely compact objects, such as pulsars and fast radio bursts (FRBs). The diffractive scintillation has a coherence timescale of typically only seconds to minutes, and often well time-averaged during the time scales of a majority of astronomical measurements (except for observations of pulsars and FRBs). As a result, typically the effects of the diffractive scattering appear as a angular broadening of the source image.
-- **Refractive scattering** arises from large-scale fluctuations, typically on scales of micro to milli-arcseconds depending on the location of the sky and observing frequency. typically days to months. Refractive effects are only quenched for a source that has an angular size larger than those scales. Consequently, they are present in many compact objects such as active galactic nuclei (AGNs). Refractive scintillation is more persistent and has a coherence timescale of days to months. Refractive scattering introduces *refractive substructures* into the observed angular-broadened image.
+The model implemented in `ScatteringOptics.jl` simulates both *diffractive* and *refractive* scattering in the *average* and *ensemble-average* regimes. Below is a brief introduction to each scattering regime and their corresponding averaging regimes.
 
-The late 80's work by Ramesh Narayan and Jeremy J. Goodman [7, 8] showed that there are three distinct averaging regimes for images in the strong-scattering limit.
- - **The snapshot regime** occurs when the timescale of measurements is shorter than the coherence time of the diffractive scattering. The measurements therefore will exhibit both diffractive and refractive scintillation. This regime is not handled by our package.
-- **The average regime** occurs when the timescale of measurements is much longer than the coherence time of the diffractive scattering but shorter than the refractive scintillation (often from days to months). In this regime, the diffractive scintillation in measurements is well averaged in time and therefore quentched. Consequently, the measurements in this regime will exhibit only refractive scintillation. A majority of radio astronomy observations of scattered objects is in this regime.
-- **The ensemble-average regime** occurs when the timescale of measurments is even longer than the refractive scintillation. At this regime, the measurements will reflect a complete average over a scattering ensemble. Consequently, the scattering effects are deterministic. For instance the scattered image is well described through blurring (or angular broadening) via convolution of the unscattered image with a scattering kernel.
+Interstellar scattering observed in radio wavelengths occurs in the *strong scattering limit*, where scattering effects are dominated by phase fluctuations on two distinct scales: **diffractive** and **refractive** [5, 6].
+- **Diffractive scattering** arises from small-scale fluctuations, typically on scales smaller than microarcseconds. Diffractive effects are quenched for the vast majority of known sources in the sky and are typically only observed in extremely compact objects, such as pulsars and fast radio bursts (FRBs). Diffractive scintillation has a coherence timescale of seconds to minutes, and is often time-averaged during most astronomical observations (except for pulsars and FRBs). As a result, diffractive scattering typically manifests as angular broadening of the source image.
+- **Refractive scattering** arises from larger-scale fluctuations, typically on scales of micro to milliarcseconds, depending on the sky location and observing frequency. Refractive scintillation has a coherence timescale ranging from days to months. Refractive effects are quenched for sources with angular sizes larger than these scales. Consequently, refractive scattering is present in many compact objects, such as active galactic nuclei (AGNs). Refractive scattering introduces *refractive substructures* into the observed angular-broadened image.
+
+In the late 1980s, Ramesh Narayan and Jeremy J. Goodman [7, 8] identified three distinct averaging regimes for images in the strong-scattering limit:
+- **The snapshot regime** occurs when the measurement timescale is shorter than the coherence time of the diffractive scattering. In this regime, measurements exhibit both diffractive and refractive scintillation. This regime is ***not*** handled by the package.
+- **The average regime** occurs when the measurement timescale is much longer than the coherence time of the diffractive scattering but shorter than the refractive scintillation (typically days to months). In this regime, diffractive scintillation is well-averaged over time and quenched, leaving only refractive scintillation in the measurements. Most radio astronomical observations of scattered objects occur in this regime.
+- **The ensemble-average regime** occurs when the measurement timescale exceeds the refractive scintillation timescale. In this regime, the measurements reflect a complete average over the scattering ensemble, and the scattering effects become deterministic. For example, the scattered image is well described by blurring (or angular broadening) through the convolution of the unscattered image with a scattering kernel.
+
 
 ## Scattering Model
-In many instances, the properties of the interstellar scattering can be well described by a single, thin phase-changing screen $\phi(\vec{r})$, where $\vec{r}$ refers to the two-dimensional phase screen coordinate vector. The statistical characteristics of scattering can be described by those of the phase screen through its spatial structure function $D_\phi(\vec{r})$. This function measures the second-order changes in the phase, $\phi(\vec{r})$ of two radio waves separated by a transverse distance $\vec{r}$ when they pass through the screen [e.g., 1]:
+In many cases, the properties of interstellar scattering can be effectively described by a single, thin phase-changing screen, denoted as $\phi(\vec{r})$, where $\vec{r}$ represents the two-dimensional coordinate vector on the phase screen [5, 6]. The statistical characteristics of the scattering are captured by the spatial structure function $D_\phi(\vec{r})$, which describes the second-order changes in phase, $\phi(\vec{r})$, between two radio waves separated by a transverse distance $\vec{r}$ as they pass through the screen [e.g., 1].
 
-$$D_\phi(r) = \langle [\phi(\vec{r}_0+\vec{r})-\phi(\vec{r}_0)]^2 \rangle$$
+```math
+D_\phi(r) = \langle [\phi(\vec{r}_0+\vec{r})-\phi(\vec{r}_0)]^2 \rangle
+```
 
-In the average or ensemble-average regimes, diffractive scattering causes the angular broadening of the source image, which is called the "ensamble-average" image. The diffractively scattered (i.e., ensemble-average) image $I_{ea}(\vec{r})$ is mathematically given by the convolution of the source image $I_{src}(r)$ with a blurring scattering kernel, $G(\vec{r})$, 
+In the average or ensemble-average regimes, diffractive scattering leads to the angular broadening of the source image, referred to as the "ensemble-average" image. The diffractively scattered (i.e., ensemble-average) image, $I_{ea}(\vec{r})$, is mathematically expressed as the convolution of the source image $I_{src}(\vec{r})$ with a blurring scattering kernel, $G(\vec{r})$.
 
-$$I_{ea}(\vec{r}) = I_{src}(\vec{r}) * G(\vec{r}).$$
+```math
+I_{ea}(\vec{r}) = I_{src}(\vec{r}) * G(\vec{r}).
+```
 
-While the above equation is defined in image space, ScatteringOptics.jl performs scattering in Fourier space, where the kernel can be described analytically. In radio interferometry, each set of measurements, so-called visibilities, obtained with a pair of antennas at different time and frequency segments, samples a Fourier component of the sky image. The source visibilities, $V_{src}(\vec{b})$, are related to the diffractively scattered (i.e., ensemble-average) visibilities, $V_{ea}(\vec{b})$, by
+While the previous equation is defined in image space, `ScatteringOptics.jl` performs scattering in Fourier space, where the kernel can be described analytically. In radio interferometry, each set of measurements—called visibilities—obtained by a pair of antennas at different times and frequency segments, samples a Fourier component of the sky image. The source visibilities, $V_{src}(\vec{b})$, are related to the diffractively scattered (i.e., ensemble-average) visibilities, $V_{ea}(\vec{b})$, by the following relation:
 
-$$V_{ea}(\vec{b}) = V_{src}(\vec{b}) \exp \left[ -\frac{1}{2} D_\phi \left( \frac{\vec{b}}{1+M} \right) \right],$$
+```math
+V_{ea}(\vec{b}) = V_{src}(\vec{b}) \exp \left[ -\frac{1}{2} D_\phi \left( \frac{\vec{b}}{1+M} \right) \right],
+```
 
-in which $\vec{b}$ is the baseline vector between observing stations. The magnification $M=D/R$ is the ratio of earth-screen distance $D$ to screen-source distance $R$. Here you can see that the convolving kernel of the angular broadening is described by the spatial structure function of the screen phase $D_\phi(\vec{r})$, attributed to a probabilistic model of the phase screen $\phi(\vec{r})$. In general, $D_\phi(\vec{r})$ is chromatic and therefore depends on the observing frequency (or wavelength) --- the kernel size in the image domain is often propotional to the squared observing wavelength $\lambda ^2$.
+in which $\vec{b}$ represents the baseline vector between observing stations. The magnification, $M = D / R$, is the ratio of the Earth-screen distance, $D$, to the screen-source distance, $R$. The convolving kernel responsible for the angular broadening is described by the spatial structure function of the phase screen, $D_\phi(\vec{r})$, which is based on a probabilistic model of the phase screen, $\phi(\vec{r})$. In general, $D_\phi(\vec{r})$ is chromatic, meaning it depends on the observing frequency (or wavelength)—the kernel size in the image domain is typically proportional to the square of the observing wavelength, $\lambda^2$.
 
-In the average regime, refractive scattering, on the other hand, further introduces compact substructures on the diffractively-scattered images. The compact substructures arise from phase gradients on the scattering screen $\nabla \phi(\vec{r})$. The refractively scattered image $I_{a}(\vec{r})$ is given by
+In the average regime, refractive scattering introduces compact substructures into the diffractively scattered images. These compact substructures arise from phase gradients on the scattering screen, $\nabla \phi(\vec{r})$. The refractively scattered image, $I_{a}(\vec{r})$, is then given by:
 
-$$I_{a}(\vec{r}) \approx I_{ea}(\vec{r} + r_F^2 \nabla \phi(\vec{r})),$$
+
+```math
+I_{a}(\vec{r}) \approx I_{ea}(\vec{r} + r_F^2 \nabla \phi(\vec{r})),
+```
 
 in which the Fresnel scale, $r_F = \sqrt{ \frac{DR}{D+R} \frac{\lambda}{2\pi} }$ is dependent on the observing wavelength $\lambda$ [1, 2]. 
 
