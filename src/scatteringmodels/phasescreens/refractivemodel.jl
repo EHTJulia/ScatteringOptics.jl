@@ -18,7 +18,6 @@ average image.
 
 `Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
 """
-
 abstract type AbstractPhaseScreen end
 
 struct RefractivePhaseScreen{S, T <: Number, N<:AbstractNoiseSignal, P <: AbstractPowerSpectrumModel} <: AbstractPhaseScreen

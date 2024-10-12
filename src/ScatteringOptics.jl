@@ -2,9 +2,9 @@ module ScatteringOptics
 
 # Import Modules
 import ComradeBase:
-    AbstractModel, IsPrimitive, IsAnalytic, NotAnalytic,
+    AbstractModel, IsAnalytic, NotAnalytic,
     IsPolarized, NotPolarized,
-    visanalytic, imanalytic, isprimitive, ispolarized,
+    visanalytic, imanalytic, ispolarized,
     visibility_point, flux, radialextent
 using DocStringExtensions
 using EHTUtils: mas2rad

@@ -16,12 +16,12 @@ struct PhaseScreenPowerLaw{N,S<:AbstractScatteringModel,T<:Number} <: AbstractPo
     Vx_km_per_s::T
     Vy_km_per_s::T
 
-    function PhaseScreenPowerLaw(sm::S, dx, dy, Vx_km_per_s=0.0::T, Vy_km_per_s=0.0::T) where {S,T}
+    function PhaseScreenPowerLaw(sm::S, dx::T, dy::T, Vx_km_per_s=0.0::T, Vy_km_per_s=0.0::T) where {S,T}
         new{2,typeof(sm),typeof(dx)}(sm, dx, dy, Vx_km_per_s, Vy_km_per_s)
     end
 end
 
-@inline fourieranalytic(::PhaseScreenPowerLaw) = IsAnalytic()
+@inline StationaryRandomFields.fourieranalytic(::PhaseScreenPowerLaw) = IsAnalytic()
 
 @inline function StationaryRandomFields.power_point(model::PhaseScreenPowerLaw, q...)
     @assert length(q) == 2
