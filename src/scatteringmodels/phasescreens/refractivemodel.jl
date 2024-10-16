@@ -47,7 +47,7 @@ Generates a refractive phase screen, `ϕ`, using StationaryRandomFields.jl the p
 The fourier space 2D noise_screen (defaults to gaussian noise screen if not given) is scaled by the power law,
 `Q`, defined in input AbstractPhaseScreen `psm`. The observing wavelength, `λ_cm`, must be given.
 """
-@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm::Number, noise_screen=nothing)
+@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm::Number; noise_screen=nothing)
     # generate noise screen if not provided
     if isnothing(noise_screen)
         noise_screen = generate_gaussian_noise(psm)
