@@ -173,7 +173,7 @@ end
     # get the frequency and wavelength information
     meta_imap = metadata(imap)
     is_freq = hasproperty(meta_imap, :frequency)
-    if is_freq == false and νref == c_cgs
+    if is_freq == false & νref == c_cgs
         @warn "the input image doesn't have a frequency information. νref=c_cgs will be assumed."
     end
     ν_imap = if is_freq ? meta_imap.frequency : νref
