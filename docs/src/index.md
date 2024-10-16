@@ -11,11 +11,11 @@ hero:
       text: Introduction
       link: /introduction
     - theme: alt
+      text: Tutorials
+      link: /tutorials/diffractive
+    - theme: alt
       icon: github
       text: View on Github
       link: https://github.com/EHTJulia/ScatteringOptics.jl
-    - theme: alt
-      text: Tutorials
-      link: /tutorials/diffractive
 ---
 ```

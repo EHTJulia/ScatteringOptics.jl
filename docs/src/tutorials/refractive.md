@@ -63,13 +63,15 @@ This Gaussian noise will be scaled with the powerspectrum of the phase screen, a
 
 ```@example 1
 # Produce the scattered image
-im_a = scatter(rps, im; noise_screen=noise_screen)
+im_a = scatter_image(rps, im; noise_screen=noise_screen)
 
 # Plot source image
 imageviz(im_a, size=(600, 500), colormap=:afmhot)
 ```
 
-If you completely randomize the process, you can skip the step to generate `noise_screen` and specify it in the argument of [scatter_image](@ref) method. In this case, the screen will be automatically generated inside [scatter_image](@ref) method. There is a quick shortcut bypassing the noise screen generation, which has a less flexibility and a larger overhead for iterative processes.
+If you completely randomize the process, you can skip the step to generate `noise_screen` and specify it in the argument of [scatter_image](@ref) method. In this case, the screen will be automatically generated inside [scatter_image](@ref) method. 
+
+There is a quick shortcut bypassing the noise screen generation, which has a less flexibility and a larger overhead for iterative processes.
 
 ```@example 1
 # Produce scattered image with observing wavelength .13 cm
@@ -86,20 +88,20 @@ Here we show an example using a simple Gaussian model. You need to create an ima
 
 ```@example 1
 # Gaussian model from VLBISkyModels.jl
-g = stretched(Gaussian(), μas2rad(10.0), μas2rad(10.0))
+g = stretched(Gaussian(), μas2rad(5.0), μas2rad(5.0))
 
 # Create an image model from the Gaussian model
-im_g = intensitymap(g, imagepixels(μas2rad(50.0), μas2rad(50.0), 256, 256))
+im_g = intensitymap(g, imagepixels(μas2rad(200.0), μas2rad(200.0), 256, 256))
 
 # Plot source image
 imageviz(im_g, size=(600, 500), colormap=:afmhot)
 ```
 
-Then you can make a scattered image.
+Then you can make a scattered image. Don't forget to add the observing frequency as im_g doesn't have a frequency information.
 
 ```@example 1
-# Produce scattered image with observing wavelength .13 cm
-im_ga = scatter_image(sm, im_g; rng=rng)
+# Produce scattered image. Don't forget to add the observing frequency as im_g doesn't have a frequency information.
+im_ga = scatter_image(sm, im_g; rng=rng, νref=νref)
 
 # Plot source image
 imageviz(im_ga, size=(600, 500), colormap=:afmhot)
