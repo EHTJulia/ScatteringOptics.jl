@@ -1,5 +1,6 @@
 export AbstractPhaseScreen
 export RefractivePhaseScreen
+export refractivephasescreen
 export phase_screen
 export wrapped_grad
 export image_scatter
@@ -28,7 +29,7 @@ struct RefractivePhaseScreen{S, T <: Number, N<:AbstractNoiseSignal, P <: Abstra
     dy::T 
     signal::N  
     Q::P
-    function RefractivePhaseScreen(sm::S, Nx::Number, Ny::Number, dx::T, dy::T, Vx_km_per_s=0.0::T, Vy_km_per_s=0.0::T) where {S, T}
+    function RefractivePhaseScreen(sm::S, Nx::Number, Ny::Number, dx::T, dy::T, Vx_km_per_s::T=0.0, Vy_km_per_s::T=0.0) where {S, T}
         # radians to cm
         dx = dx*sm.D
         dy = dy*sm.D
@@ -40,17 +41,25 @@ struct RefractivePhaseScreen{S, T <: Number, N<:AbstractNoiseSignal, P <: Abstra
 end
 
 """
-    RefractivePhaseScreen(sm, im, Vx_km_per_s=0.0, Vy_km_per_s=0.0)
+    refractivephasescreen(sm, im, Vx_km_per_s=0.0, Vy_km_per_s=0.0)
+
+An abstract type for generating a refractive phase screen model corresponding to an image and computing the scattered
+average image.
 
 - `sm <: AbstractScatteringModel`
 - `im <: IntensityMap`
-`Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
+- `Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
 """
-function RefractivePhaseScreen(sm::S, im::IntensityMap, Vx_km_per_s=0.0::T, Vy_km_per_s=0.0::T) where {S, T}
+function refractivephasescreen(sm::S, im::IntensityMap, Vx_km_per_s::T=0.0, Vy_km_per_s::T=0.0) where {S, T}
     nx, ny = size(im)[1:2]
     dx = im.X[2]-im.X[1]  # pixel size in radians
     dy = im.Y[2]-im.Y[1]
-    return RefractivePhaseScreen(sm, nx, ny, dx, dy, Vx_km_per_s, Vy_km_per_s)
+
+    U = typeof(im[1])
+    UeqT = U == T
+    Vx_km = UeqT ? Vx_km_per_s : U(Vx_km_per_s)
+    Vy_km = UeqT ? Vy_km_per_s : U(Vy_km_per_s)
+    return RefractivePhaseScreen(sm, nx, ny, dx, dy, Vx_km, Vy_km)
 end
 
 StationaryRandomFields.generate_gaussian_noise(psm::AbstractPhaseScreen; rng = Random.default_rng()) = generate_gaussian_noise(psm.signal; rng = rng)

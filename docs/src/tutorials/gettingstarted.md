@@ -84,11 +84,11 @@ f
 Otherwise, the scattering kernel `skm` is not required to obtain a fully scattered image. A `RefractivePhaseScreen` type object may be initialized from the `ScatteringModel` and image dimensions. 
 
 ```@example 1
-# Create a refractive phase screen model from scattering model and image dimensions
-nx, ny = size(im) 
-dx = im.X[2]-im.X[1]  # pixel size in radians
-dy = im.Y[2]-im.Y[1] 
-rps = RefractivePhaseScreen(sm, nx, ny, dx, dy) # sm is the scattering model
+# Create a refractive phase screen model from scattering model and image
+rps = refractivephasescreen(sm, im) 
+
+# Alternatively, you may make the screen model for arbitral grid
+# rps = RefractivePhaseScreen(sm, Nx, Ny, dx_rad, dy_rad) 
 
 # Generate a phase screen. For this particular tutorial we will use StableRNG for the reproducibility.
 using StableRNGs 
