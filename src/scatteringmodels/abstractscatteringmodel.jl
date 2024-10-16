@@ -7,6 +7,7 @@ export AbstractScatteringModel
 #export Dϕ_exact
 export visibility_point_approx
 export visibility_point_exact
+export emsembleaverage
 
 
 """

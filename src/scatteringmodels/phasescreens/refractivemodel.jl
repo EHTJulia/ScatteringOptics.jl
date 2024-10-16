@@ -3,7 +3,7 @@ export RefractivePhaseScreen
 export refractivephasescreen
 export phase_screen
 export wrapped_grad
-export image_scatter
+export scatter
 export generate_gaussian_noise
 
 
