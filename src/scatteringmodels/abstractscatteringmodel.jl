@@ -47,6 +47,9 @@ Followings are currently not used by methods but may be useful to have.
 - `Amin::Number`: related to the asymmetric scaling of the kernel. given by `calc_Amin(rin_cm, λ0_cm, M, θmin_rad)`
 - `Bmaj::Number`: calc_Bmaj(α, ϕ0, Pϕfunc, B_prefac)
 - `Bmin::Number`: calc_Bmin(α, ϕ0, Pϕfunc, B_prefac)
+
+**Mandatory Method**
+- `Pϕ(sm::ScatteringModel, ϕ)`: Probability Distribution for the wondering of the direction of the magnetic field centered at orientation ϕ0.
 """
 abstract type AbstractScatteringModel end
 
