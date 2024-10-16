@@ -146,7 +146,7 @@ model `psm`.
 
     # get the frequency and wavelength information
     meta_imap = metadata(imap)
-    ν_imap = if hasproperty(meta_imap, :frequency) ? meta_imap.frequency : νref
+    ν_imap = hasproperty(meta_imap, :frequency) ? meta_imap.frequency : νref
     λ_cm = ν2λcm(ν_imap)
     
     # compute the ensemble-average image

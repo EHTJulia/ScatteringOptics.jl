@@ -176,7 +176,7 @@ end
     if is_freq == false & νref == c_cgs
         @warn "the input image doesn't have a frequency information. νref=c_cgs will be assumed."
     end
-    ν_imap = if is_freq ? meta_imap.frequency : νref
+    ν_imap = is_freq ? meta_imap.frequency : νref
     
     # compute the ensemble-average image
     return convolve(imap, kernelmodel(sm, νref=ν_imap))
