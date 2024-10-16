@@ -154,7 +154,8 @@ model `psm`.
     λ_cm = ν2λcm(ν_imap)
     
     # compute the ensemble-average image
-    skm = kernelmodel(psm.sm, νref=ν_imap)
+    sm = psm.sm
+    skm = kernelmodel(sm, νref=ν_imap)
     imap_ea = convolve(imap, skm)
 
     # generate phase screen
