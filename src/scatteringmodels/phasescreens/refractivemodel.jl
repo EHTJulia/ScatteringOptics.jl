@@ -175,7 +175,7 @@ model `psm`.
     interp_gradϕx = extrapolate(scale(interpolate(gradϕ_x, BSpline(Linear())), (rxgrid, rygrid)), Periodic())
     interp_gradϕy = extrapolate(scale(interpolate(gradϕ_y, BSpline(Linear())), (rxgrid, rygrid)), Periodic())
 
-    # compute the emsemble average image
+    # compute the ensemble average image
     imap_sc = copy(imap_ea)
     nx, ny = size(imap_sc)
     for ix=1:nx, iy=1:ny
