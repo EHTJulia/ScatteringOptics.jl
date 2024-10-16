@@ -15,7 +15,7 @@ hero:
       text: View on Github
       link: https://github.com/EHTJulia/ScatteringOptics.jl
     - theme: alt
-      text: Tutorial
-      link: /tutorial
+      text: Tutorials
+      link: /tutorials/diffractive
 ---
 ```

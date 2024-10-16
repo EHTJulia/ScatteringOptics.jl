@@ -2,8 +2,9 @@
 CurrentModule = ScatteringOptics
 ```
 
-# Getting Started
+# Simulate Diffractive Scattering
 `ScatteringOptics.jl` is designed as a package inside the ecosystem of [`Comrade.jl`](https://github.com/ptiede/Comrade.jl). The scattering model in the package can scatter any sky model types from `Comrade.jl`.
+This page describes how to simulate diffractive scattering.
 
 ## Loading your image
 Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
@@ -115,52 +116,3 @@ imageviz(im_ea_2, size=(600, 500), colormap=:afmhot)
 
 Although this is handy, it may have an extra overhead to initialize `skm` which may slow down highly iterative processes. 
 [emsembleaverage](@ref) method also supports more general skymodels in `ComradeBase.AbstractModel` as an input instead of the image model.
-
-## Simulating Refractive Scattering
-Otherwise, the scattering kernel `skm` is not required to obtain a fully scattered image. A [RefractivePhaseScreen](@ref) type object may be initialized from the `ScatteringModel` and image dimensions. 
-
-```@example 1
-# Initialize a refractive phase screen model from scattering and image models
-rps = refractivephasescreen(sm, im) 
-
-# Alternatively, you may make the screen model for arbitral grid
-#   ScatteringOptics is design to work even if ScatteringScreen's grid is not consistent
-#   with the image you want to scatter, thanks to a powerful interpolation scheme available.
-# rps = RefractivePhaseScreen(sm, Nx, Ny, dx_rad, dy_rad) 
-
-# Generate a phase screen. For this particular tutorial we will use StableRNG for the reproducibility.
-using StableRNGs 
-rng = StableRNG(123)
-noise_screen = generate_gaussian_noise(rps; rng=rng)
-
-# Produce scattered image with observing wavelength .13 cm
-im_a = scatter(rps, im; noise_screen=noise_screen)
-
-# Plot source image
-imageviz(im_a, size=(600, 500), colormap=:afmhot)
-```
-
-If you completely randomize the process, you can skip the step to generate `noise_screen`. The screen will be automatically generated inside [scatter](@ref) method. There is a quick shortcut bypassing the noise screen generation, which has a less flexibility and a larger overhead for iterative processes.
-
-```@example 1
-# Produce scattered image with observing wavelength .13 cm
-im_a2 = scatter(sm, im; rng=rng)
-
-# Plot source image
-imageviz(im_a2, size=(600, 500), colormap=:afmhot)
-```
-
-Just because the refractive scattering effects cannot be described analytically in Fourier domain, [scatter](@ref) method only works
-for the image model (`::IntensityMap`). For skymodels in `VLBISkyModels.jl`, you need to first instantiate an image model of your sky model.
-
-```@example 1
-# Gaussian model from VLBISkyModels.jl
-g = stretched(Gaussian(), μas2rad(10.0), μas2rad(10.0))
-im_g = intensitymap(g, imagepixels(μas2rad(50.0), μas2rad(50.0), 256, 256))
-
-# Produce scattered image with observing wavelength .13 cm
-im_ga = scatter(sm, im_g; rng=rng)
-
-# Plot source image
-imageviz(im_ga, size=(600, 500), colormap=:afmhot)
-```

@@ -3,7 +3,7 @@ export RefractivePhaseScreen
 export refractivephasescreen
 export phase_screen
 export wrapped_grad
-export scatter
+export scatter_image
 export generate_gaussian_noise
 
 
@@ -121,13 +121,13 @@ Returns Fresnel scale corresponding to the given AvstractPhaseScreen object and 
 end
 
 """
-    scatter(psm::RefractivePhaseScreen, imap::IntensityMap; νref::Number = c_cgs, noise_screen=nothing)
+    scatter_image(psm::RefractivePhaseScreen, imap::IntensityMap; νref::Number = c_cgs, noise_screen=nothing)
 
 Implements full ISM scattering on an unscattered Comrade skymodel intensity map (`imap`). Diffrective blurring and 
 refractive phase screen generation are specific to the scattering parameters defined in the AbstractPhaseScreen
 model `psm`.
 """
-@inline function scatter(
+@inline function scatter_image(
         psm::AbstractPhaseScreen,
         imap::IntensityMap;
         νref::Number = c_cgs,
@@ -189,9 +189,9 @@ model `psm`.
 end
 
 """
-    scatter(sm::AbstractScatteringModel, imap::IntensityMap, λ_cm::Number; νref::Number = c_cgs, rng = Random.default_rng())
+    scatter_image(sm::AbstractScatteringModel, imap::IntensityMap, λ_cm::Number; νref::Number = c_cgs, rng = Random.default_rng())
 """
-@inline function scatter(
+@inline function scatter_image(
     sm::AbstractScatteringModel,
     imap::IntensityMap;
     νref::Number = c_cgs,
@@ -200,5 +200,5 @@ end
     rng = Random.default_rng()
 )
     rps = refractivephasescreen(sm, imap, Vx_km_per_s, Vy_km_per_s)
-    return scatter(rps, imap; νref=νref, rng=rng)
+    return scatter_image(rps, imap; νref=νref, rng=rng)
 end

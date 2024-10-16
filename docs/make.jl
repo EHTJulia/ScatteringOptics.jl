@@ -5,7 +5,10 @@ using DocumenterVitepress
 DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); recursive=true)
 
 TUTORIALS = [
-    "Getting Started" => "tutorials/gettingstarted.md",
+    "Getting Started" => [
+        "tutorials/diffractive.md",
+        "tutorials/refractive.md",
+    ],
     "Advanced" =>[
         "tutorials/nondefaultmodels.md",
         "tutorials/custommodels.md",
