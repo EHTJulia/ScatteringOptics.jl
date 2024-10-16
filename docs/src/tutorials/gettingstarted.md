@@ -23,12 +23,14 @@ imageviz(im, size=(600, 500), colormap=:afmhot)
 ```
 
 You can instantiate your scattering model with `ScatteringModel()`. If nothing is specified, the model will use the best-fit parameter set for Sgr A* in [Johnson et al. 2018](https://ui.adsabs.harvard.edu/abs/2018ApJ...865..104J/abstract). 
+
 ```@example 1
 using ScatteringOptics
 
 # initialize the scattering model
 sm = ScatteringModel()
 ```
+
 You can change the parameters if you want to simulate a different scattering screen. See [ScatteringOptics.DipoleScatteringModel](@ref) for arguments. 
 
 ## Simulate diffractive scattering 
@@ -105,7 +107,7 @@ The above tutorial is intentionally written in a low level. There is [emsembleav
 
 ```@example 1
 # scatter the image
-im_ea_2 = emsembleaverage(skm, im)
+im_ea_2 = emsembleaverage(sm, im)
 
 # Plot source image
 imageviz(im_ea_2, size=(600, 500), colormap=:afmhot)
