@@ -91,6 +91,7 @@ using StableRNGs
 using VLBISkyModels
 
 # Load a image model from an image FITS file
+# This FITS file is available in the tutorials of the repository
 im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
 
 # Plot source image
