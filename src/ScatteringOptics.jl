@@ -16,7 +16,7 @@ using QuadGK
 using Random
 using SpecialFunctions
 using StationaryRandomFields
-using VLBISkyModels: convolve, IntensityMap
+using VLBISkyModels: convolve, convolved, IntensityMap
 
 # kζ finders
 include("./kzetafinders/abstractkzetafinder.jl")

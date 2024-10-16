@@ -50,12 +50,12 @@ average image.
 - `im <: IntensityMap`
 - `Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
 """
-function refractivephasescreen(sm::S, im::IntensityMap, Vx_km_per_s::T=0.0, Vy_km_per_s::T=0.0) where {S, T}
-    nx, ny = size(im)[1:2]
-    dx = im.X[2]-im.X[1]  # pixel size in radians
-    dy = im.Y[2]-im.Y[1]
+function refractivephasescreen(sm::S, imap::IntensityMap, Vx_km_per_s::T=0.0, Vy_km_per_s::T=0.0) where {S, T}
+    nx, ny = size(imap)[1:2]
+    dx = imap.X[2]-imap.X[1]  # pixel size in radians
+    dy = imap.Y[2]-imap.Y[1]
 
-    U = typeof(im[1])
+    U = typeof(imap[1])
     UeqT = U == T
     Vx_km = UeqT ? Vx_km_per_s : U(Vx_km_per_s)
     Vy_km = UeqT ? Vy_km_per_s : U(Vy_km_per_s)
@@ -71,10 +71,10 @@ Generates a refractive phase screen, `ϕ`, using StationaryRandomFields.jl the p
 The fourier space 2D noise_screen (defaults to gaussian noise screen if not given) is scaled by the power law,
 `Q`, defined in input AbstractPhaseScreen `psm`. The observing wavelength, `λ_cm`, must be given.
 """
-@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm::Number; noise_screen=nothing)
+@inline function phase_screen(psm::AbstractPhaseScreen, λ_cm::Number; noise_screen=nothing, rng = Random.default_rng())
     # generate noise screen if not provided
     if isnothing(noise_screen)
-        noise_screen = generate_gaussian_noise(psm)
+        noise_screen = generate_gaussian_noise(psm; rng=rng)
     end
 
     # generate phase screen from power law and noise screen
@@ -121,46 +121,79 @@ Returns Fresnel scale corresponding to the given AvstractPhaseScreen object and 
 end
 
 """
-    image_scatter(psm::RefractivePhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs)
+    scatter(psm::RefractivePhaseScreen, imap::IntensityMap; νref::Number = c_cgs, noise_screen=nothing)
 
 Implements full ISM scattering on an unscattered Comrade skymodel intensity map (`imap`). Diffrective blurring and 
 refractive phase screen generation are specific to the scattering parameters defined in the AbstractPhaseScreen
-model `psm`. The observing wavelength `λ_cm` is required.
+model `psm`.
 """
-@inline function image_scatter(psm::AbstractPhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs, noise_screen=nothing)
+@inline function scatter(
+        psm::AbstractPhaseScreen,
+        imap::IntensityMap;
+        νref::Number = c_cgs,
+        noise_screen=nothing,
+        rng = Random.default_rng())
+
     # generate noise screen if not provided
     if isnothing(noise_screen)
-        noise_screen = generate_gaussian_noise(psm)
+        noise_screen = generate_gaussian_noise(psm; rng=rng)
     end
+   
+    # check if imap has a frequncy or time dimension
+    if ndims(imap) > 2
+        throw("The funciton doesn't support multi-dimensional images")
+    end
+
+    # get the frequency and wavelength information
+    meta_imap = metadata(imap)
+    ν_imap = if hasproperty(meta_imap, :frequency) ? meta_imap.frequency : νref
+    λ_cm = ν2λcm(ν_imap)
+    
+    # compute the ensemble-average image
+    skm = kernelmodel(sm, νref=ν_imap)
+    imap_ea = convolve(imap, skm)
 
     # generate phase screen
     ϕ = phase_screen(psm, λ_cm; noise_screen=noise_screen)
 
-    # derive the gradient
+    # derive the gradient of the phase screen
     gradϕ_x, gradϕ_y = wrapped_grad(ϕ, psm.dx, psm.dy) 
     
-    sm = psm.sm
+    # get the frenels scale
     rF = get_rF(psm, λ_cm)
-    skm = kernelmodel(sm, νref=νref)
+    
     # convolve to get the ensemble averaged image
-    imap_ea = convolve(imap, skm)
     rxgrid, rygrid = (imap_ea.X, imap_ea.Y) .* sm.D
 
+    # initialize the interpolators
     interp_Iea = extrapolate(scale(interpolate(imap_ea, BSpline(Linear())), (rxgrid, rygrid)), 0.)
     interp_gradϕx = extrapolate(scale(interpolate(gradϕ_x, BSpline(Linear())), (rxgrid, rygrid)), Periodic())
     interp_gradϕy = extrapolate(scale(interpolate(gradϕ_y, BSpline(Linear())), (rxgrid, rygrid)), Periodic())
 
+    # compute the emsemble average image
     imap_sc = copy(imap_ea)
     nx, ny = size(imap_sc)
     for ix=1:nx, iy=1:ny
         @inbounds rx = rxgrid[ix] 
         @inbounds ry = rygrid[iy] 
-
         rx_sft = rx .+ rF^2. * interp_gradϕx(rx, ry) 
         ry_sft = ry .+ rF^2. * interp_gradϕy(rx, ry) 
-
         @inbounds imap_sc[ix, iy] = interp_Iea(rx_sft, ry_sft)
-
     end 
     return(imap_sc)
+end
+
+"""
+    scatter(sm::AbstractScatteringModel, imap::IntensityMap, λ_cm::Number; νref::Number = c_cgs, rng = Random.default_rng())
+"""
+@inline function scatter(
+    sm::AbstractScatteringModel,
+    imap::IntensityMap;
+    νref::Number = c_cgs,
+    Vx_km_per_s=0.0, 
+    Vy_km_per_s=0.0,
+    rng = Random.default_rng()
+)
+    rps = refractivephasescreen(sm, imap, Vx_km_per_s, Vy_km_per_s)
+    return scatter(rps, imap; νref=νref, rng=rng)
 end

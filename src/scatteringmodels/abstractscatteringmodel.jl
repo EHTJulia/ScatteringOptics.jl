@@ -153,3 +153,31 @@ using the exact formula of the phase structure function.
     b = (u, v) .* (λ / (1 + sm.M))
     return exp(-0.5 * Dϕ_exact(sm, λ, b...))
 end
+
+"""
+    emsembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel)
+"""
+@inline funciton emsembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel=c_cgs)
+    return convolved(skymodel, kernelmodel(sm, νref=νmodel))
+end
+
+"""
+    emsembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+"""
+@inline funciton emsembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+    # check if imap has a frequncy or time dimension
+    if ndims(imap) > 2
+        throw("The funciton doesn't support multi-dimensional images")
+    end
+
+    # get the frequency and wavelength information
+    meta_imap = metadata(imap)
+    is_freq = hasproperty(meta_imap, :frequency)
+    if is_freq == false and νref == c_cgs
+        @warn "the input image doesn't have a frequency information. νref=c_cgs will be assumed."
+    end
+    ν_imap = if is_freq ? meta_imap.frequency : νref
+    
+    # compute the ensemble-average image
+    return convolve(imap, kernelmodel(sm, νref=ν_imap))
+end
