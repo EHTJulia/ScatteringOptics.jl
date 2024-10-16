@@ -50,7 +50,7 @@ function RefractivePhaseScreen(sm::S, im::IntensityMap, Vx_km_per_s=0.0::T, Vy_k
     nx, ny = size(im)[1:2]
     dx = im.X[2]-im.X[1]  # pixel size in radians
     dy = im.Y[2]-im.Y[1]
-    return RefractivePhaseScreen(sm, nx, ny, dx, dy)
+    return RefractivePhaseScreen(sm, nx, ny, dx, dy, Vx_km_per_s, Vy_km_per_s)
 end
 
 StationaryRandomFields.generate_gaussian_noise(psm::AbstractPhaseScreen; rng = Random.default_rng()) = generate_gaussian_noise(psm.signal; rng = rng)
