@@ -59,7 +59,7 @@ In the average regime, refractive scattering introduces compact substructures in
 I_{a}(\vec{r}) \approx I_{ea}(\vec{r} + r_F^2 \nabla \phi(\vec{r})),
 ```
 
-in which the Fresnel scale, $r_F = \sqrt{ \frac{DR}{D+R} \frac{\lambda}{2\pi} }$ is dependent on the observing wavelength $\lambda$ [1, 2]. 
+in which the Fresnel scale, $r_F = \sqrt{ \frac{DR}{D+R} \frac{\lambda}{2\pi} }$ is dependent on the observing wavelength $\lambda$ [1, 2]. The refractive substructures on the image have zero means --- the ensamble average of $I_{a}$ will be the angular-broadened (or diffractively-scattered) image $I_{ea}$.
 
 `ScatteringOptics.jl` implements three analytic probabilistic models for the phase screen $\phi(\vec{r})$, named *Dipole*, *Periodic* *Boxcar*, and *Von Mises* models in Psaltis et al. [3], providing the corresponding semi-analytic descriptions of the phase structure function $D_\phi(\vec{r})$. From $D_\phi(\vec{r})$, the package computes the scattering kernel and resultant ensemble-average image. The fully scattered image with refractive substractures will further use a generative model to produce a random realization of $\phi(\vec{r})$, which is based on a stationary Gaussian random field following the power spectrum of the probabilistic model in Fourier domain. 
 
