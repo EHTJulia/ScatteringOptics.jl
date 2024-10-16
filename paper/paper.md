@@ -85,38 +85,33 @@ in which the Fresnel scale, $r_F = \sqrt{\frac{DR}{D+R}\frac{\lambda}{2\pi}}$ is
 This example code segment uses ScatteringOptics.jl to simulate interstellar scattering on an input skymodel of [Comrade.jl](https://github.com/ptiede/Comrade.jl) [@Tiede_2022].
 
 ```
-using ScatteringOptics
-using EHTImages
-using PythonPlot
-using EHTUtils
+using CairoMakie
+using ScatteringOptics 
+using StableRNGs
+using VLBISkyModels
 
-# Load a model image FITS file
-im = load_fits("jason_mad_eofn.fits")
-# Initialize a comrade SkyModel from the loaded image
-imap = intensitymap(im)
+# Load a image model from an image FITS file
+im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
+
 # Plot source image
-imshow(im, angunit=EHTUtils.μas)
+imageviz(im, size=(600, 500), colormap=:afmhot)
 ```
 ![Output of above code plotting an example unscattered source image (obtained from @Dexter_2014).](images/src.png)
 
 ```
 # Initialize a scattering model with desired scattering paramaters, otherwise default ISM parameters are used
-# The default model is a Dipole model
+# The default model is a Dipole model with the best-fit parameters for Sgr A*
 sm = ScatteringModel()
 
+# Here using StableRNG for the reproducibility
+rng = StableRNG(123)
+
 # Create a refractive phase screen model from scattering model and image dimensions
-nx, ny = size(imap) 
-dx = imap.X.step.hi  # pixel size in radians
-dy = imap.Y.step.hi 
-rps = RefractivePhaseScreen(sm, nx, ny, dx, dy) # sm is the scattering model
+# Produce the scattered image
+im_sc = scatter_image(sm, im; rng=rng)
 
-# Produce scattered image with observing wavelength .13 cm
-s = image_scatter(rps, imap, 0.13, νref=230e9)
-
-# Load and plot scattered image
-im_sc = load(s)
-im_sc.f[1] = 230e9
-imshow(im_sc, angunit=EHTUtils.μas)
+# Plot source image
+imageviz(im_sc, size=(600, 500), colormap=:afmhot)
 ```
 ![Output of above code plotting the output scattered image.](images/avg.png)
 
