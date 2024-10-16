@@ -4,6 +4,14 @@ using DocumenterVitepress
 
 DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); recursive=true)
 
+TUTORIALS = [
+    "Getting Started" => "tutorials/gettingstarted.md",
+    "Advanced" =>[
+        "tutorials/nondefaultmodels.md",
+        "tutorials/custommodels.md",
+    ],
+]
+
 makedocs(;
     modules=[ScatteringOptics],
     authors="Anna Tartaglia, Kazunori Akiyama",
@@ -16,8 +24,8 @@ makedocs(;
         "Home" => "index.md",
         "Introduction" => "introduction.md",
         "Brief Introduction to interstellar scattering" => "math.md",
-        "Tutorial" => "tutorial.md",
-        "ScateringOptics.jl API" => "autodocs.md",
+        "Tutorials" => TUTORIALS,
+        "ScateringOptics.jl API" => "api.md",
     ],
 )
 

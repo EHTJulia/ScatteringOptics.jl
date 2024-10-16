@@ -2,9 +2,8 @@
 CurrentModule = ScatteringOptics
 ```
 
-# Tutorial
+# Getting Started
 This example code segment uses ScatteringOptics.jl to simulate interstellar scattering on an input [Comrade.jl](https://github.com/ptiede/Comrade.jl) `SkyModel` object via the `image_scatter()` function.
-
 
 ```julia
 using ScatteringOptics

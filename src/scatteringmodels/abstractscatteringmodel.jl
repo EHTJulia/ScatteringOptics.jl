@@ -28,19 +28,25 @@ Ideally, a subtype of this abstract model should have a constructor only with th
 - `λ0::Number`: The reference wavelength for the scattering model in cm.
 - `D::Number`: The distance from the observer to the scattering screen in cm.
 - `R::Number`: The distance from the source to the scattering screen in cm.
+
 Furthermore the following parameters need to be precomputed.
 - `M::Number`: Magnification parameter, defined as D/R
-- `ζ0::Number`: 
-- `A::Number`:
-- `kζ::Number`
-- `Bmaj::Number`:
-- `Bmin::Number`:
-- `Qbar::Number`:
-- `C::Number`:
-- `Amaj::Number`:
-- `Amin::Number`:
-- `ϕ0::Number`:
+- `Qbar::Number`: The amplitudes of fluctuations. Given by `calc_Qbar(α, rin_cm, λ0_cm, M, θmaj_rad, θmin_rad)`
+- `C::Number`: The scaling factor of the power spectrum. Given by `calc_C(α, rin_cm, λ0_cm, Qbar)`
+- `D1maj::Number`: given by `calc_D1(α, Amaj, Bmaj)`
+- `D2maj::Number`: given by `calc_D2(α, Amaj, Bmaj)`
+- `D1min::Number`: given by `calc_D1(α, Amin, Bmin)`
+- `D2min::Number`: given by `calc_D2(α, Amin, Bmin)`
 
+**Optional Fields**
+Followings are currently not used by methods but may be useful to have. 
+- `A::Number`: Asymmetry parameter θmaj_mas/θmin_mas
+- `ζ0::Number`: Another asymmetry parameter. Given by calc_ζ0(A)
+- `ϕ0`:: position angle (measured from Dec axis in CCW) converted to a more traditional angle in radians measured from RA axis in CW
+- `Amaj::Number`: related to the asymmetric scaling of the kernel. given by `calc_Amaj(rin_cm, λ0_cm, M, θmaj_rad)`
+- `Amin::Number`: related to the asymmetric scaling of the kernel. given by `calc_Amin(rin_cm, λ0_cm, M, θmin_rad)`
+- `Bmaj::Number`: calc_Bmaj(α, ϕ0, Pϕfunc, B_prefac)
+- `Bmin::Number`: calc_Bmin(α, ϕ0, Pϕfunc, B_prefac)
 """
 abstract type AbstractScatteringModel end
 

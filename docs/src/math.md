@@ -1,7 +1,7 @@
 ```@meta
 CurrentModule = ScatteringOptics
 ```
-## Brief Introduction to Interstellar Scattering
+# Brief Introduction to Interstellar Scattering
 
 `ScatteringOptics.jl` implements a single thin-screen interstellar scattering model based on a fast yet accurate semi-analytic framework developed by Johnson & Narayan (2016) [1], and further extended in subsequent works [2-4].
 
@@ -27,19 +27,30 @@ In many cases, the properties of interstellar scattering can be effectively desc
 D_\phi(r) = \langle [\phi(\vec{r}_0+\vec{r})-\phi(\vec{r}_0)]^2 \rangle
 ```
 
-In the average or ensemble-average regimes, diffractive scattering leads to the angular broadening of the source image, referred to as the "ensemble-average" image. The diffractively scattered (i.e., ensemble-average) image, $I_{ea}(\vec{r})$, is mathematically expressed as the convolution of the source image $I_{src}(\vec{r})$ with a blurring scattering kernel, $G(\vec{r})$.
+In the average or ensemble-average regimes, diffractive scattering leads to the angular broadening of the source image, referred to as the "ensemble-average" image. 
+The diffractively scattered (i.e., ensemble-average) image, $I_{ea}(\vec{r})$, is mathematically expressed as the convolution of the source image $I_{src}(\vec{r})$ with a blurring scattering kernel, $G(\vec{r})$.
 
 ```math
 I_{ea}(\vec{r}) = I_{src}(\vec{r}) * G(\vec{r}).
 ```
 
-While the previous equation is defined in image space, `ScatteringOptics.jl` performs scattering in Fourier space, where the kernel can be described analytically. In radio interferometry, each set of measurements—called visibilities—obtained by a pair of antennas at different times and frequency segments, samples a Fourier component of the sky image. The source visibilities, $V_{src}(\vec{b})$, are related to the diffractively scattered (i.e., ensemble-average) visibilities, $V_{ea}(\vec{b})$, by the following relation:
+While the previous equation is defined in image space, `ScatteringOptics.jl` performs scattering in Fourier space, where the kernel can be described analytically. In radio interferometry, each set of measurements—called visibilities ($V_{obs}(\vec{b})$) obtained by a pair of antennas at different times and frequency segments, samples a Fourier component of the sky image $I_{sky}(\vec{r})$: 
+
+```math
+V_{obs}(\vec{b}) = \int \int I_{sky}(\vec{r}) \exp(2\pi \frac{\vec{r}\cdot\vec{b}}{D\lambda}) \, d\vec{r},
+```
+
+where $D$ is the Earth-screen distance and $\lambda$ is the observing wavelength.
+
+Using this measurement equation, the source visibilities, $V_{src}(\vec{b})$, are related to the diffractively scattered (i.e., ensemble-average) visibilities, $V_{ea}(\vec{b})$, by the following relation:
 
 ```math
 V_{ea}(\vec{b}) = V_{src}(\vec{b}) \exp \left[ -\frac{1}{2} D_\phi \left( \frac{\vec{b}}{1+M} \right) \right],
 ```
 
-in which $\vec{b}$ represents the baseline vector between observing stations. The magnification, $M = D / R$, is the ratio of the Earth-screen distance, $D$, to the screen-source distance, $R$. The convolving kernel responsible for the angular broadening is described by the spatial structure function of the phase screen, $D_\phi(\vec{r})$, which is based on a probabilistic model of the phase screen, $\phi(\vec{r})$. In general, $D_\phi(\vec{r})$ is chromatic, meaning it depends on the observing frequency (or wavelength)—the kernel size in the image domain is typically proportional to the square of the observing wavelength, $\lambda^2$.
+in which $\vec{b}$ represents the baseline vector between observing stations. The magnification, $M = D / R$, is the ratio of the Earth-screen distance, $D$, to the screen-source distance, $R$. Since the Fourier transform of $I_{src}(\vec{r}) * G(\vec{r})$ is given by $V_{src}(\vec{r}) F[G(\vec{r})]$, you can see that the second exponential term corresponds to the Fourier coefficient of the convolving scattering kernel $G(\vec{r})$. 
+
+The convolving kernel responsible for the angular broadening is described by the spatial structure function of the phase screen, $D_\phi(\vec{r})$, which is based on a probabilistic model of the phase screen, $\phi(\vec{r})$. In general, $D_\phi(\vec{r})$ is chromatic, meaning it depends on the observing frequency (or wavelength)—the kernel size in the image domain is typically proportional to the square of the observing wavelength, $\lambda^2$.
 
 In the average regime, refractive scattering introduces compact substructures into the diffractively scattered images. These compact substructures arise from phase gradients on the scattering screen, $\nabla \phi(\vec{r})$. The refractively scattered image, $I_{a}(\vec{r})$, is then given by:
 
@@ -50,7 +61,9 @@ I_{a}(\vec{r}) \approx I_{ea}(\vec{r} + r_F^2 \nabla \phi(\vec{r})),
 
 in which the Fresnel scale, $r_F = \sqrt{ \frac{DR}{D+R} \frac{\lambda}{2\pi} }$ is dependent on the observing wavelength $\lambda$ [1, 2]. 
 
-`ScatteringOptics.jl` implements three analytic probabilistic models for the phase screen $\phi(\vec{r})$, named *Dipole*, *Periodic* *Boxcar*, and *Von Mises* models in Psaltis et al. [3], providing the corresponding semi-analytic descriptions of the phase structure function $D_\phi(\vec{r})$. The default model is the Dipole model, known to be consistent with multi-frequency measurements of Sgr A* [4].
+`ScatteringOptics.jl` implements three analytic probabilistic models for the phase screen $\phi(\vec{r})$, named *Dipole*, *Periodic* *Boxcar*, and *Von Mises* models in Psaltis et al. [3], providing the corresponding semi-analytic descriptions of the phase structure function $D_\phi(\vec{r})$. From $D_\phi(\vec{r})$, the package computes the scattering kernel and resultant ensemble-average image. The fully scattered image with refractive substractures will further use a generative model to produce a random realization of $\phi(\vec{r})$, which is based on a stationary Gaussian random field following the power spectrum of the probabilistic model in Fourier domain. 
+
+The package uses the Dipole model as default, which was originally proposed by Johnson & Narayan et al. [1]. The Dipole model is known to be consistent with multi-frequency measurements of Sgr A* [4].
 
 
 ## References
