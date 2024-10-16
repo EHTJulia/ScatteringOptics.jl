@@ -146,11 +146,15 @@ model `psm`.
 
     # get the frequency and wavelength information
     meta_imap = metadata(imap)
-    ν_imap = hasproperty(meta_imap, :frequency) ? meta_imap.frequency : νref
+    is_freq = hasproperty(meta_imap, :frequency)
+    if (is_freq == false) & (νref == c_cgs)
+        @warn "the input image doesn't have a frequency information. νref=c_cgs will be assumed."
+    end
+    ν_imap = is_freq ? meta_imap.frequency : νref
     λ_cm = ν2λcm(ν_imap)
     
     # compute the ensemble-average image
-    skm = kernelmodel(sm, νref=ν_imap)
+    skm = kernelmodel(psm.sm, νref=ν_imap)
     imap_ea = convolve(imap, skm)
 
     # generate phase screen
