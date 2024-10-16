@@ -7,7 +7,7 @@ export AbstractScatteringModel
 #export Dϕ_exact
 export visibility_point_approx
 export visibility_point_exact
-export emsembleaverage
+export ensembleaverage
 
 
 """
@@ -156,16 +156,16 @@ using the exact formula of the phase structure function.
 end
 
 """
-    emsembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel)
+    ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel)
 """
-@inline function emsembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel=c_cgs)
+@inline function ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel=c_cgs)
     return convolved(skymodel, kernelmodel(sm, νref=νmodel))
 end
 
 """
-    emsembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+    ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
 """
-@inline function emsembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+@inline function ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
     # check if imap has a frequncy or time dimension
     if ndims(imap) > 2
         throw("The funciton doesn't support multi-dimensional images")

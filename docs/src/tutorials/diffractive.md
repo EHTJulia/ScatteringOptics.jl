@@ -105,15 +105,15 @@ f
 ```
 
 ## A quick shortcut
-The above tutorial is intentionally written in a low level. There is [emsembleaverage](@ref) method to do a quick shortcut by bypassing the kernel generation.
+The above tutorial is intentionally written in a low level. There is [ensembleaaverage](@ref) method to do a quick shortcut by bypassing the kernel generation.
 
 ```@example 1
 # scatter the image
-im_ea_2 = emsembleaverage(sm, im)
+im_ea_2 = ensembleaaverage(sm, im)
 
 # Plot source image
 imageviz(im_ea_2, size=(600, 500), colormap=:afmhot)
 ```
 
 Although this is handy, it may have an extra overhead to initialize `skm` which may slow down highly iterative processes. 
-[emsembleaverage](@ref) method also supports more general skymodels in `ComradeBase.AbstractModel` as an input instead of the image model.
+[ensembleaaverage](@ref) method also supports more general skymodels in `ComradeBase.AbstractModel` as an input instead of the image model.
