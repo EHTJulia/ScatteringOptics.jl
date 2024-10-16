@@ -7,6 +7,7 @@ export AbstractScatteringModel
 #export Dϕ_exact
 export visibility_point_approx
 export visibility_point_exact
+export ensembleaverage
 
 
 """
@@ -28,19 +29,28 @@ Ideally, a subtype of this abstract model should have a constructor only with th
 - `λ0::Number`: The reference wavelength for the scattering model in cm.
 - `D::Number`: The distance from the observer to the scattering screen in cm.
 - `R::Number`: The distance from the source to the scattering screen in cm.
+
 Furthermore the following parameters need to be precomputed.
 - `M::Number`: Magnification parameter, defined as D/R
-- `ζ0::Number`: 
-- `A::Number`:
-- `kζ::Number`
-- `Bmaj::Number`:
-- `Bmin::Number`:
-- `Qbar::Number`:
-- `C::Number`:
-- `Amaj::Number`:
-- `Amin::Number`:
-- `ϕ0::Number`:
+- `Qbar::Number`: The amplitudes of fluctuations. Given by `calc_Qbar(α, rin_cm, λ0_cm, M, θmaj_rad, θmin_rad)`
+- `C::Number`: The scaling factor of the power spectrum. Given by `calc_C(α, rin_cm, λ0_cm, Qbar)`
+- `D1maj::Number`: given by `calc_D1(α, Amaj, Bmaj)`
+- `D2maj::Number`: given by `calc_D2(α, Amaj, Bmaj)`
+- `D1min::Number`: given by `calc_D1(α, Amin, Bmin)`
+- `D2min::Number`: given by `calc_D2(α, Amin, Bmin)`
 
+**Optional Fields**
+Followings are currently not used by methods but may be useful to have. 
+- `A::Number`: Asymmetry parameter θmaj_mas/θmin_mas
+- `ζ0::Number`: Another asymmetry parameter. Given by calc_ζ0(A)
+- `ϕ0`:: position angle (measured from Dec axis in CCW) converted to a more traditional angle in radians measured from RA axis in CW
+- `Amaj::Number`: related to the asymmetric scaling of the kernel. given by `calc_Amaj(rin_cm, λ0_cm, M, θmaj_rad)`
+- `Amin::Number`: related to the asymmetric scaling of the kernel. given by `calc_Amin(rin_cm, λ0_cm, M, θmin_rad)`
+- `Bmaj::Number`: calc_Bmaj(α, ϕ0, Pϕfunc, B_prefac)
+- `Bmin::Number`: calc_Bmin(α, ϕ0, Pϕfunc, B_prefac)
+
+**Mandatory Method**
+- `Pϕ(sm::ScatteringModel, ϕ)`: Probability Distribution for the wondering of the direction of the magnetic field centered at orientation ϕ0.
 """
 abstract type AbstractScatteringModel end
 
@@ -143,4 +153,32 @@ using the exact formula of the phase structure function.
 @inline function visibility_point_exact(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
     b = (u, v) .* (λ / (1 + sm.M))
     return exp(-0.5 * Dϕ_exact(sm, λ, b...))
+end
+
+"""
+    ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel)
+"""
+@inline function ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel=c_cgs)
+    return convolved(skymodel, kernelmodel(sm, νref=νmodel))
+end
+
+"""
+    ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+"""
+@inline function ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+    # check if imap has a frequncy or time dimension
+    if ndims(imap) > 2
+        throw("The funciton doesn't support multi-dimensional images")
+    end
+
+    # get the frequency and wavelength information
+    meta_imap = metadata(imap)
+    is_freq = hasproperty(meta_imap, :frequency)
+    if (is_freq == false) & (νref == c_cgs)
+        @warn "the input image doesn't have a frequency information. νref=c_cgs will be assumed."
+    end
+    ν_imap = is_freq ? meta_imap.frequency : νref
+    
+    # compute the ensemble-average image
+    return convolve(imap, kernelmodel(sm, νref=ν_imap))
 end

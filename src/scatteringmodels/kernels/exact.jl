@@ -24,7 +24,9 @@ function radialextent(skm::ExactScatteringKernel{T,S,N}) where {T,S,N}
     return convert(T, 5) * calc_θrad(skm.sm.θmaj) * (ν2λcm(νref) / skm.sm.λ0)^2
 end
 
-@inline function visibility_point(skm::ExactScatteringKernel{T,S,N}, u, v, time, freq) where {T,S,N}
-    ν = iszero(freq) ? skm.νref : freq
-    return visibility_point_exact(skm.sm, ν2λcm(ν), u, v) + zero(T)im
+@inline function visibility_point(skm::ExactScatteringKernel{T,S,N}, p) where {T,S,N}
+    U = p.U
+    V = p.V
+    ν = :Fr in keys(p) ? p.Fr : skm.νref
+    return visibility_point_exact(skm.sm, ν2λcm(ν), U, V) + zero(T)im
 end

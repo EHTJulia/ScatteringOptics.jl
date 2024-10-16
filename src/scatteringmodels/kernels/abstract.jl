@@ -15,6 +15,5 @@ As a result a user only needs to implement the following methods.
 """
 abstract type AbstractScatteringKernel{T} <: AbstractModel end
 @inline flux(::AbstractScatteringKernel{T}) where {T} = one(T)
-@inline isprimitive(::Type{<:AbstractScatteringKernel}) = IsPrimitive()
 @inline visanalytic(::Type{<:AbstractScatteringKernel}) = IsAnalytic()
 @inline imanalytic(::Type{<:AbstractScatteringKernel}) = NotAnalytic()
