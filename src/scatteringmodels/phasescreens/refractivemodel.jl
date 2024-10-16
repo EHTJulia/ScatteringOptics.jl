@@ -3,6 +3,7 @@ export RefractivePhaseScreen
 export phase_screen
 export wrapped_grad
 export image_scatter
+export generate_gaussian_noise
 
 """
     RefractivePhaseScreen(sm, Nx, Ny, dx, dy, Vx_km_per_s=0.0, Vy_km_per_s=0.0)
@@ -51,6 +52,7 @@ The fourier space 2D noise_screen (defaults to gaussian noise screen if not give
     if isnothing(noise_screen)
         noise_screen = generate_gaussian_noise(psm)
     end
+
     # generate phase screen from power law and noise screen
     cns = ContinuousNoiseSignal(psm.signal)
     screengen = PSNoiseGenerator(psm.Q, cns)
@@ -101,10 +103,16 @@ Implements full ISM scattering on an unscattered Comrade skymodel intensity map 
 refractive phase screen generation are specific to the scattering parameters defined in the AbstractPhaseScreen
 model `psm`. The observing wavelength `λ_cm` is required.
 """
-@inline function image_scatter(psm::AbstractPhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs)
+@inline function image_scatter(psm::AbstractPhaseScreen, imap, λ_cm::Number; νref::Number = c_cgs, noise_screen=nothing)
+    # generate noise screen if not provided
+    if isnothing(noise_screen)
+        noise_screen = generate_gaussian_noise(psm)
+    end
 
-    ϕ = phase_screen(psm, λ_cm)
+    # generate phase screen
+    ϕ = phase_screen(psm, λ_cm; noise_screen=noise_screen)
 
+    # derive the gradient
     gradϕ_x, gradϕ_y = wrapped_grad(ϕ, psm.dx, psm.dy) 
     
     sm = psm.sm
