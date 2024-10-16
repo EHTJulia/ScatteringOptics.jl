@@ -5,6 +5,9 @@ export wrapped_grad
 export image_scatter
 export generate_gaussian_noise
 
+
+abstract type AbstractPhaseScreen end
+
 """
     RefractivePhaseScreen(sm, Nx, Ny, dx, dy, Vx_km_per_s=0.0, Vy_km_per_s=0.0)
 
@@ -19,8 +22,6 @@ average image.
 
 `Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
 """
-abstract type AbstractPhaseScreen end
-
 struct RefractivePhaseScreen{S, T <: Number, N<:AbstractNoiseSignal, P <: AbstractPowerSpectrumModel} <: AbstractPhaseScreen
     sm::S
     dx::T 
@@ -36,6 +37,20 @@ struct RefractivePhaseScreen{S, T <: Number, N<:AbstractNoiseSignal, P <: Abstra
         signal = NoiseSignal((Nx, Ny))
         return new{S, T, NoiseSignal, typeof(Q)}(sm, dx, dy, signal, Q)
     end
+end
+
+"""
+    RefractivePhaseScreen(sm, im, Vx_km_per_s=0.0, Vy_km_per_s=0.0)
+
+- `sm <: AbstractScatteringModel`
+- `im <: IntensityMap`
+`Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
+"""
+function RefractivePhaseScreen(sm::S, im::IntensityMap, Vx_km_per_s=0.0::T, Vy_km_per_s=0.0::T) where {S, T}
+    nx, ny = size(im)[1:2]
+    dx = im.X[2]-im.X[1]  # pixel size in radians
+    dy = im.Y[2]-im.Y[1]
+    return = RefractivePhaseScreen(sm, nx, ny, dx, dy)
 end
 
 StationaryRandomFields.generate_gaussian_noise(psm::AbstractPhaseScreen; rng = Random.default_rng()) = generate_gaussian_noise(psm.signal; rng = rng)
