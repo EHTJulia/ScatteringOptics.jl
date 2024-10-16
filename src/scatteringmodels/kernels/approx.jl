@@ -26,8 +26,9 @@ function radialextent(skm::ApproximatedScatteringKernel{T,S,N}) where {T,S,N}
 end
 
 @inline function visibility_point(skm::ApproximatedScatteringKernel{T,S,N}, p) where {T,S,N}
-    (;U, V, Ti, Fr) = p
-    ν = iszero(Fr) ? skm.νref : Fr
+    U = p.U
+    V = p.V
+    ν = :Fr in keys(p) ? p.Fr : skm.νref
     return visibility_point_approx(skm.sm, ν2λcm(ν), U, V) + zero(T)im
 end
 
