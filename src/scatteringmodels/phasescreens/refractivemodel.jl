@@ -114,7 +114,7 @@ model `psm`. The observing wavelength `λ_cm` is required.
     imap_ea = convolve(imap, skm)
     rxgrid, rygrid = (imap_ea.X, imap_ea.Y) .* sm.D
 
-    interp_Iea = extrapolate(scale(interpolate(imap_ea.data.data, BSpline(Linear())), (rxgrid, rygrid)), 0.)
+    interp_Iea = extrapolate(scale(interpolate(imap_ea, BSpline(Linear())), (rxgrid, rygrid)), 0.)
     interp_gradϕx = extrapolate(scale(interpolate(gradϕ_x, BSpline(Linear())), (rxgrid, rygrid)), Periodic())
     interp_gradϕy = extrapolate(scale(interpolate(gradϕ_y, BSpline(Linear())), (rxgrid, rygrid)), Periodic())
 
