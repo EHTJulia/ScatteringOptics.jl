@@ -27,6 +27,7 @@ makedocs(;
         "Home" => "index.md",
         "Introduction" => "introduction.md",
         "Brief Introduction to interstellar scattering" => "math.md",
+        "Benchmarks" => "benchmarks.md,
         "Tutorials" => TUTORIALS,
         "ScateringOptics.jl API" => "api.md",
     ],
