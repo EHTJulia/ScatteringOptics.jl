@@ -71,7 +71,7 @@ for item in contents
 end
 
 # manually clean up build 
-clean_md_output = isnothing(format.clean_md_output) ? deploy_decision.all_ok : format.clean_md_output
+clean_md_output = deploy_decision.all_ok
 if clean_md_output
     @info "make.jl: manually cleaning up Markdown output."
     rm(mddir; recursive = true)
