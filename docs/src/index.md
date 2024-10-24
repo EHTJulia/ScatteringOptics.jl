@@ -12,7 +12,7 @@ hero:
       link: /introduction
     - theme: alt
       text: Tutorials
-      link: /tutorials/diffractive
+      link: /diffractive
     - theme: alt
       icon: github
       text: View on Github

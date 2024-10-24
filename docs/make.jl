@@ -6,12 +6,12 @@ DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); 
 
 TUTORIALS = [
     "Getting Started" => [
-        "tutorials/diffractive.md",
-        "tutorials/refractive.md",
+        "diffractive.md",
+        "refractive.md",
     ],
     "Advanced" =>[
-        "tutorials/nondefaultmodels.md",
-        "tutorials/custommodels.md",
+        "nondefaultmodels.md",
+        "custommodels.md",
     ],
 ]
 
