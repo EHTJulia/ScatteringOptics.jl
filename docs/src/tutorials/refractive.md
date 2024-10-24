@@ -106,3 +106,13 @@ im_ga = scatter_image(sm, im_g; rng=rng, νref=νref)
 # Plot source image
 imageviz(im_ga, size=(600, 500), colormap=:afmhot)
 ```
+
+## Save the tutorial data 
+The output images may be saved to fits files. Here, we save the images generated in the tutorial above.
+
+```@example 1
+# Average image of provided EHT fits file
+save_fits("data/im_a.fits", im_ea)
+# Scattered average image of Gaussian model
+save_fits("data/im_ga.fits", im_gea)
+```

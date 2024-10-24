@@ -117,3 +117,28 @@ imageviz(im_ea_2, size=(600, 500), colormap=:afmhot)
 
 Although this is handy, it may have an extra overhead to initialize `skm` which may slow down highly iterative processes. 
 [ensembleaverage](@ref) method also supports more general skymodels in `ComradeBase.AbstractModel` as an input instead of the image model.
+
+
+## Save the tutorial data 
+The output images may be saved to fits files. Here, we save the images generated in the tutorial above.
+
+```@example 1
+# Ensemble average image of provided EHT fits file
+save_fits("data/im_ea.fits", im_ea)
+# Gaussian model and its scattered ensemble average image
+save_fits("data/im_g.fits", im_g)
+save_fits("data/im_gea.fits", im_gea)
+# Scattering kernel
+save_fits("data/im_skm.fits", im_skm)
+```
+
+We also save the kernel visibilities calculated in the tutorial.
+```@example 1
+using HDF5
+
+# Save the computed kernel data
+h5open("output_data.h5", "w") do file
+    file["u"] = collect(u)  
+    file["vis"] = vis       
+end
+```
