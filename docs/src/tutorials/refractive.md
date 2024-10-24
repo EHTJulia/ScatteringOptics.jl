@@ -112,7 +112,7 @@ The output images may be saved to fits files. Here, we save the images generated
 
 ```@example 1
 # Average image of provided EHT fits file
-save_fits("data/im_a.fits", im_ea)
+save_fits("data/im_a.fits", im_a)
 # Scattered average image of Gaussian model
-save_fits("data/im_ga.fits", im_gea)
+save_fits("data/im_ga.fits", im_ga)
 ```
