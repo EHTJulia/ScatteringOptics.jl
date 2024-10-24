@@ -18,10 +18,10 @@ TUTORIALS = [
 makedocs(;
     modules=[ScatteringOptics],
     authors="Anna Tartaglia, Kazunori Akiyama",
-    repo="https://github.com/EHTJulia/ScatteringOptics.jl/blob/{commit}{path}#{line}",
+    repo="github.com/EHTJulia/ScatteringOptics.jl/blob/{commit}{path}#{line}",
     sitename="ScatteringOptics.jl",
     format = MarkdownVitepress(
-        repo = "https://github.com/EHTJulia/ScatteringOptics.jl",
+        repo = "github.com/EHTJulia/ScatteringOptics.jl",
     ),
     pages=[
         "Home" => "index.md",
@@ -32,6 +32,8 @@ makedocs(;
         "ScateringOptics.jl API" => "api.md",
     ],
 )
+
+cp("./build/.documenter/data", "./build/final_site/")
 
 deploydocs(;
     repo="github.com/EHTJulia/ScatteringOptics.jl",

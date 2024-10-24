@@ -7,7 +7,7 @@ CurrentModule = ScatteringOptics
 This page describes how to simulate diffractive scattering.
 
 ## Loading your image
-Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](assets/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
+Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
 
 ```@example 1
 using CairoMakie
@@ -17,7 +17,7 @@ using VLBISkyModels
 # using Comrade
 
 # Load a image model from an image FITS file
-im = load_fits("assets/jason_mad_eofn.fits", IntensityMap)
+im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
 
 # Plot source image
 imageviz(im, size=(600, 500), colormap=:afmhot)
@@ -123,23 +123,23 @@ Although this is handy, it may have an extra overhead to initialize `skm` which 
 The output images may be saved to fits files. Here, we save the images generated in the tutorial above. 
 ```@example 1
 # Ensemble average image of provided EHT fits file
-save_fits("assets/im_ea.fits", im_ea)
+save_fits("data/im_ea.fits", im_ea)
 # Gaussian model and its scattered ensemble average image
-save_fits("assets/im_g.fits", im_g)
-save_fits("assets/im_gea.fits", im_gea)
+save_fits("data/im_g.fits", im_g)
+save_fits("data/im_gea.fits", im_gea)
 # Scattering kernel
-save_fits("assets/im_skm.fits", im_skm)
+save_fits("data/im_skm.fits", im_skm)
 ```
-You can download generated files from here ([im_ea.fits](assets/im_ea.fits), [im_g.fits](assets/im_ea.fits), [im_gea.fits](assets/im_gea.fits), [im_skm.fits](assets/im_skm.fits),)
+You can download generated files from here ([im_ea.fits](data/im_ea.fits), [im_g.fits](data/im_ea.fits), [im_gea.fits](data/im_gea.fits), [im_skm.fits](data/im_skm.fits),)
 
 We also save the kernel visibilities calculated in the tutorial. 
 ```@example 1
 using HDF5
 
 # Save the computed kernel data
-h5open("assets/kernel.h5", "w") do file
+h5open("data/kernel.h5", "w") do file
     file["u"] = collect(u)  
     file["vis"] = vis       
 end
 ```
-You can find the generated file from [here](assets/kernel.h5).
+You can find the generated file from [here](data/kernel.h5).
