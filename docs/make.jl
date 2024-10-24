@@ -35,8 +35,7 @@ else
     deploy_decision = format.deploy_decision
 end
 
-# build documentation
-makedocs(;
+makedocs_kwargs = (
     modules=[ScatteringOptics],
     authors="Anna Tartaglia, Kazunori Akiyama",
     repo="github.com/EHTJulia/ScatteringOptics.jl/blob/{commit}{path}#{line}",
@@ -52,8 +51,12 @@ makedocs(;
     ],
 )
 
+# build documentation
+makedocs(; makedocs_kwargs...)
+
 # shortcut to some directories
-builddir = "./build"
+doc = Documenter.Document(; makedocs_kwargs...)
+builddir = isabspath(doc.user.build) ? doc.user.build : joinpath(doc.user.root, doc.user.build)
 mddir = joinpath(builddir, format.md_output_path)
 fsdir = joinpath(builddir, "final_site")
 
