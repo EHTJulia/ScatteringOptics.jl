@@ -7,7 +7,7 @@ CurrentModule = ScatteringOptics
 This page describes how to simulate diffractive scattering.
 
 ## Loading your image
-Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](docs/src/assets/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
+Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](../assets/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
 
 ```@example 1
 using CairoMakie
@@ -17,7 +17,7 @@ using VLBISkyModels
 # using Comrade
 
 # Load a image model from an image FITS file
-im = load_fits("docs/src/assets/jason_mad_eofn.fits", IntensityMap)
+im = load_fits("../assets/jason_mad_eofn.fits", IntensityMap)
 
 # Plot source image
 imageviz(im, size=(600, 500), colormap=:afmhot)
@@ -124,12 +124,12 @@ The output images may be saved to fits files. Here, we save the images generated
 
 ```@example 1
 # Ensemble average image of provided EHT fits file
-save_fits("docs/src/assets/im_ea.fits", im_ea)
+save_fits("../assets/im_ea.fits", im_ea)
 # Gaussian model and its scattered ensemble average image
-save_fits("docs/src/assets/im_g.fits", im_g)
-save_fits("docs/src/assets/im_gea.fits", im_gea)
+save_fits("../assets/im_g.fits", im_g)
+save_fits("../assets/im_gea.fits", im_gea)
 # Scattering kernel
-save_fits("docs/src/assets/im_skm.fits", im_skm)
+save_fits("../assets/im_skm.fits", im_skm)
 ```
 
 We also save the kernel visibilities calculated in the tutorial.
@@ -137,7 +137,7 @@ We also save the kernel visibilities calculated in the tutorial.
 using HDF5
 
 # Save the computed kernel data
-h5open("docs/src/assets/kernel.h5", "w") do file
+h5open("../assets/kernel.h5", "w") do file
     file["u"] = collect(u)  
     file["vis"] = vis       
 end

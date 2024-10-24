@@ -6,7 +6,7 @@ CurrentModule = ScatteringOptics
 Another feature of `ScatteringOptics.jl` is simulating refractive scattering. This page gives a tutorial to simulate refractive scattering effects. 
 
 ## Loading your image
-Again, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](docs/src/assets/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
+Again, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](../assets/jason_mad_eofn.fits). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
 
 ```@example 1
 using CairoMakie
@@ -16,7 +16,7 @@ using VLBISkyModels
 # using Comrade
 
 # Load a image model from an image FITS file
-im = load_fits("docs/src/assets/jason_mad_eofn.fits", IntensityMap)
+im = load_fits("../assets/jason_mad_eofn.fits", IntensityMap)
 
 # Frequency of the image
 νref = metadata(im).frequency
@@ -112,7 +112,7 @@ The output images may be saved to fits files. Here, we save the images generated
 
 ```@example 1
 # Average image of provided EHT fits file
-save_fits("docs/src/assets/im_a.fits", im_a)
+save_fits("../assets/im_a.fits", im_a)
 # Scattered average image of Gaussian model
-save_fits("docs/src/assets/im_ga.fits", im_ga)
+save_fits("../assets/im_ga.fits", im_ga)
 ```
