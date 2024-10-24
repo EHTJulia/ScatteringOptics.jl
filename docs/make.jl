@@ -33,7 +33,7 @@ makedocs(;
     ],
 )
 
-cp("./build/.documenter/data", "./build/final_site/")
+cp("./build/.documenter/data", "./build/final_site/data", force=true)
 
 deploydocs(;
     repo="github.com/EHTJulia/ScatteringOptics.jl",
