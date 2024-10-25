@@ -107,7 +107,7 @@ im_ga = scatter_image(sm, im_g; rng=rng, νref=νref)
 imageviz(im_ga, size=(600, 500), colormap=:afmhot)
 ```
 
-## Save the tutorial data 
+## Save the tutorial data and do some unit tests
 The output images may be saved to fits files. Here, we save the images generated in the tutorial above.
 
 ```@example 1
@@ -118,3 +118,21 @@ save_fits("data/im_ga.fits", im_ga)
 ```
 
 The saved files are available here ([im_a.fits](data/im_a.fits), [im_ga.fits](data/im_a.fits); please open in a new window. otherwise you will get 404 error).
+
+## Unit Tests
+Julia codes in our tutorial are automatically run at the compilation of the documentation at GitHub Workflow, and therefore those files are kept produced with the corresponding version of the package. For your own unit tests, you can compare fits files created in your local enviroment with these reference data. For instance, for the images,
+
+```julia
+im_a_ref = load_fits("downloaded im_a.fits", IntensityMap)
+
+# take differences
+Δim_a = im_a .- im_a_ref
+
+# compute a fractional error map
+fim_a = Δim_a ./ (im_a_ref .+ 1e-10)
+
+# plot the error map
+imageviz(abs.(fim_a))
+```
+
+In our tests, which compare images produced at GitHub (using ubuntu and x86 architecture) and a computer of the developer members (macOS with Apple Silicon M3 architecture), the maximum and mean fractional errors were $\sim 10^{-8}$ (found at the edge of images where the intensity is almost 0) and $\sim 10^{-13}$, respectively. This is a sufficient accuracy for the vast majority (if not all!) of the analysis done in the EHT and broader radio astronomy communities.

@@ -15,13 +15,27 @@ ScatteringModel == DipoleScatteringModel
 
 Nevertheless, the package implements two other scattering models --- *von Mises* and *periodic Boxcar* models in Psaltis et al. [3]. You can use then by
 
-```
-# von Mises
-vmsm = vonMisesScatteringModel()
+:::tabs
 
-# Periodic Boxcar
+== Dipole Model (Default)
+
+```@example 1
+sm = DipoleScatteringModel()
+```
+
+== von Mises Model
+
+```@example 1
+vmsm = vonMisesScatteringModel()
+```
+
+== Periodic Boxcar Model
+
+```@example 1
 pbsm = PeriodicBoxCarScatteringModel()
 ```
+
+:::
 
 Users also can define a custom scattering model. Please see [Define Your Own Scattering Model](@ref).
 

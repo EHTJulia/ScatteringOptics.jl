@@ -119,7 +119,7 @@ Although this is handy, it may have an extra overhead to initialize `skm` which 
 [ensembleaverage](@ref) method also supports more general skymodels in `ComradeBase.AbstractModel` as an input instead of the image model.
 
 
-## Save the tutorial data 
+## Save the tutorial data
 The output images may be saved to fits files. Here, we save the images generated in the tutorial above. 
 ```@example 1
 # Ensemble average image of provided EHT fits file
@@ -130,7 +130,7 @@ save_fits("data/im_gea.fits", im_gea)
 # Scattering kernel
 save_fits("data/im_skm.fits", im_skm)
 ```
-You can download generated files from here ([im_ea.fits](data/im_ea.fits), [im_g.fits](data/im_ea.fits), [im_gea.fits](data/im_gea.fits), [im_skm.fits](data/im_skm.fits); please open in a new window. otherwise you will get 404 error)
+You can download generated files from here ([im_ea.fits](data/im_ea.fits), [im_g.fits](data/im_ea.fits), [im_gea.fits](data/im_gea.fits), [im_skm.fits](data/im_skm.fits); please open in a new window. otherwise you will get 404 error).
 
 We also save the kernel visibilities calculated in the tutorial. 
 ```@example 1
@@ -143,3 +143,6 @@ h5open("data/kernel.h5", "w") do file
 end
 ```
 You can find the generated file from [here](data/kernel.h5) (please open in a new window. otherwise you will get 404 error). Additionally, for accuracy and speed evaluations of the scattering kernel, see [Benchmarks](@ref).
+
+## Unit Tests
+You can do your own unit tests by comparing your own outputs with those created in the website. Please see at the end of [Simulate Refractive Scattering](@ref) for a quick example.
