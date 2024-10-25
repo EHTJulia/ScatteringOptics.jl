@@ -6,7 +6,7 @@ CurrentModule = ScatteringOptics
 Another feature of `ScatteringOptics.jl` is simulating refractive scattering. This page gives a tutorial to simulate refractive scattering effects. 
 
 ## Loading your image
-Again, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from <a href="data/jason_mad_eofn.fits" target="_blank">here</a>. This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2014](https://ui.adsabs.harvard.edu/abs/2014IAUS..303..298D).
+Again, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits) (please open in a new window. otherwise you will get 404 error). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2020](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.4168D/abstract).
 
 ```@example 1
 using CairoMakie
@@ -117,4 +117,4 @@ save_fits("data/im_a.fits", im_a)
 save_fits("data/im_ga.fits", im_ga)
 ```
 
-The saved files are available here (<a href="data/im_a.fits" target="_blank">im_a.fits</a>, <a href="data/im_ga.fits" target="_blank">im_ga.fits</a>)
+The saved files are available here ([im_a.fits](data/im_a.fits), [im_ga.fits](data/im_a.fits); please open in a new window. otherwise you will get 404 error).

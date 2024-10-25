@@ -7,7 +7,7 @@ CurrentModule = ScatteringOptics
 This page describes how to simulate diffractive scattering.
 
 ## Loading your image
-Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from <a href="data/jason_mad_eofn.fits" target="_blank">here</a>. This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2014](https://ui.adsabs.harvard.edu/abs/2014IAUS..303..298D).
+Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits) (please open in a new window. otherwise you will get 404 error). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2014](https://ui.adsabs.harvard.edu/abs/2014IAUS..303..298D).
 
 ```@example 1
 using CairoMakie
@@ -130,7 +130,7 @@ save_fits("data/im_gea.fits", im_gea)
 # Scattering kernel
 save_fits("data/im_skm.fits", im_skm)
 ```
-You can download generated files from here (<a href="data/im_ea.fits" target="_blank">im_ea.fits</a>, <a href="data/im_g.fits" target="_blank">im_g.fits</a>, <a href="data/im_gea.fits" target="_blank">im_gea.fits</a>, and <a href="data/im_skm.fits" target="_blank">im_skm.fits</a>)
+You can download generated files from here ([im_ea.fits](data/im_ea.fits), [im_g.fits](data/im_ea.fits), [im_gea.fits](data/im_gea.fits), [im_skm.fits](data/im_skm.fits); please open in a new window. otherwise you will get 404 error)
 
 We also save the kernel visibilities calculated in the tutorial. 
 ```@example 1
@@ -142,4 +142,4 @@ h5open("data/kernel.h5", "w") do file
     file["vis"] = vis       
 end
 ```
-You can find the generated file from <a href="data/kernel.h5" target="_blank">here</a>.
+You can find the generated file from [here](data/kernel.h5) (please open in a new window. otherwise you will get 404 error).

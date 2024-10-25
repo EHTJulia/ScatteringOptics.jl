@@ -10,11 +10,11 @@ With Julia's speed improvements, the `ScatteringOptics.jl` scattering kernel loa
 
 ![](assets/speed_dipole.png) ![](assets/speed_boxcar.png) ![](assets/speed_vonmises.png)
 
-With this significant speed up, the Julia implementation allows for the joint modeling of scattering parameters and reconstructed images in self-consistent way. 
+With this significant speed up, the Julia implementation paves the pathway for the joint modeling of scattering parameters and reconstructed images in self-consistent way. 
 
 ## Consistency
 
-Our scattering kernel produces visibilities that are consistent with those computed by `eht-imaging` across all 3 kernel models as well as the range of standard observing wavelengths in radio astronomy. Below, we demonstrate this by plotting the Dipole kernel over the Fourier space major and minor axis for both the Julia and Python implementations in one plot per observing wavelength. The lines completely overlap, indicating complete consistency in results. All fractional errors between the two implementations range on the order of $10^{-6}$ and $10^{-7}$ (Figure \ref{kernelerrors}), which is well under scattering kernel uncertainty limits.
+Our scattering kernel produces visibilities that are consistent with those computed by `eht-imaging` across all 3 kernel models as well as the range of standard observing wavelengths in radio astronomy. Below, we demonstrate this by plotting the Dipole kernel over the Fourier space major and minor axis for both the Julia and Python implementations in one plot per observing wavelength. The lines completely overlap, indicating complete consistency in results. All fractional errors between the two implementations range on the order of $10^{-6}$ and $10^{-7}$, which is well under scattering kernel uncertainty limits.
 
 ![](assets/kernel87.png) ![](assets/kernel36.png)
 
