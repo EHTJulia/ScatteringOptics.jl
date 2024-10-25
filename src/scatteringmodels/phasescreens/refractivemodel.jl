@@ -86,7 +86,7 @@ The fourier space 2D noise_screen (defaults to gaussian noise screen if not give
     FOVx = psm.dx * nx
     FOVy = psm.dy * ny
 
-    return generate_signal_noise(screengen; noise_screen=noise_screen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy)  .* nx .* ny
+    return generate_signal_noise(screengen, noise_screen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy)  .* nx .* ny
 end
 
 """
