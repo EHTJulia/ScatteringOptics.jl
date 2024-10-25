@@ -142,4 +142,4 @@ h5open("data/kernel.h5", "w") do file
     file["vis"] = vis       
 end
 ```
-You can find the generated file from [here](data/kernel.h5) (please open in a new window. otherwise you will get 404 error).
+You can find the generated file from [here](data/kernel.h5) (please open in a new window. otherwise you will get 404 error). Additionall, for accuracy and speed eveluations of the scattering kernel, see [Benchmarks](@ref).
