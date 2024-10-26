@@ -1302,9 +1302,7 @@ version = "0.6.43"
 
 [[deps.ScatteringOptics]]
 deps = ["ComradeBase", "DocStringExtensions", "EHTUtils", "FFTW", "HypergeometricFunctions", "Interpolations", "NonlinearSolve", "QuadGK", "Random", "SpecialFunctions", "StationaryRandomFields", "VLBISkyModels"]
-git-tree-sha1 = "fc2ebeb1ca1b58d1817ea0deb1e6790f80143bc2"
-repo-rev = "main"
-repo-url = ".."
+git-tree-sha1 = "42d4ff56b72d15ddd737b4975d68a5fa8bf852c4"
 uuid = "e317c96f-4a6f-4ae9-8016-294fb9063ff5"
 version = "0.1.4"
 
