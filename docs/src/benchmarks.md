@@ -33,10 +33,10 @@ Our scattering kernel produces visibilities that are consistent with those compu
 
 :::tabs
 
-== Dipole Model's Kernel at 0.87 mm
+== Dipole Model Kernel at 0.87 mm
 
 ![](assets/kernel87.png)
 
-== Dipole Model's Kernel at 3.6 cm
+== Dipole Model Kernel at 3.6 cm
 
 ![](assets/kernel36.png)
