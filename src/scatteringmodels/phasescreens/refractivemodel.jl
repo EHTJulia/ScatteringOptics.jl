@@ -132,8 +132,9 @@ model `psm`.
         imap::IntensityMap;
         νref::Number = c_cgs,
         noise_screen=nothing,
-        rng = Random.default_rng())
-
+        rng = Random.default_rng(),
+        use_approx::Bool=true,
+)
     # generate noise screen if not provided
     if isnothing(noise_screen)
         noise_screen = generate_gaussian_noise(psm; rng=rng)
@@ -155,7 +156,7 @@ model `psm`.
     
     # compute the ensemble-average image
     sm = psm.sm
-    skm = kernelmodel(sm, νref=ν_imap)
+    skm = kernelmodel(sm, νref=ν_imap, use_approx=use_approx)
     imap_ea = convolve(imap, skm)
 
     # generate phase screen
@@ -197,8 +198,9 @@ end
     νref::Number = c_cgs,
     Vx_km_per_s=0.0, 
     Vy_km_per_s=0.0,
-    rng = Random.default_rng()
+    rng = Random.default_rng(),
+    use_approx::Bool=true,
 )
     rps = refractivephasescreen(sm, imap, Vx_km_per_s, Vy_km_per_s)
-    return scatter_image(rps, imap; νref=νref, rng=rng)
+    return scatter_image(rps, imap; νref=νref, rng=rng, use_approx=use_approx)
 end
