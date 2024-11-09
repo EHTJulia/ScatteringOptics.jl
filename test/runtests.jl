@@ -1,10 +1,9 @@
-using BenchmarkTools
-using HDF5
 using ScatteringOptics
 using StableRNGs
+using Statistics
 using Test
 using VLBISkyModels
 
 @testset "ScatteringOptics.jl" begin
-    # Write your tests here.
+    include("scatteringmodels.jl")
 end
