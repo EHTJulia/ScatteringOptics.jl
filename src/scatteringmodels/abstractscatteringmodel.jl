@@ -156,16 +156,34 @@ using the exact formula of the phase structure function.
 end
 
 """
-    ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel)
+    ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel; use_approx=true)
+
+Compute the ensemble-average image of the input skymodel `skymodel` using the scattering model `sm`.
+
+# Arguments
+- `sm::AbstractScatteringModel`: An instance of the scattering model.
+- `skymodel::AbstractModel`: An instance of `AbstractModel`.
+- `νmodel::Number=c_cgs`: The frequency in Hz to compute the scattering kernel.
+- `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
-@inline function ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel=c_cgs)
-    return convolved(skymodel, kernelmodel(sm, νref=νmodel))
+@inline function ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel; use_approx::Bool=true)
+    return convolved(skymodel, kernelmodel(sm, νref=νmodel; use_approx=use_approx))
 end
 
 """
-    ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+    ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs, use_approx=true)
+
+Compute the ensemble-average image of the input intensity map `imap` using the scattering model `sm`.
+The frequency of the image, if exists in its metadata, is used to compute the scattering kernel. 
+Otherwise `νref` is used to compute the scattering kernel.
+
+# Arguments
+- `sm::AbstractScatteringModel`: An instance of the scattering model.
+- `imap::IntensityMap`: An instance of the intensity map.
+- `νref::Number=c_cgs`: The frequency in Hz to compute the scattering kernel.
+- `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
-@inline function ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs)
+@inline function ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs, use_approx::Bool=true)
     # check if imap has a frequncy or time dimension
     if ndims(imap) > 2
         throw("The funciton doesn't support multi-dimensional images")
@@ -180,5 +198,5 @@ end
     ν_imap = is_freq ? meta_imap.frequency : νref
     
     # compute the ensemble-average image
-    return convolve(imap, kernelmodel(sm, νref=ν_imap))
+    return convolve(imap, kernelmodel(sm; νref=ν_imap, use_approx=use_approx))
 end
