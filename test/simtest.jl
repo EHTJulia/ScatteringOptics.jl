@@ -1,3 +1,8 @@
+#This particular test script conduct basic tests to directly compare outputs with reference data in `data` directory, which was created by the script `data/datagen.jl`.
+
+
+@info "End-to-end test using reference data"
+
 # scattering kernel model labels
 sm_labels = ["DP", "VM", "BC"]
 kernel_labels = ["Apprx"]
@@ -39,7 +44,7 @@ for i_sm=1:3
     smlabe = sm_labels[i_sm]
     kernellabel = kernel_labels[1]
 
-    @info "Scattering model: $(smlabe), Kernel: $(kernellabel)"
+    @info "  Testing Scattering model: $(smlabe), Kernel: $(kernellabel)"
     
     # create scattering kernel model
     kernel = kernelmodel(sm; νref=νref, use_approx=use_approx)

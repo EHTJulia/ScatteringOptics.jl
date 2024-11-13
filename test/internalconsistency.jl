@@ -1,6 +1,6 @@
-"""
-This particular test script conduct basic tests for internal consistency of functions, which does not rely on a secific input source model.
-"""
+#This particular test script conduct basic tests for internal consistency of functions, 
+#which does not rely on a secific input source model.
+
 # Check initialization of the scatteiring models
 sm_def = ScatteringModel()
 sm_d = DipoleScatteringModel()
@@ -12,7 +12,7 @@ sm_b = PeriodicBoxCarScatteringModel()
 @test sm_def != sm_b
 
 # Sanity Check for the visibility point functions
-
+@info "Testing visibility point functions"
 #   Test 1: the zero baseline amplitude should be 1 at whatever point
 stablerng = StableRNG(1)
 λ_list = rand(stablerng, 100)
@@ -36,6 +36,7 @@ for sm in [sm_d, sm_v, sm_b]
 end
 
 # Sanity Check for scattering kernel functions
+@info "Testing scattering kernel functions"
 stablerng = StableRNG(123)
 νref = 230e9
 λcm = ScatteringOptics.ν2λcm(230e9)
@@ -56,6 +57,7 @@ for sm in [sm_d, sm_v, sm_b]
 end
 
 # Sanity Check for refractive scattering effects
+@info "Testing refractive scattering functions"
 im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
 νref = metadata(im).frequency
 for sm in [sm_d, sm_v, sm_b]
