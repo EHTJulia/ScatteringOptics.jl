@@ -16,14 +16,3 @@ Scattering has become increasingly important in high-angular-resolution studies 
 In both scenarios, the observed interferometric data are influenced by both diffractive and refractive scattering effects.
 
 For a more detailed description of the scattering models implemented in this package, see [Brief Introduction to Interstellar Scattering](@ref).
-
-## Installation
-The package is registered in the Julia standard repository, and installable through the standard ways by
-```julia
-using Pkg
-Pkg.add("ScatteringOptics")
-```
-or
-```julia
-]add ScatteringOptics
-```

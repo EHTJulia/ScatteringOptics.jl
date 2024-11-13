@@ -7,6 +7,7 @@ DocMeta.setdocmeta!(ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); 
 # Tutorial files
 TUTORIALS = [
     "Getting Started" => [
+        "installation.md",
         "diffractive.md",
         "refractive.md",
     ],
