@@ -1,5 +1,6 @@
 using Pkg
 Pkg.activate(dirname(@__DIR__))
+Pkg.instantiate()
 
 using BenchmarkTools
 using CSV
