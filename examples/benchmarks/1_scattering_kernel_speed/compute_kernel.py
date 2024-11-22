@@ -35,9 +35,9 @@ for nsample in tqdm.tqdm(nsamples):
     def compute_bc():
         return sm_bc.Ensemble_Average_Kernel_Visibility(u=u, v=v, wavelength_cm=0.13)
 
-    dpt = timeit.timeit(compute_dp, number=100)
-    vmt = timeit.timeit(compute_vm, number=100)
-    bct = timeit.timeit(compute_bc, number=100)
+    dpt = np.median(timeit.repeat(compute_dp, repeat=100, number=1))
+    vmt = np.median(timeit.repeat(compute_vm, repeat=100, number=1))
+    bct = np.median(timeit.repeat(compute_bc, repeat=100, number=1))
     dpset.append(dpt)
     vmset.append(vmt)
     bcset.append(bct)
@@ -45,6 +45,6 @@ for nsample in tqdm.tqdm(nsamples):
 df = pd.DataFrame()
 df["samples"] = nsamples
 df["dipole"] = dpset
-df["von_Mises"] = vmset
+df["vonmises"] = vmset
 df["boxcar"] = bcset
-df.to_csv("ehtim_compute_kernel.csv")
+df.to_csv("eh_compute_kernel.csv")

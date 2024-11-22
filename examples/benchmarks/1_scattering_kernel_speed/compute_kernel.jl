@@ -2,7 +2,6 @@ using Pkg
 Pkg.activate(dirname(@__DIR__))
 Pkg.instantiate()
 
-using CairoMakie
 using CSV
 using BenchmarkTools
 using DataFrames
@@ -30,8 +29,11 @@ const sms = [DipoleScatteringModel(), vonMisesScatteringModel(), PeriodicBoxCarS
 const kernels = map(sm -> kernelmodel(sm; νref=νref), sms)
 
 # a function to compute visibility
-@inline function so_compute(sm, λcm, uvec, vvec)
-    return map((u, v) -> visibility_point_approx(sm, λcm, u, v), uvec, vvec)
+@inline function so_compute!(vis, sm, λcm, uvec, vvec)
+    for i in 1:length(uvec)
+        @inbounds vis[i] = visibility_point_approx(sm, λcm, uvec[i], vvec[i])
+    end
+    return nothing
 end
 
 # Benchmarking
@@ -41,12 +43,13 @@ for i in ProgressBar(1:length(nsamples))
     local stablerng = StableRNG(nsample)
     local uvec = rand(stablerng, nsample) .* 1e10
     local vvec = rand(stablerng, nsample) .* 1e10
-    local p = UnstructuredDomain((U=uvec, V=vvec))
+    #local p = UnstructuredDomain((U=uvec, V=vvec))
+    local vis = Vector{Float64}(undef, nsample)
     for j in 1:3
         local sm = sms[j]
         local kernel = kernels[j]
-        #local out = @benchmark visibilitymap($kernel, $p) samples=100
-        local out = @benchmark so_compute($sm, $λcm, $uvec, $vvec) samples=1
+        #local out = @benchmark visibilitymap!($vis, $kernel, $p) samples=100
+        local out = @benchmark so_compute!($vis, $sm, $λcm, $uvec, $vvec) samples=100
         @inbounds so_results[j, i] = minimum(out).time/1e9
     end
 end
@@ -54,6 +57,7 @@ end
 df = DataFrame(
     samples = nsamples,
     dipole = so_results[1, :],
-    vonMises = so_results[2, :],
+    vonmises = so_results[2, :],
     boxcar = so_results[3, :]
 )
+CSV.write("so_compute_kernel.csv", df)
