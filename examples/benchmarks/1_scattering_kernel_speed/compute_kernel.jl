@@ -50,7 +50,7 @@ for i in ProgressBar(1:length(nsamples))
         local kernel = kernels[j]
         #local out = @benchmark visibilitymap!($vis, $kernel, $p) samples=100
         local out = @benchmark so_compute!($vis, $sm, $λcm, $uvec, $vvec) samples=100
-        @inbounds so_results[j, i] = minimum(out).time/1e9
+        @inbounds so_results[j, i] = median(out).time/1e9
     end
 end
 

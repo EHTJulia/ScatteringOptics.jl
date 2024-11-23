@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 # This script sets up the Python environment for the benchmarks.
-#   We use mamba and miniforge to avoid the potential license issues with Anaconda
+#   We used mamba and miniforge to avoid potential license issues with Anaconda
 condacommand="mamba"
 
 # Setup new enviroment

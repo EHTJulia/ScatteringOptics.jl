@@ -14,3 +14,7 @@ cd ..
 cd 1_scattering_kernel_speed
 bash run.bash
 cd ..
+
+cd 2_scattering_kernel_speed
+bash run.bash
+cd ..
