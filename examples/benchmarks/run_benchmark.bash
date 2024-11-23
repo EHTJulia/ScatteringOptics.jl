@@ -18,3 +18,7 @@ cd ..
 cd 2_scattering_kernel_speed
 bash run.bash
 cd ..
+
+cd 3_scattering_kernel_consistency
+bash run.bash
+cd ..
