@@ -1,0 +1,6 @@
+2×4 DataFrame
+ Row │ Name                  Dipole             vonMises           PeriodicBoxCar
+     │ String                String             String             String
+─────┼────────────────────────────────────────────────────────────────────────────────
+   1 │ ScatteringOptics.jl   0.26 +/- 0.15 ms   0.17 +/- 0.08 ms   0.51 +/- 0.11 ms
+   2 │ eht-imaging (Python)  22.86 +/- 1.53 ms  15.99 +/- 1.58 ms  149.24 +/- 6.79 ms
