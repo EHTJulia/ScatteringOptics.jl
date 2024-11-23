@@ -12,7 +12,7 @@ ehdf = DataFrame(CSV.File("./eh_full_scattering.csv"))
 sodf = DataFrame(CSV.File("./so_full_scattering.csv"))
 
 @info "Plotting Results"
-fig = Figure(size=(500,600), fontsize=12)
+fig = Figure(size=(500,500), fontsize=12)
 
 ax = Axis(
     fig[1, 1],
