@@ -12,12 +12,12 @@ ehdf = DataFrame(CSV.File("./eh_full_scattering.csv"))
 sodf = DataFrame(CSV.File("./so_full_scattering.csv"))
 
 @info "Plotting Results"
-fig = Figure(size=(500,500), fontsize=12)
+fig = Figure(size=(500,600), fontsize=12)
 
 ax = Axis(
     fig[1, 1],
     title = string("Computation time for scattering an image"),
-    xlabel = "Data Size in the Visibility Domain",
+    xlabel = "Number of Image Pixels",
     ylabel = "Computation Time (s)",
     xscale = log10,
     yscale = log10,
@@ -25,7 +25,7 @@ ax = Axis(
     xminorticks = IntervalsBetween(9),
     xminorticksvisible = true,
     xminorgridvisible = true,
-    yticks = (10. .^ collect(-4:1), [latexstring("10^{$(i)}") for i in -4:1]),
+    yticks = (10. .^ collect(-4:2), [latexstring("10^{$(i)}") for i in -4:2]),
     yminorticks = IntervalsBetween(9),
     yminorticksvisible = true,
     yminorgridvisible = true,
