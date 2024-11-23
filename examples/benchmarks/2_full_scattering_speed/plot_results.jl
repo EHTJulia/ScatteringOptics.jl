@@ -43,4 +43,4 @@ scatter!(ax, ehdf[!, :nx] .^ 2, ehdf[!, :ensembleaverage], color = "orange")
 
 axislegend(ax, position = :rb)
 
-save(string("full_scattering.png"), fig)
+save(string("bench_full_scattering.png"), fig)
