@@ -1,7 +1,7 @@
 name = "ScatteringOptics"
 uuid = "e317c96f-4a6f-4ae9-8016-294fb9063ff5"
 authors = ["Anna Tartaglia", "Kazunori Akiyama", "Paul Tiede"]
-version = "0.1.6"
+version = "0.1.7"
 
 [deps]
 ComradeBase = "6d8c423b-a35f-4ef1-850c-862fe21f82c4"
