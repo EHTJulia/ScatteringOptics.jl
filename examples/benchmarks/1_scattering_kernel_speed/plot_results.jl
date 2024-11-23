@@ -16,14 +16,14 @@ sodf = DataFrame(CSV.File("./so_compute_kernel.csv"))
 modelnames = ["Dipole", "von Mises", "Periodic Boxcar"]
 dfcols = [:dipole, :vonmises, :boxcar]
 lablenames = ["dp", "vm", "bc"]
+
+fig = Figure(size=(1500,500), fontsize=12)
 for i=1:3
     modelname=modelnames[i]
     labelname=lablenames[i]
 
-    fig = Figure(size=(500,500), fontsize=12)
-    
     ax = Axis(
-        fig[1, 1],
+        fig[1, i],
         title = string("Computation time of the kernel visibility amplitudes ($(modelname) Model)"),
         xlabel = "Data Size in the Visibility Domain",
         ylabel = "Computation Time (s)",
@@ -47,6 +47,5 @@ for i=1:3
     scatter!(ax, ehdf[!, :samples], ehdf[!, dfcols[i]], color = "orange")
     
     axislegend(ax, position = :rb)
-
-    save(string("kernel_", labelname, ".png"), fig)
 end
+save(string("bench_kernel_speed.png"), fig)
