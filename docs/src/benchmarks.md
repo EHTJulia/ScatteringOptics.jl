@@ -53,9 +53,9 @@ With this significant speed up, the Julia implementation paves the pathway for t
 
 ## Scattering kernel computations
 The scattering kernel may be called upon to compute visibilities for a given sample of Fourier space points (see [Simulate Diffractive Scattering](@ref) for the tutorial), which is important to mitigate the diffractive scattering in the sky model (e.g. image) reconstruction. 
-Once the scattering model is initialzied, the kernel visbility can be computed in fairly simple analytic formula that can be purely written by basic `numpy` operations in Python without a significant overhead. Therefore, one wouldn't anticipate a significant speed improvement in Julia.
+Once the scattering model is initialzied, the kernel visbility can be computed in fairly simple analytic formula that can be purely written by basic numpy operations in Python without a significant overhead. Therefore, one wouldn't anticipate a significant speed improvement in Julia.
 
-In these computations, however, `ScatteringOptics.jl` also exhibits speed improvements up to 100 times over the three included models (Dipole, Boxcar, and Von Mises; see [Use Non-default Models](@ref) for more info) in particular for data less than 1k points where typical EHT data sets are. As anticipated, `ScatteringOptics.jl` and `eht-imaging` will get closer for larger data sets where overhead contributions are ignoreable.
+In these computations, however, `ScatteringOptics.jl` also exhibits speed improvements up to about 30 times over the three included models (Dipole, Boxcar, and Von Mises; see [Use Non-default Models](@ref) for more info) in particular for data less than 1k points where typical EHT data sets are. As anticipated, `ScatteringOptics.jl` and `eht-imaging` will get closer for larger data sets where overhead contributions are ignoreable. 
 
 ![](assets/bench_kernel_speed.png)
 
@@ -64,6 +64,7 @@ The benchmark scripts are available in `examples/1_scattering_kernel_speed`, and
 # run both python and julia
 bash run.bash
 ```
+This particular comparison is made for a similar level of the low-level functions in a single thread. Comrade.jl's ecosystem further offers multi-threading of computations through `visibilitymap!` and related methods to be used in a higher-level modeling/imaging functions if needed, which allows further accerelation. 
 
 ## End-to-end scattering simulations
 `ScatteringOptics.jl` offers a significant speed up for the end-to-end process as well. Here we compare diffractive scattering of the image that will create an ensemble average image (using `ensembleaverage` method; see [Simulate Diffractive Scattering](@ref)) and also full (i.e. diffractive+refractive) scattering that will create an average image (using `scatter_image` method; see [Simulate Refractive Scattering](@ref)).
