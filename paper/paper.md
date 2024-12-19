@@ -87,23 +87,26 @@ using StableRNGs
 using VLBISkyModels
 
 # Load a image model from an image FITS file
-# This FITS file is available in the tutorial pages of the software documentation.
+# This FITS file is available in the tutorial pages of the
+# software documentation.
 im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
 
 # Plot source image
 imageviz(im, size=(600, 500), colormap=:afmhot)
 ```
-![Output of above code plotting an example unscattered source image (obtained from @Dexter_2014).](images/src.png)
+![Output of above code plotting an example unscattered source image [obtained from @Dexter_2014].](images/src.png)
 
 ```
 # Initialize a scattering model (the default is a Dipole model)
-# The default model is a Dipole model with the best-fit parameters for the Milkey Way supermassive black hole Sgr A*
+# The default model is a Dipole model with the best-fit parameters
+# for the Milky Way supermassive black hole Sgr A*
 sm = ScatteringModel()
 
 # Here using StableRNG for the reproducibility
 rng = StableRNG(123)
 
-# Create a refractive phase screen model from scattering model and image dimensions
+# Create a refractive phase screen model from scattering model
+# and image dimensions
 # Produce the scattered image
 im_sc = scatter_image(sm, im; rng=rng)
 
@@ -117,3 +120,5 @@ We thank Dongjin Kim and Vincent Fish for their helpful discussions related to t
 This work was made possible by grants from the National Science Foundation (NSF; AST-1950348 and AST-2034306). 
 K.A. and P.T. have been financially supported also by other NSF grants (AST-1935980, OMA-2029670, AST-2107681, AST-2132700). 
 The Black Hole Initiative at Harvard University is funded by grants from the John Templeton Foundation and the Gordon and Betty Moore Foundation to Harvard University.
+
+# References
