@@ -9,25 +9,26 @@ tags:
 authors:
   - name: Anna Tartaglia
     orcid: 0000-0001-9229-8833
-    affiliation: "1, 2" 
+    affiliation: "1, 2, 3" 
   - name: Kazunori Akiyama
     orcid: 0000-0002-9475-4254
-    affiliation: "1,3,4"
+    affiliation: "2,4,5"
   - name: Paul Tiede
     orcid: 0000-0003-3826-5648
-    affiliation: "4,5"
+    affiliation: "1,5"
 
 affiliations:
- - name: Massachusetts Institute of Technology Haystack Observatory
-   index: 1
- - name: The Pennsylvania State University
-   index: 2
- - name: National Astronomical Observatory of Japan
-   index: 3
- - name: Black Hole Initiative at Harvard University
-   index: 4
  - name: Center for Astrophysics | Harvard & Smithsonian
+   index: 1
+ - name: Massachusetts Institute of Technology Haystack Observatory
+   index: 2
+ - name: The Pennsylvania State University
+   index: 3
+ - name: National Astronomical Observatory of Japan
+   index: 4
+ - name: Black Hole Initiative at Harvard University
    index: 5
+
 
 date: 14 December 2023
 bibliography: paper.bib
