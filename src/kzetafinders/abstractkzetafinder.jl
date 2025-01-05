@@ -12,7 +12,6 @@ for an anistropic interstellar scattering model. See Psaltis et al. 2018, arxiv:
 """
 abstract type AbstractKzetaFinder end
 
-
 """
     findkzeta_exact(finder::AbstractKzetaFinder; kwargs...)
 
@@ -24,7 +23,6 @@ It uses NonlinearSolve.jl.
     probN = NonlinearProblem(kzetafinder_equation, [kζ0, kζ0], finder)
     return solve(probN, solver)[1]
 end
-
 
 """
     kzetafinder_equation(kzeta, finder::AbstractKzetaFinder)

@@ -25,7 +25,7 @@ im = load_fits("./jason_mad_eofn.fits", IntensityMap)
 
 # Frequency of the image
 νref = metadata(im).frequency
-@info "Frequency of the image: ", νref/1e9, " GHz"
+@info "Frequency of the image: ", νref / 1e9, " GHz"
 
 # Geometric models
 g = stretched(Gaussian(), μas2rad(5.0), μas2rad(5.0))
@@ -36,21 +36,23 @@ stablerng = StableRNG(123)
 u_list = rand(stablerng, 100) .* 1e10
 v_list = rand(stablerng, 100) .* 1e10
 
-for i_sm=1:3
+for i_sm in 1:3
     sm = sm_list[i_sm]
     smlabe = sm_labels[i_sm]
-    
-    for i_kernel=1:2
+
+    for i_kernel in 1:2
         use_approx = i_kernel == 1
         kernellabel = kernel_labels[i_kernel]
 
         @info "Scattering model: $(smlabe), Kernel: $(kernellabel)"
-        
+
         # create scattering kernel model
         kernel = kernelmodel(sm; νref=νref, use_approx=use_approx)
-        
+
         # compute kernel amps
-        kernelamps = map(uv -> visibility_point(kernel, (U=uv[1], V=uv[2])), zip(u_list, v_list))
+        kernelamps = map(
+            uv -> visibility_point(kernel, (U=uv[1], V=uv[2])), zip(u_list, v_list)
+        )
 
         # generate emnsemble average image
         im_ea = ensembleaverage(sm, im; use_approx=use_approx)
@@ -65,13 +67,16 @@ for i_sm=1:3
 
         # save the results
         filename = "$(smlabe)_$(kernellabel).jld2"
-        save(filename, Dict(
-            "kernelamps" => kernelamps,
-            "im_ea" => im_ea,
-            "g_ea" => g_ea,
-            "img_ea" => img_ea,
-            "im_a" => im_a,
-            "img_a" => img_a
-        ))
+        save(
+            filename,
+            Dict(
+                "kernelamps" => kernelamps,
+                "im_ea" => im_ea,
+                "g_ea" => g_ea,
+                "img_ea" => img_ea,
+                "im_a" => im_a,
+                "img_a" => img_a,
+            ),
+        )
     end
 end

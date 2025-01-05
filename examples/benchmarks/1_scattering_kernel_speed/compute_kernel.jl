@@ -13,7 +13,7 @@ using VLBISkyModels
 @info "This benchmark script will compare the time taken to compute the visibility function of the scatteirng kernel between eht-imaging and ScatteringOptics.jl"
 
 # number of uvsamples
-const nsamples = Int64.(floor.(exp10.(range(1, 6, length=20))))
+const nsamples = Int64.(floor.(exp10.(range(1, 6; length=20))))
 
 # maximum uvd
 const uvdmax = Float64(10^10)
@@ -25,7 +25,9 @@ const νref = ScatteringOptics.λcm2ν(λcm)
 @info "Benchmarking ScatteringOptics.jl"
 
 # creating the scattering models
-const sms = [DipoleScatteringModel(), vonMisesScatteringModel(), PeriodicBoxCarScatteringModel()]
+const sms = [
+    DipoleScatteringModel(), vonMisesScatteringModel(), PeriodicBoxCarScatteringModel()
+]
 const kernels = map(sm -> kernelmodel(sm; νref=νref), sms)
 
 # a function to compute visibility
@@ -37,7 +39,7 @@ const kernels = map(sm -> kernelmodel(sm; νref=νref), sms)
 end
 
 # Benchmarking
-so_results=Array{Float64,2}(undef, 3, length(nsamples))
+so_results = Array{Float64,2}(undef, 3, length(nsamples))
 for i in ProgressBar(1:length(nsamples))
     local nsample = nsamples[i]
     local stablerng = StableRNG(nsample)
@@ -49,15 +51,15 @@ for i in ProgressBar(1:length(nsamples))
         local sm = sms[j]
         local kernel = kernels[j]
         #local out = @benchmark visibilitymap!($vis, $kernel, $p) samples=100
-        local out = @benchmark so_compute!($vis, $sm, $λcm, $uvec, $vvec) samples=100
-        @inbounds so_results[j, i] = median(out).time/1e9
+        local out = @benchmark so_compute!($vis, $sm, $λcm, $uvec, $vvec) samples = 100
+        @inbounds so_results[j, i] = median(out).time / 1e9
     end
 end
 
-df = DataFrame(
-    samples = nsamples,
-    dipole = so_results[1, :],
-    vonmises = so_results[2, :],
-    boxcar = so_results[3, :]
+df = DataFrame(;
+    samples=nsamples,
+    dipole=so_results[1, :],
+    vonmises=so_results[2, :],
+    boxcar=so_results[3, :],
 )
 CSV.write("so_compute_kernel.csv", df)

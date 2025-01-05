@@ -25,11 +25,13 @@ const λcm1 = 0.087
 const λcm2 = 3.6
 
 # creating the scattering models
-const sm = ScatteringModel(ϕpa_deg=0.)
+const sm = ScatteringModel(; ϕpa_deg=0.0)
 
 # a function to compute visibility
-@inline visibilitymap_approx_min(sm, λcm, uvec) = map(u -> visibility_point_approx(sm, λcm, u, 0.), uvec)
-@inline visibilitymap_approx_maj(sm, λcm, vvec) = map(v -> visibility_point_approx(sm, λcm, 0., v), vvec)
+@inline visibilitymap_approx_min(sm, λcm, uvec) =
+    map(u -> visibility_point_approx(sm, λcm, u, 0.0), uvec)
+@inline visibilitymap_approx_maj(sm, λcm, vvec) =
+    map(v -> visibility_point_approx(sm, λcm, 0.0, v), vvec)
 
 # Benchmarking
 vismaj1 = visibilitymap_approx_maj(sm, λcm1, uvec1)
@@ -37,12 +39,12 @@ vismin1 = visibilitymap_approx_min(sm, λcm1, uvec1)
 vismaj2 = visibilitymap_approx_maj(sm, λcm2, uvec2)
 vismin2 = visibilitymap_approx_min(sm, λcm2, uvec2)
 
-df = DataFrame(
-    uvd1 = uvec1,
-    vismaj1 = vismaj1,
-    vismin1 = vismin1,
-    uvd2 = uvec2,
-    vismaj2 = vismaj2,
-    vismin2 = vismin2,
+df = DataFrame(;
+    uvd1=uvec1,
+    vismaj1=vismaj1,
+    vismin1=vismin1,
+    uvd2=uvec2,
+    vismaj2=vismaj2,
+    vismin2=vismin2,
 )
 CSV.write("so_compute_kernel.csv", df)

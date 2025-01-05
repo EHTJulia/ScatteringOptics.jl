@@ -2,7 +2,6 @@ export AbstractScatteringKernel
 export visibility_point
 export radialextent
 
-
 """
     $(TYPEDEF)
 

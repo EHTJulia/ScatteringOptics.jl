@@ -14,7 +14,6 @@ struct Dipole_KzetaFinder{T<:Number} <: AbstractKzetaFinder
     A::T
 end
 
-
 # Equation 43 of Psaltis et al. 2018.
 @inline function kzetafinder_equation(kzeta, finder::Dipole_KzetaFinder)
     α = finder.α

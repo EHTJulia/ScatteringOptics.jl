@@ -1,6 +1,5 @@
 #This particular test script conduct basic tests to directly compare outputs with reference data in `data` directory, which was created by the script `data/datagen.jl`.
 
-
 @info "End-to-end test using reference data"
 
 # scattering kernel model labels
@@ -20,7 +19,7 @@ im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
 
 # Frequency of the image
 νref = metadata(im).frequency
-@info "Frequency of the image: ", νref/1e9, " GHz"
+@info "Frequency of the image: ", νref / 1e9, " GHz"
 
 # Geometric models
 g = stretched(Gaussian(), μas2rad(5.0), μas2rad(5.0))
@@ -36,21 +35,23 @@ use_approx = true
 
 # error metric
 function meanfractionalerror(x, ref; ϵ=1e-8)
-    return mean( abs.(x .- ref) ./ abs.(ref .+ ϵ) )
+    return mean(abs.(x .- ref) ./ abs.(ref .+ ϵ))
 end
 
-for i_sm=1:3
+for i_sm in 1:3
     sm = sm_list[i_sm]
     smlabe = sm_labels[i_sm]
     kernellabel = kernel_labels[1]
 
     @info "  Testing Scattering model: $(smlabe), Kernel: $(kernellabel)"
-    
+
     # create scattering kernel model
     kernel = kernelmodel(sm; νref=νref, use_approx=use_approx)
-    
+
     # compute kernel amps
-    kernelamps = map(uv -> visibility_point(kernel, (U=uv[1], V=uv[2])), zip(u_list, v_list))
+    kernelamps = map(
+        uv -> visibility_point(kernel, (U=uv[1], V=uv[2])), zip(u_list, v_list)
+    )
 
     # generate emnsemble average image
     im_ea = ensembleaverage(sm, im; use_approx=use_approx)

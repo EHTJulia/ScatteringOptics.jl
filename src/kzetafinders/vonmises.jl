@@ -13,11 +13,10 @@ struct vonMises_KzetaFinder{T<:Number} <: AbstractKzetaFinder
     A::T
 end
 
-
 # Originally Equation 37 of Psaltis et al. 2018, but apparely different equation is used in eht-imaging library.
 # We here use the version used in eht-imaging library.
 @inline function kzetafinder_equation(kzeta, finder::vonMises_KzetaFinder)
     return besseli.(0, kzeta) ./ besseli.(1, kzeta) .- finder.A^2
 end
 
-@inline initialize(::vonMises_KzetaFinder) = .538
+@inline initialize(::vonMises_KzetaFinder) = 0.538

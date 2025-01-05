@@ -9,7 +9,6 @@ export visibility_point_approx
 export visibility_point_exact
 export ensembleaverage
 
-
 """
     $(TYPEDEF)
 
@@ -76,7 +75,6 @@ Masm D_maj(r) for given r. Based on Equation 33 of Psaltis et al. 2018
     return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / λ0)^2
 end
 
-
 """
     calc_Dmin(r, sm::AbstractScatteringModel)
 
@@ -84,13 +82,12 @@ Masm D_min(r) for given r. Based on Equation 34 of Psaltis et al. 2018
 """
 @inline function calc_Dmin(sm::AbstractScatteringModel, λ::Number, r::Number)
     d1 = sm.D1min
-    d2 = sm.D2min 
+    d2 = sm.D2min
     α = sm.α
     rin = sm.rin
     λ0 = sm.λ0
     return d1 * ((1 + d2 * (r / rin)^2)^(α / 2) - 1) * (λ / λ0)^2
 end
-
 
 """
     Dϕ_approx(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
@@ -114,10 +111,9 @@ end
 Differential contribution to the phase structure function.
 """
 @inline function dDϕ_dz(sm::AbstractScatteringModel, λ::Number, r::Number, ϕ::Number, ϕq)
-
-    return 4 * (λ / sm.λ0)^2 * sm.C / sm.α * (_₁F₁(-sm.α / 2, 0.5, -r^2 / (4 * sm.rin^2) * cos(ϕ - ϕq)^2) - 1)
+    return 4 * (λ / sm.λ0)^2 * sm.C / sm.α *
+           (_₁F₁(-sm.α / 2, 0.5, -r^2 / (4 * sm.rin^2) * cos(ϕ - ϕq)^2) - 1)
 end
-
 
 """
     Dϕ_exact(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
@@ -131,18 +127,18 @@ Masm exact phase structure function Dϕ(r, ϕ) at observing wavelength `λ`, fir
     return quadgk(ϕq -> dDϕ_dz(sm, λ, r, ϕ, ϕq) * Pϕ(sm, ϕq), 0, 2π)[1]
 end
 
-
 """
     visibility_point_approx(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
 
 Compute the diffractive kernel for a given observing wavelength `λ` and fourier space coordinates `u`, `v`
 using the approximated formula of the phase structure function.
 """
-@inline function visibility_point_approx(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
+@inline function visibility_point_approx(
+    sm::AbstractScatteringModel, λ::Number, u::Number, v::Number
+)
     b = (u, v) .* (λ / (1 + sm.M))
     return exp(-0.5 * Dϕ_approx(sm, λ, b...))
 end
-
 
 """
     visibility_point_exact(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
@@ -150,7 +146,9 @@ end
 Compute the diffractive kernel for a given observing wavelength λ and fourier space coordinates `u`, `v`
 using the exact formula of the phase structure function.
 """
-@inline function visibility_point_exact(sm::AbstractScatteringModel, λ::Number, u::Number, v::Number)
+@inline function visibility_point_exact(
+    sm::AbstractScatteringModel, λ::Number, u::Number, v::Number
+)
     b = (u, v) .* (λ / (1 + sm.M))
     return exp(-0.5 * Dϕ_exact(sm, λ, b...))
 end
@@ -166,8 +164,10 @@ Compute the ensemble-average image of the input skymodel `skymodel` using the sc
 - `νmodel::Number=c_cgs`: The frequency in Hz to compute the scattering kernel.
 - `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
-@inline function ensembleaverage(sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel; use_approx::Bool=true)
-    return convolved(skymodel, kernelmodel(sm, νref=νmodel; use_approx=use_approx))
+@inline function ensembleaverage(
+    sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel; use_approx::Bool=true
+)
+    return convolved(skymodel, kernelmodel(sm; νref=νmodel, use_approx=use_approx))
 end
 
 """
@@ -183,7 +183,9 @@ Otherwise `νref` is used to compute the scattering kernel.
 - `νref::Number=c_cgs`: The frequency in Hz to compute the scattering kernel.
 - `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
-@inline function ensembleaverage(sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs, use_approx::Bool=true)
+@inline function ensembleaverage(
+    sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs, use_approx::Bool=true
+)
     # check if imap has a frequncy or time dimension
     if ndims(imap) > 2
         throw("The funciton doesn't support multi-dimensional images")
@@ -196,7 +198,7 @@ Otherwise `νref` is used to compute the scattering kernel.
         @warn "the input image doesn't have a frequency information. νref=c_cgs will be assumed."
     end
     ν_imap = is_freq ? meta_imap.frequency : νref
-    
+
     # compute the ensemble-average image
     return convolve(imap, kernelmodel(sm; νref=ν_imap, use_approx=use_approx))
 end

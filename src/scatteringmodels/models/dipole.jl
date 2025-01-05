@@ -49,15 +49,24 @@ struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
     Pϕ0::T
 
     # Constructor
-    function DipoleScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, D_kpc=2.82, R_kpc=5.53)
+    function DipoleScatteringModel(;
+        α=1.38,
+        rin_cm=800e5,
+        θmaj_mas=1.380,
+        θmin_mas=0.703,
+        ϕpa_deg=81.9,
+        λ0_cm=1.0,
+        D_kpc=2.82,
+        R_kpc=5.53,
+    )
         # compute asymmetry parameters and magnification parameter
         A = calc_A(θmaj_mas, θmin_mas)
         ζ0 = calc_ζ0(A)
         M = calc_M(D_kpc, R_kpc)
 
         # convert D and R to cm
-        D_cm = kpc_tp_cm*D_kpc
-        R_cm = kpc_tp_cm*R_kpc
+        D_cm = kpc_tp_cm * D_kpc
+        R_cm = kpc_tp_cm * R_kpc
 
         # position angle (measured from Dec axis in CCW)
         # to a more tranditional angle measured from RA axis in CW
@@ -94,20 +103,40 @@ struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
         D2min = calc_D2(α, Amin, Bmin)
 
         return new{typeof(α)}(
-            α, rin_cm, θmaj_mas, θmin_mas, ϕpa_deg, λ0_cm, D_cm, R_cm,
-            M, ζ0, A, kζ, Bmaj, Bmin, Qbar, C, Amaj, Amin, ϕ0, D1maj, D2maj, D1min, D2min, Pϕ0
+            α,
+            rin_cm,
+            θmaj_mas,
+            θmin_mas,
+            ϕpa_deg,
+            λ0_cm,
+            D_cm,
+            R_cm,
+            M,
+            ζ0,
+            A,
+            kζ,
+            Bmaj,
+            Bmin,
+            Qbar,
+            C,
+            Amaj,
+            Amin,
+            ϕ0,
+            D1maj,
+            D2maj,
+            D1min,
+            D2min,
+            Pϕ0,
         )
     end
 end
 
-
 # the dipole model is the default scattering model
 const ScatteringModel = DipoleScatteringModel
-
 
 @inline function Pϕ(::Type{<:DipoleScatteringModel}, ϕ, α, ϕ0, kζ, Pϕ0)
     return Pϕ0 * (1 + kζ * sin(ϕ - ϕ0)^2)^(-(α + 2) / 2)
 end
 
-
-@inline Pϕ(sm::DipoleScatteringModel, ϕ) = Pϕ(DipoleScatteringModel, ϕ, sm.α, sm.ϕ0, sm.kζ, sm.Pϕ0)
+@inline Pϕ(sm::DipoleScatteringModel, ϕ) =
+    Pϕ(DipoleScatteringModel, ϕ, sm.α, sm.ϕ0, sm.kζ, sm.Pϕ0)

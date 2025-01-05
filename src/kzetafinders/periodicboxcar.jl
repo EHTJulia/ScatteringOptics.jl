@@ -12,7 +12,6 @@ struct PeriodicBoxCar_KzetaFinder{T<:Number} <: AbstractKzetaFinder
     ζ0::T
 end
 
-
 # Equation 47 of Psaltis et al. 2018.
 #    Note: Eq 47 has a typo and it has an extra kzeta. We use the correct one following
 #          Psaltis+2018's reference implementation in the eht-imaging library.
@@ -23,4 +22,4 @@ end
     return sinc.(x) .- finder.ζ0
 end
 
-@inline initialize(::PeriodicBoxCar_KzetaFinder) = .859
+@inline initialize(::PeriodicBoxCar_KzetaFinder) = 0.859

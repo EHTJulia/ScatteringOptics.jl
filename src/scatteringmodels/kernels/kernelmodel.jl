@@ -14,7 +14,9 @@ Return a Comrade Sky Model for the diffractive scattering kernel of the input sc
     if `true`, returns a model using the approximated fourmula to compute visibiltiies (`ScatteringKernel`).
     Otherwise, return a model instead using the exact formula (`ExactScatteringKernel`).
 """
-@inline function kernelmodel(sm::AbstractScatteringModel; νref::Number=c_cgs, use_approx::Bool=true)
+@inline function kernelmodel(
+    sm::AbstractScatteringModel; νref::Number=c_cgs, use_approx::Bool=true
+)
     if use_approx
         return ScatteringKernel(sm, νref)
     else

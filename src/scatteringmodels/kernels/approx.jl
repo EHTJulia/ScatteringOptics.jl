@@ -19,7 +19,9 @@ struct ApproximatedScatteringKernel{T,S,N} <: AbstractScatteringKernel{T}
     end
 end
 
-ApproximatedScatteringKernel(sm::S, νref::N) where {S,N} = ApproximatedScatteringKernel{Float64}(sm, νref)
+function ApproximatedScatteringKernel(sm::S, νref::N) where {S,N}
+    return ApproximatedScatteringKernel{Float64}(sm, νref)
+end
 
 function radialextent(skm::ApproximatedScatteringKernel{T,S,N}) where {T,S,N}
     return convert(T, 5) * calc_θrad(skm.sm.θmaj) * (ν2λcm(νref) / skm.sm.λ0)^2
