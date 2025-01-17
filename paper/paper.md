@@ -18,15 +18,15 @@ authors:
     affiliation: "1,5"
 
 affiliations:
- - name: Center for Astrophysics | Harvard & Smithsonian
+ - name: Center for Astrophysics | Harvard & Smithsonian, USA
    index: 1
- - name: Massachusetts Institute of Technology Haystack Observatory
+ - name: Massachusetts Institute of Technology Haystack Observatory, USA
    index: 2
- - name: The Pennsylvania State University
+ - name: The Pennsylvania State University, USA
    index: 3
- - name: National Astronomical Observatory of Japan
+ - name: National Astronomical Observatory of Japan, Japan
    index: 4
- - name: Black Hole Initiative at Harvard University
+ - name: Black Hole Initiative at Harvard University, USA
    index: 5
 
 
@@ -36,7 +36,7 @@ bibliography: paper.bib
 ---
 
 # Summary 
-`ScatteringOptics.jl` is an astronomy software package developed in the Julia programming language [@Bezanson_2012]. 
+`ScatteringOptics.jl` is an astronomy software package developed in the Julia programming language [@Julia_2017]. 
 It implements physical models for the anisotropic scattering of radio waves, which arise from turbulence in the ionized interstellar medium. 
 This toolkit excels in simulating and modeling the temporal, spatial, and spectral effects of interstellar scintillation in the strong scattering regime, taking advantage of Julia's speed and composability. 
 The package provides essential functionalities for modeling, analyzing, and interpreting the images of the Galactic Center's supermassive black hole, Sagittarius A*, especially with the Event Horizon Telescope, as well as the images of extremely high brightness temperature emissions in active galactic nuclei using space very long baseline interferometry.
