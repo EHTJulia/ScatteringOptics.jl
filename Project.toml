@@ -18,7 +18,7 @@ StationaryRandomFields = "6ab34832-f7e5-40a4-9cd7-47ea82b5c144"
 VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
 
 [compat]
-ComradeBase = "0.8"
+ComradeBase = "0.8, 0.9"
 DocStringExtensions = "0.9"
 EHTUtils = "0.1"
 FFTW = "1"
