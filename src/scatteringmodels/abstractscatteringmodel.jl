@@ -15,9 +15,11 @@ export ensembleaverage
 An abstract anistropic scattering model based on a thin-screen approximation.
 In this package, we provide a reference implementation of
 the dipole (`DipoleScatteringModel`), von Mises (`vonMisesScatteringModel`) and
-periodic Box Car models (`PeriodicBoxCarScatteringModel`) all introduced in Psaltis et al. 2018.
+periodic Box Car models (`PeriodicBoxCarScatteringModel`) all introduced in
+[Psaltis et al. 2018](@cite PsaltisEtalModel2018).
 
 **Mandatory fields**
+
 The scattering model will be fundamentally governed by the following parameters.
 Ideally, a subtype of this abstract model should have a constructor only with these arguments.
 - `α::Number`: The power-law index of the phase fluctuations (Kolmogorov is 5/3).
@@ -55,7 +57,7 @@ abstract type AbstractScatteringModel end
 
 """
     Pϕ(::AbstractScatteringModel, ϕ::Number)
-    
+
 Normalized probability distribution describing the distribution of the field wander.
 The function should depend on the field wander model.
 """
@@ -64,7 +66,7 @@ The function should depend on the field wander model.
 """
     Dmaj(r, sm::AbstractScatteringModel)
 
-Masm D_maj(r) for given r. Based on Equation 33 of Psaltis et al. 2018
+Masm D_maj(r) for given r. Based on Equation 33 of [Psaltis et al. 2018](@cite PsaltisEtalModel2018)
 """
 @inline function calc_Dmaj(sm::AbstractScatteringModel, λ::Number, r::Number)
     d1 = sm.D1maj
@@ -78,7 +80,7 @@ end
 """
     calc_Dmin(r, sm::AbstractScatteringModel)
 
-Masm D_min(r) for given r. Based on Equation 34 of Psaltis et al. 2018
+Masm D_min(r) for given r. Based on Equation 34 of [Psaltis et al. 2018](@cite PsaltisEtalModel2018)
 """
 @inline function calc_Dmin(sm::AbstractScatteringModel, λ::Number, r::Number)
     d1 = sm.D1min
@@ -93,7 +95,7 @@ end
     Dϕ_approx(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
 
 Masm approximate phase structure function Dϕ(r, ϕ) at observing wavelength λ, first converting
-x and y into polar coordinates. Based on Equation 35 of Psaltis et al. 2018.
+x and y into polar coordinates. Based on Equation 35 of [Psaltis et al. 2018](@cite PsaltisEtalModel2018).
 """
 @inline function Dϕ_approx(sm::AbstractScatteringModel, λ::Number, x::Number, y::Number)
     r = √(x^2 + y^2)

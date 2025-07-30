@@ -3,10 +3,10 @@ CurrentModule = ScatteringOptics
 ```
 
 # Simulate Refractive Scattering
-Another feature of `ScatteringOptics.jl` is simulating refractive scattering. This page gives a tutorial to simulate refractive scattering effects. 
+Another feature of `ScatteringOptics.jl` is simulating refractive scattering. This page gives a tutorial to simulate refractive scattering effects.
 
 ## Loading your image
-Again, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits) (please open in a new window. otherwise you will get 404 error). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2014](https://ui.adsabs.harvard.edu/abs/2014IAUS..303..298D).
+Again, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits) (please open in a new window. otherwise you will get 404 error). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [DexterEvent2013](@citet).
 
 ```@example 1
 using CairoMakie
@@ -37,24 +37,24 @@ sm = ScatteringModel()
 ```
 
 Refractive scattering will distort the diffractively-scattered (i.e. emsemble-average) image and add compact substrucures so-called *refractive substructures*.
-These effects will be simulated with a phase screen generated from the probabilistic magnetic field wander model of the intersteller medium implemented in the scattering model. 
+These effects will be simulated with a phase screen generated from the probabilistic magnetic field wander model of the intersteller medium implemented in the scattering model.
 
 First, let's initialize a phase screen model ([RefractivePhaseScreen](@ref)) from the scattering model and the model image.
 ```@example 1
 # Initialize a refractive phase screen model from scattering and image models
-rps = refractivephasescreen(sm, im) 
+rps = refractivephasescreen(sm, im)
 
 # Alternatively, you may make the screen model for arbitral grid
 #   ScatteringOptics is design to work even if ScatteringScreen's grid is not consistent
 #   with the image you want to scatter, thanks to a powerful interpolation scheme available.
-# rps = RefractivePhaseScreen(sm, Nx, Ny, dx_rad, dy_rad) 
+# rps = RefractivePhaseScreen(sm, Nx, Ny, dx_rad, dy_rad)
 ```
 
 You can sample a Gaussian noise in the Fourier domain.
 
 ```@example 1
 # Generate a phase screen. For this particular tutorial we will use StableRNG for the reproducibility.
-using StableRNGs 
+using StableRNGs
 rng = StableRNG(123)
 noise_screen = generate_gaussian_noise(rps; rng=rng)
 ```
@@ -69,7 +69,7 @@ im_a = scatter_image(rps, im; noise_screen=noise_screen)
 imageviz(im_a, size=(600, 500), colormap=:afmhot)
 ```
 
-If you completely randomize the process, you can skip the step to generate `noise_screen` and specify it in the argument of [scatter_image](@ref) method. In this case, the screen will be automatically generated inside [scatter_image](@ref) method. 
+If you completely randomize the process, you can skip the step to generate `noise_screen` and specify it in the argument of [scatter_image](@ref) method. In this case, the screen will be automatically generated inside [scatter_image](@ref) method.
 
 There is a quick shortcut bypassing the noise screen generation, which has a less flexibility and a larger overhead for iterative processes.
 

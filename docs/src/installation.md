@@ -5,9 +5,9 @@ The package is registered in the Julia standard repository, and installable thro
 using Pkg
 Pkg.add("ScatteringOptics")
 ```
-or
-```julia
-]add ScatteringOptics
+or, in the Julia REPL,
+```julia-repl
+julia> ]add ScatteringOptics
 ```
 
 ## Unit Tests
@@ -16,7 +16,7 @@ The installed package can be tested in your local enviroment through the standar
 using Pkg
 Pkg.test("ScatteringOptics")
 ```
-or
-```julia
-]test ScatteringOptics
+or, in the Julia REPL,
+```julia-repl
+julia> ]test ScatteringOptics
 ```

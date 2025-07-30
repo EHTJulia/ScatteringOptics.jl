@@ -5,7 +5,8 @@ export ApproximatedScatteringKernel
     $(TYPEDEF)
 
 A Comrade VLBI Sky Model for the scattering kernel based on a Scattering Model
-`sm <: AbstractScatteringModel` using the fast approximation formula in Psaltis et al. (2018).
+`sm <: AbstractScatteringModel` using the fast approximation formula in
+[Psaltis et al. (2018)](@cite PsaltisEtalModel2018).
 
 If `T` isn't given, `T` defaults to `Float64`
 """

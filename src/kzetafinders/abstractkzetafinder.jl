@@ -2,7 +2,8 @@
     AbstractKzetaFinder
 
 This is an abstract data type to set up equations and provide a solver for the concentration parameter k_ζ
-for an anistropic interstellar scattering model. See Psaltis et al. 2018, arxiv::1805.01242v1 for details.
+for an anistropic interstellar scattering model. See [Psaltis et al. 2018, arxiv::1805.01242v1](@cite PsaltisEtalModel2018)
+for details.
 
 **Mandatory methods**
 - `kzetafinder_equation(kzeta, finder::AbstractKzetaFinder)`: should privide a equation where k will be derived.

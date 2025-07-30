@@ -5,10 +5,13 @@ export DipoleScatteringModel
     $(TYPEDEF)
 
 An anistropic scattering model based on a thin-screen approximation.
-This scattering model adopts the dipole field wonder described in Psaltis et al. 2018.
+This scattering model adopts the dipole field wonder described in
+[Psaltis et al. 2018](@cite PsaltisEtalModel2018).
 
-** Keywords for the constructor **
-The default numbers are based on the best-fit parameters presented in Johnson et al. 2018.
+**Keywords for the constructor**
+
+The default numbers are based on the best-fit parameters presented in
+[Johnson et al. 2018](@cite JohnsonEtalScattering2018).
 - `α::Number`: The power-law index of the phase fluctuations (Kolmogorov is 5/3).
 - `rin_cm::Number`: The inner scale of the scattering screen in cm.
 - `θmaj_mas::Number`: FWHM in mas of the major axis angular broadening at the specified reference wavelength.

@@ -4,7 +4,7 @@ const c_cgs = 29979245800.0
 const kpc_tp_cm = 3.0857e21
 
 """
-Best-fit parameters of the dipole scattering model derived in Johnson et al. 2018
+Best-fit parameters of the dipole scattering model derived in [Johnson et al. 2018](@cite JohnsonEtalScattering2018)
 """
 const Params_Johnson2018 = (
     α=1.38,

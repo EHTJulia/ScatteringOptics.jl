@@ -5,7 +5,7 @@ export kernelmodel
 
 Return a Comrade Sky Model for the diffractive scattering kernel of the input scattering model.
 
-** Keyword Argurments **
+**Keyword Argurments**
 - `νref::Number`:
     the reference frequency in Hz to give a radial extent of the kernel,
     which is ideally the lowest frequency of your data sets as the kenerl size is roughly scale with λ^2.
