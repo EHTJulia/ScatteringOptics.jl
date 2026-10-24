@@ -2,8 +2,8 @@
     $(TYPEDEF)
 
 The finder of the concentration parameter k_ζ,2 for dipole anistropic scattering models.
-See Psaltis et al. 2018, arxiv::1805.01242v1 for details. The equation for k_ζ,2 is
-given by the equation 43 of Psaltis et al. 2018.
+See [Psaltis et al. 2018, arxiv::1805.01242v1](@cite PsaltisEtalModel2018) for details.
+The equation for k_ζ,2 is given by the equation 43 of Psaltis et al. 2018.
 
 **Mandatory fields**
 - `α::Number`: The power-law index of the phase fluctuations (Kolmogorov is 5/3).

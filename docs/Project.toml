@@ -1,8 +1,20 @@
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
 DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 ScatteringOptics = "e317c96f-4a6f-4ae9-8016-294fb9063ff5"
 StableRNGs = "860ef19b-820b-49d6-a774-d7a799459cd3"
 VLBISkyModels = "d6343c73-7174-4e0f-bb64-562643efbeca"
+
+[sources]
+ScatteringOptics = {path = ".."}
+
+[compat]
+CairoMakie = "0.13"
+Documenter = "1"
+DocumenterVitepress = "0.2"
+HDF5 = "0.17"
+StableRNGs = "1"
+VLBISkyModels = "0.6"

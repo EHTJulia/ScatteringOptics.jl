@@ -5,7 +5,7 @@ CurrentModule = ScatteringOptics
 # Define Your Own Scattering Model
 While this package covers all three probabilistic models published in literature as of 2024 (see [Brief Introduction to Interstellar Scattering](@ref)), users may define a custom probabilistic model leveledging a high level abstraction of data types implemented in this package.
 
-To make your own custom model, you only need to define a custom type of [ScatteringOptics.AbstractScatteringModel](@ref). You need to define the constructor of the type with the standardized parameters set in the literature. Here is a quick example. As long as your model is compatible with the framework of the semianalytic models in Psaltis et al. [1], you need to change only few lines. 
+To make your own custom model, you only need to define a custom type of [ScatteringOptics.AbstractScatteringModel](@ref). You need to define the constructor of the type with the standardized parameters set in the literature. Here is a quick example. As long as your model is compatible with the framework of the semianalytic models in [PsaltisEtalModel2018](@citet), you need to change only few lines.
 ```julia
 using ScatteringOptics
 
@@ -39,7 +39,7 @@ struct YourScatteringModel{T<:Number} <: AbstractScatteringModel
     kζ::T
     Bmaj::T
     Bmin::T
-    .... 
+    ....
 
     # Constructor. Here the default parameters are for Sgr A* (Johnson et al. 2018, [4])
     function YourScatteringModel(; α=1.38, rin_cm=800e5, θmaj_mas=1.380, θmin_mas=0.703, ϕpa_deg=81.9, λ0_cm=1.0, D_kpc=2.82, R_kpc=5.53)
@@ -102,22 +102,13 @@ function Pϕ(::Type{<:YourScatteringModel}, ϕ, α, ϕ0, kζ, ...) end
 #   THIS DEPENDS ON YOUR FIELD WANDER MODEL
 Pϕ(sm::YourScatteringModel, ϕ)=Pϕ(YourScatteringModel, ϕ, sm.α, sm.ϕ0, sm.kζ, ...)
 ```
-For the actual examples, please have a look at the source codes of the three models, which are currently in `src/scatteringmodels/models`. `calc_xxxx` functions are all defined in `src/scatteringmodels/commonfunctions.jl`. Most of the parameters are denoted following Psaltis et al. [1]. This package implements equations connecting the standardized parameters to various precomputed parameters using equations in the eht-imaging library based on [2-4].
+For the actual examples, please have a look at the source codes of the three models, which are currently in `src/scatteringmodels/models`. `calc_xxxx` functions are all defined in `src/scatteringmodels/commonfunctions.jl`. Most of the parameters are denoted following [PsaltisEtalModel2018](@citet). This package implements equations connecting the standardized parameters to various precomputed parameters using equations in the eht-imaging library based on [JohnsonNarayanOptics2016, JohnsonStochastic2016, JohnsonEtalScattering2018](@cite).
 
 Once you define your scattering model, you can simply use your model by
 ```julia
 sm = YourScatteringModel()
 ```
 
-The field wander model often involves a concentration parameter (denoted as $k_\zeta$ in Psaltis et al. [1]). This package offers an abstract type [AbstractKzetaFinder](@ref) to numerically solve $k_\zeta$ from the given scattering parameters. You can see actual examples for three models in `src/kzetafinders` along with the definition of the abstract type. 
+The field wander model often involves a concentration parameter (denoted as $k_\zeta$ in [PsaltisEtalModel2018](@citet)). This package offers an abstract type [AbstractKzetaFinder](@ref) to numerically solve $k_\zeta$ from the given scattering parameters. You can see actual examples for three models in `src/kzetafinders` along with the definition of the abstract type.
 
 You should be able to use all of functions in tutorials with your own model. Enjoy!
-
-## References
-[1] Psaltis, D., et al., 2018, arXiv e-prints, arXiv:1805.01242, DOI: [10.48550/arXiv.1805.01242](https://doi.org/10.48550/arXiv.1805.01242) ([ADS](https://ui.adsabs.harvard.edu/abs/2018arXiv180501242P))
-
-[2] Johnson, M. D., Narayan, R., 2016, The Astrophysical Journal, 826, 170, DOI: [10.3847/0004-637X/826/2/170](https://doi.org/10.3847/0004-637X/826/2/170) ([ADS](https://ui.adsabs.harvard.edu/abs/2016ApJ...826..170J))
-
-[3] Johnson, M. D., 2016, The Astrophysical Journal, 833, 74, DOI: [10.3847/1538-4357/833/1/74](https://doi.org/10.3847/1538-4357/833/1/74) ([ADS](https://ui.adsabs.harvard.edu/abs/2016ApJ...833...74J))
-
-[4] Johnson, M. D., et al., 2018, The Astrophysical Journal, 865, 104, DOI: [10.3847/1538-4357/aadcff](https://doi.org/10.3847/1538-4357/aadcff) ([ADS](https://ui.adsabs.harvard.edu/abs/2018ApJ...865..104J))

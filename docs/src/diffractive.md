@@ -7,7 +7,7 @@ CurrentModule = ScatteringOptics
 This page describes how to simulate diffractive scattering.
 
 ## Loading your image
-Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits) (please open in a new window. otherwise you will get 404 error). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [Dexter et al. 2014](https://ui.adsabs.harvard.edu/abs/2014IAUS..303..298D).
+Here, we use an example image in [`eht-imaging`](https://github.com/achael/eht-imaging). Data can be downloaded from [here](data/jason_mad_eofn.fits) (please open in a new window. otherwise you will get 404 error). This is a general relativistic magnetohydrodynamic (GRMHD) model of the magnetic arrestic disk originally from [DexterEvent2013](@citet).
 
 ```@example 1
 using CairoMakie
@@ -23,7 +23,7 @@ im = load_fits("data/jason_mad_eofn.fits", IntensityMap)
 imageviz(im, size=(600, 500), colormap=:afmhot)
 ```
 
-You can instantiate your scattering model with `ScatteringModel()`. If nothing is specified, the model will use the best-fit parameter set for Sgr A* in [Johnson et al. 2018](https://ui.adsabs.harvard.edu/abs/2018ApJ...865..104J/abstract). 
+You can instantiate your scattering model with `ScatteringModel()`. If nothing is specified, the model will use the best-fit parameter set for Sgr A* in [JohnsonEtalScattering2018](@citet).
 
 ```@example 1
 using ScatteringOptics
@@ -32,10 +32,10 @@ using ScatteringOptics
 sm = ScatteringModel()
 ```
 
-You can change the parameters if you want to simulate a different scattering screen. See [ScatteringOptics.DipoleScatteringModel](@ref) for arguments. 
+You can change the parameters if you want to simulate a different scattering screen. See [ScatteringOptics.DipoleScatteringModel](@ref) for arguments.
 
-## Simulate diffractive scattering 
-As explained in [Brief Introduction to Interstellar Scattering](@ref), diffractive scattering will cause angular broaderning of the resultant image, which is described by the convolution of the source image with a scattering kernel. `ScatteringOptics.jl` implements a `Comrade.jl`'s skymodel of the scattering kernel. You can generate it by 
+## Simulate diffractive scattering
+As explained in [Brief Introduction to Interstellar Scattering](@ref), diffractive scattering will cause angular broaderning of the resultant image, which is described by the convolution of the source image with a scattering kernel. `ScatteringOptics.jl` implements a `Comrade.jl`'s skymodel of the scattering kernel. You can generate it by
 
 ```@example 1
 # Frequency of the image
@@ -95,7 +95,7 @@ u = LinRange(0,10e9,1000)
 vis = [visibility_point(skm, (U=u, V=0, Fr=νref)) for u=u]
 
 # Plot source image
-f = Figure() 
+f = Figure()
 ax = Axis(f[1, 1],
     xlabel="Baseline Length (Gλ)",
     ylabel="Kernel Amplitudes",
@@ -105,7 +105,7 @@ f
 ```
 
 ## A quick shortcut
-The above tutorial is intentionally written in a low level. There is [ensembleaverage](@ref) method to do a quick shortcut by bypassing the kernel generation.
+The above tutorial is intentionally written in a low level. There is [`ensembleaverage`](@ref) method to do a quick shortcut by bypassing the kernel generation.
 
 ```@example 1
 # scatter the image
@@ -115,12 +115,12 @@ im_ea_2 = ensembleaverage(sm, im)
 imageviz(im_ea_2, size=(600, 500), colormap=:afmhot)
 ```
 
-Although this is handy, it may have an extra overhead to initialize `skm` which may slow down highly iterative processes. 
+Although this is handy, it may have an extra overhead to initialize `skm` which may slow down highly iterative processes.
 [ensembleaverage](@ref) method also supports more general skymodels in `ComradeBase.AbstractModel` as an input instead of the image model.
 
 
 ## Save the tutorial data
-The output images may be saved to fits files. Here, we save the images generated in the tutorial above. 
+The output images may be saved to fits files. Here, we save the images generated in the tutorial above.
 ```@example 1
 # Ensemble average image of provided EHT fits file
 save_fits("data/im_ea.fits", im_ea)
@@ -132,14 +132,14 @@ save_fits("data/im_skm.fits", im_skm)
 ```
 You can download generated files from here ([im_ea.fits](data/im_ea.fits), [im_g.fits](data/im_ea.fits), [im_gea.fits](data/im_gea.fits), [im_skm.fits](data/im_skm.fits); please open in a new window. otherwise you will get 404 error).
 
-We also save the kernel visibilities calculated in the tutorial. 
+We also save the kernel visibilities calculated in the tutorial.
 ```@example 1
 using HDF5
 
 # Save the computed kernel data
 h5open("data/kernel.h5", "w") do file
-    file["u"] = collect(u)  
-    file["vis"] = vis       
+    file["u"] = collect(u)
+    file["vis"] = vis
 end
 ```
 You can find the generated file from [here](data/kernel.h5) (please open in a new window. otherwise you will get 404 error). Additionally, for accuracy and speed evaluations of the scattering kernel, see [Benchmarks](@ref).

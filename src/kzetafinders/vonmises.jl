@@ -2,9 +2,11 @@
     $(TYPEDEF)
 
 The finder of the concentration parameter k_ζ,1 for the von Mises anistropic scattering model.
-See Psaltis et al. 2018, arxiv::1805.01242v1 for details. The equation for k_ζ,1 is originally
-given by the equation 37 of Psaltis et al. 2018, but this is different in the implementation of
-Johnson et al. 2018 in eht-imaging library. We follow eht-imaging's implementation.
+See [Psaltis et al. 2018, arxiv::1805.01242v1](@cite PsaltisEtalModel2018) for details.
+The equation for k_ζ,1 is originally given by the
+[equation 37 of Psaltis et al. 2018](@cite PsaltisEtalModel2018), but this is different in
+the implementation of [Johnson et al. 2018](@cite JohnsonEtalScattering2018) in eht-imaging
+library. We follow eht-imaging's implementation.
 
 **Mandatory fields**
 - `A::Number`: The anisotropy parameter of the angular broaderning defined by θmaj/θmin.

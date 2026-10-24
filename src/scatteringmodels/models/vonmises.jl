@@ -6,7 +6,8 @@ export vonMisesScatteringModel
 An anistropic scattering model based on a thin-screen approximation.
 This scattering adopts the von Mises field wonder described in Psaltis et al. 2018.
 
-** Keywords for the constructor **
+**Keywords for the constructor**
+
 The default numbers are based on the best-fit parameters presented in Johnson et al. 2018.
 - `α::Number`: The power-law index of the phase fluctuations (Kolmogorov is 5/3).
 - `rin_cm::Number`: The inner scale of the scattering screen in cm.

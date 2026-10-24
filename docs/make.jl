@@ -1,6 +1,7 @@
 using ScatteringOptics
 using Documenter
 using DocumenterVitepress
+using DocumenterCitations
 
 DocMeta.setdocmeta!(
     ScatteringOptics, :DocTestSetup, :(using ScatteringOptics); recursive=true
@@ -15,8 +16,10 @@ TUTORIALS = [
 # Formatter
 format = MarkdownVitepress(;
     repo="github.com/EHTJulia/ScatteringOptics.jl",
-    clean_md_output=false,    #  this needs to be false for the manual data copy
 )
+
+# Citation plugin
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style = :numeric)
 
 # Keywords for Documenter.jl
 makedocs_kwargs = (
@@ -32,7 +35,10 @@ makedocs_kwargs = (
         "Benchmarks" => "benchmarks.md",
         "Tutorials" => TUTORIALS,
         "ScateringOptics.jl API" => "api.md",
+        "Bibliography" => "bibliography.md",
     ],
+    clean=false,    #  this needs to be false for the manual data copy
+    plugins=[bib],
 )
 
 # Build documentation
