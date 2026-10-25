@@ -1,4 +1,5 @@
 using Test
+using ScatteringOptics
 
 @testset "kζ finders" begin
     finders = [
