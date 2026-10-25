@@ -1,3 +1,5 @@
+using Test
+
 @testset "kζ finders" begin
     finders = [
         ScatteringOptics.Dipole_KzetaFinder(1.38, 1.38 / 0.703),
