@@ -14,7 +14,6 @@ import ComradeBase:
     flux,
     radialextent
 using DocStringExtensions
-using EHTUtils: mas2rad
 using FFTW
 using HypergeometricFunctions
 using Interpolations

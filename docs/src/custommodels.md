@@ -109,7 +109,9 @@ Once you define your scattering model, you can simply use your model by
 sm = YourScatteringModel()
 ```
 
-The field wander model often involves a concentration parameter (denoted as $k_\zeta$ in Psaltis et al. [1]). This package offers an abstract type [AbstractKzetaFinder](@ref) to numerically solve $k_\zeta$ from the given scattering parameters. You can see actual examples for three models in `src/kzetafinders` along with the definition of the abstract type. 
+The field wander model often involves a concentration parameter (denoted as $k_\zeta$ in Psaltis et al. [1]). This package offers an abstract type [AbstractKzetaFinder](@ref) to numerically solve $k_\zeta$ from the given scattering parameters. You can see actual examples for three models in `src/kzetafinders` along with the definition of the abstract type.
+
+Finder calls use a fixed-iteration differentiable approximation by default. The original `NonlinearSolve` implementation remains available with `findkzeta_exact(finder; method=:original)`. The approximation uses 32 fixed quadrature points and 5 Newton iterations for the dipole model, 8 Bessel-series terms and 4 iterations for the von Mises model, and 5 iterations for the periodic box-car model.
 
 You should be able to use all of functions in tutorials with your own model. Enjoy!
 

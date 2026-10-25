@@ -112,7 +112,7 @@ Differential contribution to the phase structure function.
 """
 @inline function dDϕ_dz(sm::AbstractScatteringModel, λ::Number, r::Number, ϕ::Number, ϕq)
     return 4 * (λ / sm.λ0)^2 * sm.C / sm.α *
-           (_₁F₁(-sm.α / 2, 0.5, -r^2 / (4 * sm.rin^2) * cos(ϕ - ϕq)^2) - 1)
+        (_₁F₁(-sm.α / 2, 0.5, -r^2 / (4 * sm.rin^2) * cos(ϕ - ϕq)^2) - 1)
 end
 
 """
@@ -134,8 +134,8 @@ Compute the diffractive kernel for a given observing wavelength `λ` and fourier
 using the approximated formula of the phase structure function.
 """
 @inline function visibility_point_approx(
-    sm::AbstractScatteringModel, λ::Number, u::Number, v::Number
-)
+        sm::AbstractScatteringModel, λ::Number, u::Number, v::Number
+    )
     b = (u, v) .* (λ / (1 + sm.M))
     return exp(-0.5 * Dϕ_approx(sm, λ, b...))
 end
@@ -147,8 +147,8 @@ Compute the diffractive kernel for a given observing wavelength λ and fourier s
 using the exact formula of the phase structure function.
 """
 @inline function visibility_point_exact(
-    sm::AbstractScatteringModel, λ::Number, u::Number, v::Number
-)
+        sm::AbstractScatteringModel, λ::Number, u::Number, v::Number
+    )
     b = (u, v) .* (λ / (1 + sm.M))
     return exp(-0.5 * Dϕ_exact(sm, λ, b...))
 end
@@ -165,9 +165,9 @@ Compute the ensemble-average image of the input skymodel `skymodel` using the sc
 - `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
 @inline function ensembleaverage(
-    sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel; use_approx::Bool=true
-)
-    return convolved(skymodel, kernelmodel(sm; νref=νmodel, use_approx=use_approx))
+        sm::AbstractScatteringModel, skymodel::AbstractModel, νmodel; use_approx::Bool = true
+    )
+    return convolved(skymodel, kernelmodel(sm; νref = νmodel, use_approx = use_approx))
 end
 
 """
@@ -184,8 +184,8 @@ Otherwise `νref` is used to compute the scattering kernel.
 - `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
 @inline function ensembleaverage(
-    sm::AbstractScatteringModel, imap::IntensityMap; νref=c_cgs, use_approx::Bool=true
-)
+        sm::AbstractScatteringModel, imap::IntensityMap; νref = c_cgs, use_approx::Bool = true
+    )
     # check if imap has a frequncy or time dimension
     if ndims(imap) > 2
         throw("The funciton doesn't support multi-dimensional images")
@@ -200,5 +200,5 @@ Otherwise `νref` is used to compute the scattering kernel.
     ν_imap = is_freq ? meta_imap.frequency : νref
 
     # compute the ensemble-average image
-    return convolve(imap, kernelmodel(sm; νref=ν_imap, use_approx=use_approx))
+    return convolve(imap, kernelmodel(sm; νref = ν_imap, use_approx = use_approx))
 end

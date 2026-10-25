@@ -23,23 +23,30 @@ average image.
 `Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen. 
 """
 struct RefractivePhaseScreen{
-    S,T<:Number,N<:AbstractNoiseSignal,P<:AbstractPowerSpectrumModel
-} <: AbstractPhaseScreen
+        S, T <: Number, L <: AbstractStationaryRandomField, P <: AbstractPowerSpectrumModel, X,
+    } <: AbstractPhaseScreen
     sm::S
     dx::T
     dy::T
-    signal::N
+    latent::L
     Q::P
+    transform::X
     function RefractivePhaseScreen(
-        sm::S, Nx::Number, Ny::Number, dx::T, dy::T, Vx_km_per_s::T=0.0, Vy_km_per_s::T=0.0
-    ) where {S,T}
+            sm::S, Nx::Number, Ny::Number, dx::T, dy::T, Vx_km_per_s::T = 0.0, Vy_km_per_s::T = 0.0
+        ) where {S, T}
         # radians to cm
         dx = dx * sm.D
         dy = dy * sm.D
 
         Q = PhaseScreenPowerLaw(sm, dx, dy, Vx_km_per_s, Vy_km_per_s)
-        signal = NoiseSignal((Nx, Ny))
-        return new{S,T,NoiseSignal,typeof(Q)}(sm, dx, dy, signal, Q)
+        latent = UnivariateGaussianRandomField(T, (Nx, Ny))
+        grid = FieldGrid((Nx, Ny); spacing = (dx, dy))
+        transform = prepare(
+            TransformChain(SpectralScaling(Q), HartleyTransform()), latent; grid
+        )
+        return new{S, T, typeof(latent), typeof(Q), typeof(transform)}(
+            sm, dx, dy, latent, Q, transform
+        )
     end
 end
 
@@ -54,8 +61,8 @@ average image.
 - `Vx_km_per_s` and `Vy_km_per_s` are optional for moving phase screen, which is not yet implemented. 
 """
 function refractivephasescreen(
-    sm::S, imap::IntensityMap, Vx_km_per_s::T=0.0, Vy_km_per_s::T=0.0
-) where {S,T}
+        sm::S, imap::IntensityMap, Vx_km_per_s::T = 0.0, Vy_km_per_s::T = 0.0
+    ) where {S, T}
     nx, ny = size(imap)[1:2]
     dx = imap.X[2] - imap.X[1]  # pixel size in radians
     dy = imap.Y[2] - imap.Y[1]
@@ -67,10 +74,10 @@ function refractivephasescreen(
     return RefractivePhaseScreen(sm, nx, ny, dx, dy, Vx_km, Vy_km)
 end
 
-function StationaryRandomFields.generate_gaussian_noise(
-    psm::AbstractPhaseScreen; rng=Random.default_rng()
-)
-    return generate_gaussian_noise(psm.signal; rng=rng)
+function generate_gaussian_noise(
+        psm::AbstractPhaseScreen; rng = Random.default_rng()
+    )
+    return rand(rng, psm.latent)
 end
 
 """
@@ -81,24 +88,21 @@ The fourier space 2D noise_screen (defaults to gaussian noise screen if not give
 `Q`, defined in input AbstractPhaseScreen `psm`. The observing wavelength, `λ_cm`, must be given.
 """
 @inline function phase_screen(
-    psm::AbstractPhaseScreen, λ_cm::Number; noise_screen=nothing, rng=Random.default_rng()
-)
+        psm::AbstractPhaseScreen, λ_cm::Number; noise_screen = nothing, rng = Random.default_rng()
+    )
     # generate noise screen if not provided
     if isnothing(noise_screen)
-        noise_screen = generate_gaussian_noise(psm; rng=rng)
+        noise_screen = generate_gaussian_noise(psm; rng = rng)
     end
-
-    # generate phase screen from power law and noise screen
-    cns = ContinuousNoiseSignal(psm.signal)
-    screengen = PSNoiseGenerator(psm.Q, cns)
+    size(noise_screen) == size(psm.latent) ||
+        throw(DimensionMismatch("The latent screen has the wrong shape."))
 
     λ_bar = λ_cm / 2pi
-    nx, ny = size(psm.signal)
+    nx, ny = size(psm.latent)
     FOVx = psm.dx * nx
     FOVy = psm.dy * ny
 
-    return generate_signal_noise(screengen, noise_screen) .* λ_bar ./ sqrt(FOVx) ./
-           sqrt(FOVy) .* nx .* ny
+    return apply(psm.transform, noise_screen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy) .* nx .* ny
 end
 
 """
@@ -146,16 +150,16 @@ end
 - `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
 @inline function scatter_image(
-    psm::AbstractPhaseScreen,
-    imap::IntensityMap;
-    νref::Number=c_cgs,
-    noise_screen=nothing,
-    rng=Random.default_rng(),
-    use_approx::Bool=true,
-)
+        psm::AbstractPhaseScreen,
+        imap::IntensityMap;
+        νref::Number = c_cgs,
+        noise_screen = nothing,
+        rng = Random.default_rng(),
+        use_approx::Bool = true,
+    )
     # generate noise screen if not provided
     if isnothing(noise_screen)
-        noise_screen = generate_gaussian_noise(psm; rng=rng)
+        noise_screen = generate_gaussian_noise(psm; rng = rng)
     end
 
     # check if imap has a frequncy or time dimension
@@ -174,11 +178,11 @@ end
 
     # compute the ensemble-average image
     sm = psm.sm
-    skm = kernelmodel(sm; νref=ν_imap, use_approx=use_approx)
+    skm = kernelmodel(sm; νref = ν_imap, use_approx = use_approx)
     imap_ea = convolve(imap, skm)
 
     # generate phase screen
-    ϕ = phase_screen(psm, λ_cm; noise_screen=noise_screen)
+    ϕ = phase_screen(psm, λ_cm; noise_screen = noise_screen)
 
     # derive the gradient of the phase screen
     gradϕ_x, gradϕ_y = wrapped_grad(ϕ, psm.dx, psm.dy)
@@ -231,14 +235,14 @@ The frequency of the image, if exists in its metadata, is used to simulate the s
 - `use_approx::Bool=true`: If true, the approximate analytic formula is used to compute the scattering kernel. Otherwise semi-analytic formula is used.
 """
 @inline function scatter_image(
-    sm::AbstractScatteringModel,
-    imap::IntensityMap;
-    νref::Number=c_cgs,
-    Vx_km_per_s=0.0,
-    Vy_km_per_s=0.0,
-    rng=Random.default_rng(),
-    use_approx::Bool=true,
-)
+        sm::AbstractScatteringModel,
+        imap::IntensityMap;
+        νref::Number = c_cgs,
+        Vx_km_per_s = 0.0,
+        Vy_km_per_s = 0.0,
+        rng = Random.default_rng(),
+        use_approx::Bool = true,
+    )
     rps = refractivephasescreen(sm, imap, Vx_km_per_s, Vy_km_per_s)
-    return scatter_image(rps, imap; νref=νref, rng=rng, use_approx=use_approx)
+    return scatter_image(rps, imap; νref = νref, rng = rng, use_approx = use_approx)
 end

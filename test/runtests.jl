@@ -7,5 +7,6 @@ using VLBISkyModels
 
 @testset "ScatteringOptics.jl" begin
     include("internalconsistency.jl")
+    include("kzetafinders.jl")
     include("simtest.jl")
 end

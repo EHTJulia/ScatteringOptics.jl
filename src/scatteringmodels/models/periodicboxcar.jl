@@ -17,7 +17,7 @@ The default numbers are based on the best-fit parameters presented in Johnson et
 - `D_kpc::Number`: The distance from the observer to the scattering screen in pc.
 - `R_kpc::Number`: The distance from the source to the scattering screen in pc.
 """
-struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
+struct PeriodicBoxCarScatteringModel{T <: Number} <: AbstractScatteringModel
     # Mandatory fields for AbstractScatteringModel
     #   fundamental parameters
     α::T
@@ -48,15 +48,15 @@ struct PeriodicBoxCarScatteringModel{T<:Number} <: AbstractScatteringModel
     Pϕ0::T
 
     function PeriodicBoxCarScatteringModel(;
-        α=1.38,
-        rin_cm=800e5,
-        θmaj_mas=1.380,
-        θmin_mas=0.703,
-        ϕpa_deg=81.9,
-        λ0_cm=1.0,
-        R_kpc=5.53,
-        D_kpc=2.82,
-    )
+            α = 1.38,
+            rin_cm = 800.0e5,
+            θmaj_mas = 1.38,
+            θmin_mas = 0.703,
+            ϕpa_deg = 81.9,
+            λ0_cm = 1.0,
+            R_kpc = 5.53,
+            D_kpc = 2.82,
+        )
         # compute asymmetry parameters and magnification parameter
         A = calc_A(θmaj_mas, θmin_mas)
         ζ0 = calc_ζ0(A)

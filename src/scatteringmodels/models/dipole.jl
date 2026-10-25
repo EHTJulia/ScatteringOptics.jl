@@ -18,7 +18,7 @@ The default numbers are based on the best-fit parameters presented in Johnson et
 - `D_kpc::Number`: The distance from the observer to the scattering screen in kpc.
 - `R_kpc::Number`: The distance from the source to the scattering screen in kpc.
 """
-struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
+struct DipoleScatteringModel{T <: Number} <: AbstractScatteringModel
     # Mandatory fields for AbstractScatteringModel
     #   fundamental parameters
     α::T
@@ -50,15 +50,34 @@ struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
 
     # Constructor
     function DipoleScatteringModel(;
-        α=1.38,
-        rin_cm=800e5,
-        θmaj_mas=1.380,
-        θmin_mas=0.703,
-        ϕpa_deg=81.9,
-        λ0_cm=1.0,
-        D_kpc=2.82,
-        R_kpc=5.53,
-    )
+            α = 1.38,
+            rin_cm = 800.0e5,
+            θmaj_mas = 1.38,
+            θmin_mas = 0.703,
+            ϕpa_deg = 81.9,
+            λ0_cm = 1.0,
+            D_kpc = 2.82,
+            R_kpc = 5.53,
+        )
+        T = promote_type(
+            typeof(α),
+            typeof(rin_cm),
+            typeof(θmaj_mas),
+            typeof(θmin_mas),
+            typeof(ϕpa_deg),
+            typeof(λ0_cm),
+            typeof(D_kpc),
+            typeof(R_kpc),
+        )
+        α = T(α)
+        rin_cm = T(rin_cm)
+        θmaj_mas = T(θmaj_mas)
+        θmin_mas = T(θmin_mas)
+        ϕpa_deg = T(ϕpa_deg)
+        λ0_cm = T(λ0_cm)
+        D_kpc = T(D_kpc)
+        R_kpc = T(R_kpc)
+
         # compute asymmetry parameters and magnification parameter
         A = calc_A(θmaj_mas, θmin_mas)
         ζ0 = calc_ζ0(A)
@@ -88,7 +107,11 @@ struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
 
         # precomputing factor for Pϕ
         #   note: both lines are depending on the type of the scattering model
-        Pϕ0 = 1 / (2π * _₂F₁((α + 2) / 2, 0.5, 1, -kζ))
+        # Evaluate the normalization directly to avoid differentiating the
+        # special-function representation through AD backends.
+        Pϕ0 = 1 / _gauss_legendre_integral(
+            ϕ -> (1 + kζ * sin(ϕ)^2)^(-(α + 2) / 2), 0, 2π
+        )
         Pϕfunc(ϕ) = Pϕ(DipoleScatteringModel, ϕ, α, ϕ0, kζ, Pϕ0)
 
         # B parameters
@@ -102,7 +125,7 @@ struct DipoleScatteringModel{T<:Number} <: AbstractScatteringModel
         D1min = calc_D1(α, Amin, Bmin)
         D2min = calc_D2(α, Amin, Bmin)
 
-        return new{typeof(α)}(
+        return new{T}(
             α,
             rin_cm,
             θmaj_mas,

@@ -15,14 +15,33 @@ abstract type AbstractKzetaFinder end
 """
     findkzeta_exact(finder::AbstractKzetaFinder; kwargs...)
 
-Solves the equation for the concentration parameter k_ζ,2 given the set of parameters in the finder.
-It uses NonlinearSolve.jl.
+Solves the equation for the concentration parameter k_ζ given the set of parameters in the finder.
+
+The default is a fixed-iteration differentiable approximation. Use `method=:original`
+to select the original `NonlinearSolve.jl` implementation.
 """
-@inline function findkzeta_exact(finder::AbstractKzetaFinder; solver=NewtonRaphson())
+@inline function findkzeta_exact(
+        finder::AbstractKzetaFinder;
+        method = :differentiable,
+        solver = NewtonRaphson(),
+        kwargs...,
+    )
+    if method === :differentiable
+        return findkzeta_differentiable(finder; kwargs...)
+    elseif method === :original
+        return _findkzeta_original(finder; solver)
+    else
+        throw(ArgumentError("method must be :differentiable or :original"))
+    end
+end
+
+@inline function _findkzeta_original(finder::AbstractKzetaFinder; solver = NewtonRaphson())
     kζ0 = initialize(finder)
     probN = NonlinearProblem(kzetafinder_equation, [kζ0, kζ0], finder)
     return solve(probN, solver)[1]
 end
+
+function findkzeta_differentiable end
 
 """
     kzetafinder_equation(kzeta, finder::AbstractKzetaFinder)

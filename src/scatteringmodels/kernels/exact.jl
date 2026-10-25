@@ -8,23 +8,23 @@ A Comrade VLBI Sky Model for the scattering kernel based on a Scattering Model
 
 By default if `T` isn't given, `T` defaults to `Float64`
 """
-struct ExactScatteringKernel{T,S,N} <: AbstractScatteringKernel{T}
+struct ExactScatteringKernel{T, S, N} <: AbstractScatteringKernel{T}
     """Scattering Model"""
     sm::S
     """Reference frequency in Hz for radial extent. Pick the lowest frequency of your skymodel."""
     νref::N
-    function ExactScatteringKernel{T}(sm::S, νref::N) where {T,S,N}
-        return new{T,S,N}(sm, νref)
+    function ExactScatteringKernel{T}(sm::S, νref::N) where {T, S, N}
+        return new{T, S, N}(sm, νref)
     end
 end
 
-ExactScatteringKernel(sm::S, νref::N) where {S,N} = ExactScatteringKernel{Float64}(sm, νref)
+ExactScatteringKernel(sm::S, νref::N) where {S, N} = ExactScatteringKernel{Float64}(sm, νref)
 
-function radialextent(skm::ExactScatteringKernel{T,S,N}) where {T,S,N}
+function radialextent(skm::ExactScatteringKernel{T, S, N}) where {T, S, N}
     return convert(T, 5) * calc_θrad(skm.sm.θmaj) * (ν2λcm(νref) / skm.sm.λ0)^2
 end
 
-@inline function visibility_point(skm::ExactScatteringKernel{T,S,N}, p) where {T,S,N}
+@inline function visibility_point(skm::ExactScatteringKernel{T, S, N}, p) where {T, S, N}
     U = p.U
     V = p.V
     ν = :Fr in keys(p) ? p.Fr : skm.νref
