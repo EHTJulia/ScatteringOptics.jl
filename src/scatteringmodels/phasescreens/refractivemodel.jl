@@ -3,6 +3,7 @@ export RefractivePhaseScreen
 export refractivephasescreen
 export phase_screen
 export hartley_matrix
+export phase_screen_frequency_indices
 export phase_screen_fht
 export wrapped_grad
 export refractive_remap
@@ -145,7 +146,21 @@ end
 @inline _reflected_frequency_index(index, n) = index == 1 ? 0 : _frequency_index(n - index + 2, n)
 
 """
-    phase_screen_fht(sm, noise_screen, λ_cm, angular_dx, angular_dy, hartley)
+    phase_screen_frequency_indices(nx, ny)
+
+Return static forward and reflected integer frequency grids for
+[`phase_screen_fht`](@ref). Prepare this tuple outside an AD or Reactant trace.
+"""
+function phase_screen_frequency_indices(nx::Integer, ny::Integer)
+    forward_x = [_frequency_index(i, nx) for i in 1:nx, _ in 1:ny]
+    forward_y = [_frequency_index(j, ny) for _ in 1:nx, j in 1:ny]
+    reflected_x = [_reflected_frequency_index(i, nx) for i in 1:nx, _ in 1:ny]
+    reflected_y = [_reflected_frequency_index(j, ny) for _ in 1:nx, j in 1:ny]
+    return (forward_x, forward_y, reflected_x, reflected_y)
+end
+
+"""
+    phase_screen_fht(sm, noise_screen, λ_cm, angular_dx, angular_dy, hartley, frequency_indices)
 
 Generate the same static FHT phase-screen synthesis as [`phase_screen`](@ref)
 with an explicitly supplied, precomputed Hartley matrix. This small-grid path
@@ -161,6 +176,7 @@ function phase_screen_fht(
         angular_dx::Number,
         angular_dy::Number,
         hartley,
+        frequency_indices = phase_screen_frequency_indices(size(noise_screen)...),
     )
     nx, ny = size(noise_screen)
     size(hartley) == (nx * ny, nx * ny) ||
@@ -168,19 +184,19 @@ function phase_screen_fht(
 
     dx = angular_dx * sm.D
     dy = angular_dy * sm.D
+    forward_x, forward_y, reflected_x, reflected_y = frequency_indices
+    all(size(index) == size(noise_screen) for index in frequency_indices) ||
+        throw(DimensionMismatch("Frequency indices and latent screen have incompatible sizes."))
     spectrum = PhaseScreenPowerLaw(sm, dx, dy)
-    scaled_noise = map(CartesianIndices(noise_screen)) do index
-        i, j = Tuple(index)
-        qx = _frequency_index(i, nx) / (nx * dx)
-        qy = _frequency_index(j, ny) / (ny * dy)
-        qx_reflected = _reflected_frequency_index(i, nx) / (nx * dx)
-        qy_reflected = _reflected_frequency_index(j, ny) / (ny * dy)
-        power = (
-            StationaryRandomFields.power_point(spectrum, qx, qy) +
-                StationaryRandomFields.power_point(spectrum, qx_reflected, qy_reflected)
-        ) / 2
-        noise_screen[index] * sqrt(power)
-    end
+    qx = forward_x ./ (nx * dx)
+    qy = forward_y ./ (ny * dy)
+    qx_reflected = reflected_x ./ (nx * dx)
+    qy_reflected = reflected_y ./ (ny * dy)
+    power = (
+        StationaryRandomFields.power_point.(Ref(spectrum), qx, qy) .+
+            StationaryRandomFields.power_point.(Ref(spectrum), qx_reflected, qy_reflected)
+    ) ./ 2
+    scaled_noise = noise_screen .* sqrt.(power)
 
     λ_bar = λ_cm / 2π
     fov_x = dx * nx

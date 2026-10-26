@@ -33,7 +33,13 @@ end
 
     reference = phase_screen(psm, wavelength; noise_screen = latent)
     candidate = phase_screen_fht(
-        sm, latent, wavelength, angular_dx, angular_dy, hartley_matrix(nx, ny)
+        sm,
+        latent,
+        wavelength,
+        angular_dx,
+        angular_dy,
+        hartley_matrix(nx, ny),
+        phase_screen_frequency_indices(nx, ny),
     )
 
     @test candidate ≈ reference rtol = 1.0e-12
