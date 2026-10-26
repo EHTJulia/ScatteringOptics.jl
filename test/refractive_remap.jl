@@ -22,3 +22,19 @@
     @test isfinite(finite_difference)
     @test abs(finite_difference) > 1.0e-8
 end
+
+@testset "Static FHT phase-screen validation path" begin
+    nx, ny = 6, 5
+    angular_dx, angular_dy = 1.0e-11, 1.2e-11
+    sm = ScatteringModel()
+    psm = RefractivePhaseScreen(sm, nx, ny, angular_dx, angular_dy)
+    latent = randn(MersenneTwister(17), nx, ny)
+    wavelength = 0.13
+
+    reference = phase_screen(psm, wavelength; noise_screen = latent)
+    candidate = phase_screen_fht(
+        sm, latent, wavelength, angular_dx, angular_dy, hartley_matrix(nx, ny)
+    )
+
+    @test candidate ≈ reference rtol = 1.0e-12
+end

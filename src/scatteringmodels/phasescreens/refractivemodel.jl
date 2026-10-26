@@ -2,6 +2,8 @@ export AbstractPhaseScreen
 export RefractivePhaseScreen
 export refractivephasescreen
 export phase_screen
+export hartley_matrix
+export phase_screen_fht
 export wrapped_grad
 export refractive_remap
 export refractive_remap_squared_error
@@ -104,11 +106,11 @@ The fourier space 2D noise_screen (defaults to gaussian noise screen if not give
     FOVx = psm.dx * nx
     FOVy = psm.dy * ny
 
-    # A transform prepared from the CPU latent field captures CPU coordinate
-    # storage. Re-prepare it when the caller supplies a different array backend.
+    # A transform prepared from the CPU latent field is valid for ordinary CPU
+    # arrays. Re-prepare only when the caller supplies a different array backend.
     # This preserves the cached CPU path while allowing an explicitly supplied
     # GPU latent screen to remain GPU resident.
-    transform = if typeof(noise_screen) === typeof(psm.latent)
+    transform = if noise_screen isa Array
         psm.transform
     else
         grid = FieldGrid((nx, ny); spacing = (psm.dx, psm.dy))
@@ -116,6 +118,75 @@ The fourier space 2D noise_screen (defaults to gaussian noise screen if not give
     end
 
     return apply(transform, noise_screen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy) .* nx .* ny
+end
+
+"""
+    hartley_matrix(nx, ny)
+
+Construct the unnormalized two-dimensional discrete Hartley synthesis matrix
+used by the StationaryRandomFields FHT path. The matrix is intended to be
+prepared once outside automatic differentiation for small validation grids.
+"""
+function hartley_matrix(nx::Integer, ny::Integer)
+    n = nx * ny
+    matrix = Matrix{Float64}(undef, n, n)
+    for output_y in 0:(ny - 1), output_x in 0:(nx - 1)
+        row = output_x + 1 + output_y * nx
+        for input_y in 0:(ny - 1), input_x in 0:(nx - 1)
+            column = input_x + 1 + input_y * nx
+            phase = 2π * (output_x * input_x / nx + output_y * input_y / ny)
+            matrix[row, column] = cos(phase) + sin(phase)
+        end
+    end
+    return matrix
+end
+
+@inline _frequency_index(index, n) = index - 1 <= (n - 1) ÷ 2 ? index - 1 : index - 1 - n
+@inline _reflected_frequency_index(index, n) = index == 1 ? 0 : _frequency_index(n - index + 2, n)
+
+"""
+    phase_screen_fht(sm, noise_screen, λ_cm, angular_dx, angular_dy, hartley)
+
+Generate the same static FHT phase-screen synthesis as [`phase_screen`](@ref)
+with an explicitly supplied, precomputed Hartley matrix. This small-grid path
+keeps the FHT linear map outside the differentiated inputs, allowing Enzyme to
+differentiate the latent and continuous scattering parameters without tracing
+FFTW plan construction. It is intended for validation; [`phase_screen`](@ref)
+remains the default production path.
+"""
+function phase_screen_fht(
+        sm::AbstractScatteringModel,
+        noise_screen,
+        λ_cm::Number,
+        angular_dx::Number,
+        angular_dy::Number,
+        hartley,
+    )
+    nx, ny = size(noise_screen)
+    size(hartley) == (nx * ny, nx * ny) ||
+        throw(DimensionMismatch("Hartley matrix and latent screen have incompatible sizes."))
+
+    dx = angular_dx * sm.D
+    dy = angular_dy * sm.D
+    spectrum = PhaseScreenPowerLaw(sm, dx, dy)
+    scaled_noise = map(CartesianIndices(noise_screen)) do index
+        i, j = Tuple(index)
+        qx = _frequency_index(i, nx) / (nx * dx)
+        qy = _frequency_index(j, ny) / (ny * dy)
+        qx_reflected = _reflected_frequency_index(i, nx) / (nx * dx)
+        qy_reflected = _reflected_frequency_index(j, ny) / (ny * dy)
+        power = (
+            StationaryRandomFields.power_point(spectrum, qx, qy) +
+                StationaryRandomFields.power_point(spectrum, qx_reflected, qy_reflected)
+        ) / 2
+        noise_screen[index] * sqrt(power)
+    end
+
+    λ_bar = λ_cm / 2π
+    fov_x = dx * nx
+    fov_y = dy * ny
+    scale = λ_bar * nx * ny / sqrt(nx * ny) / sqrt(fov_x) / sqrt(fov_y)
+    return reshape(hartley * vec(scaled_noise), nx, ny) .* scale
 end
 
 """

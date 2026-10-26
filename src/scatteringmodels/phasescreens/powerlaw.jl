@@ -30,7 +30,10 @@ end
     # SRF coordinates are cycles per coordinate unit; the physical spectrum
     # is defined in angular spatial frequency.
     q_r = 2π * √sum(abs2, q) + 1.0e-12 / model.sm.rin
-    q_ϕ = atan(q[2], q[1])
+    # The zero-frequency mode has no physical direction. Its limiting angle is
+    # conventionally zero, which preserves the previous primal value while
+    # avoiding the undefined derivative of atan(0, 0).
+    q_ϕ = iszero(q[1]) && iszero(q[2]) ? zero(q_r) : atan(q[2], q[1])
     return model.sm.Qbar *
         (q_r * model.sm.rin)^(-(model.sm.α + 2.0)) *
         exp(-(q_r * model.sm.rin)^2) *
