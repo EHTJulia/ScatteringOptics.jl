@@ -102,7 +102,18 @@ The fourier space 2D noise_screen (defaults to gaussian noise screen if not give
     FOVx = psm.dx * nx
     FOVy = psm.dy * ny
 
-    return apply(psm.transform, noise_screen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy) .* nx .* ny
+    # A transform prepared from the CPU latent field captures CPU coordinate
+    # storage. Re-prepare it when the caller supplies a different array backend.
+    # This preserves the cached CPU path while allowing an explicitly supplied
+    # GPU latent screen to remain GPU resident.
+    transform = if typeof(noise_screen) === typeof(psm.latent)
+        psm.transform
+    else
+        grid = FieldGrid((nx, ny); spacing = (psm.dx, psm.dy))
+        prepare(TransformChain(SpectralScaling(psm.Q), HartleyTransform()), noise_screen; grid)
+    end
+
+    return apply(transform, noise_screen) .* λ_bar ./ sqrt(FOVx) ./ sqrt(FOVy) .* nx .* ny
 end
 
 """
