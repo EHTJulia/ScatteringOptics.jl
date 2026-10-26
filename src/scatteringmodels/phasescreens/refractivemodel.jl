@@ -3,6 +3,8 @@ export RefractivePhaseScreen
 export refractivephasescreen
 export phase_screen
 export wrapped_grad
+export refractive_remap
+export refractive_remap_squared_error
 export scatter_image
 export generate_gaussian_noise
 
@@ -123,18 +125,68 @@ Returns the wrapped gradient of a given 2D phase screen. The x and y pixel sizes
 """
 @inline function wrapped_grad(ϕ, dx, dy)
     nx, ny = size(ϕ)
-    gradϕ_x = Array{Float64}(undef, (nx, ny))
-    gradϕ_y = Array{Float64}(undef, (nx, ny))
-    for i in 1:nx, j in 1:ny
-        i0 = i == 1 ? nx : i - 1
-        j0 = j == 1 ? ny : j - 1
-        i1 = i == nx ? 1 : i + 1
-        j1 = j == ny ? 1 : j + 1
+    return (
+        map(CartesianIndices(ϕ)) do index
+            i, j = Tuple(index)
+            i0, i1 = i == 1 ? nx : i - 1, i == nx ? 1 : i + 1
+            (ϕ[i1, j] - ϕ[i0, j]) / (2 * dx)
+        end,
+        map(CartesianIndices(ϕ)) do index
+            i, j = Tuple(index)
+            j0, j1 = j == 1 ? ny : j - 1, j == ny ? 1 : j + 1
+            (ϕ[i, j1] - ϕ[i, j0]) / (2 * dy)
+        end,
+    )
+end
 
-        @inbounds gradϕ_x[i, j] = 0.5 * (ϕ[i1, j] - ϕ[i0, j]) / dx
-        @inbounds gradϕ_y[i, j] = 0.5 * (ϕ[i, j1] - ϕ[i, j0]) / dy
+@inline function _zero_boundary_bilinear(image, x, y)
+    nx, ny = size(image)
+    i0, j0 = floor(Int, x), floor(Int, y)
+    tx, ty = x - i0, y - j0
+    value(i, j) = 1 <= i <= nx && 1 <= j <= ny ? image[i, j] : zero(eltype(image))
+    return (
+        (1 - tx) * (1 - ty) * value(i0, j0) +
+            tx * (1 - ty) * value(i0 + 1, j0) +
+            (1 - tx) * ty * value(i0, j0 + 1) +
+            tx * ty * value(i0 + 1, j0 + 1)
+    )
+end
+
+"""
+    refractive_remap(image, δx, δy, Δx, Δy)
+
+Evaluate the Johnson--Narayan Eq. (9) pullback remapping of an
+ensemble-average image on its original grid. `δx` and `δy` are physical
+displacements; `Δx` and `Δy` are pixel spacings in the same units. Sampling
+uses bilinear interpolation with zero extrapolation. A positive displacement
+samples `image(r + δ)`.
+"""
+function refractive_remap(image, δx, δy, Δx, Δy)
+    size(image) == size(δx) == size(δy) ||
+        throw(DimensionMismatch("Image and displacement arrays must have equal sizes."))
+    return map(CartesianIndices(image)) do index
+        i, j = Tuple(index)
+        _zero_boundary_bilinear(image, i + δx[index] / Δx, j + δy[index] / Δy)
     end
-    return (gradϕ_x, gradϕ_y)
+end
+
+"""
+    refractive_remap_squared_error(image, δx, δy, Δx, Δy, target)
+
+Return the squared pixel residual of [`refractive_remap`](@ref) without
+materializing the remapped image. This scalar form is useful for reverse-mode
+automatic differentiation of a fixed-grid Eq. (9) imaging loss.
+"""
+function refractive_remap_squared_error(image, δx, δy, Δx, Δy, target)
+    size(image) == size(δx) == size(δy) == size(target) ||
+        throw(DimensionMismatch("Image, displacement, and target arrays must have equal sizes."))
+    total = zero(promote_type(eltype(image), eltype(δx), eltype(δy), eltype(target)))
+    for index in CartesianIndices(image)
+        i, j = Tuple(index)
+        residual = _zero_boundary_bilinear(image, i + δx[index] / Δx, j + δy[index] / Δy) - target[index]
+        total += abs2(residual)
+    end
+    return total
 end
 
 """
